@@ -9,7 +9,7 @@ class User(models.Model):
     # Es pot definir com volem que sigui la contrasenya, quins caràcters especials
     password = models.CharField(max_length=16)
     # Amb auto_now_add es registrara la data i hora en el mateix moemtn que es crei el registre
-    register_date = models.DateTimeField(auto_now_add=True)
+  #  register_date = models.DateTimeField(auto_now_add=True)
 
     def set_password(self, password):
         # Guarda la contrasenya de forma segura amb bcrypt

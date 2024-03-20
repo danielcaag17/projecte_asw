@@ -10,4 +10,5 @@ from django.conf import settings
 urlpatterns = [
     path('', views.main, name='main'),
     path('new', views.new_link, name='new_link'),
+    path('create_link', views.create_link, name = 'create_link'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -75,17 +75,17 @@
                 </aside>
                 <div id="content" class="section">
                     <div class="container" data-controller="entry-link-create">
-                        <form name="entry_link" method="post" class="entry-create" enctype="multipart/form-data">
+                        <form action ="/create_link" name="entry_link" method="post" class="entry-create" enctype="multipart/form-data">{% csrf_token %}
                             <div>
                                 <label for="entry_link_url" class="required">URL</label>
-                                <input type="text" id="entry_link_url" name="entry_link[url]" required="required" inputmode="url" data-action="entry-link-create#fetchLink" data-entry-link-create-target="url">
+                                <input type="text" id="entry_link_url" name="url" required="required" inputmode="url" >
                             </div>
                             <div>
                                 <label for="entry_link_title" class="required">Title</label>
-                                <textarea id="entry_link_title" name="entry_link[title]" required="required" data-controller="input-length autogrow" data-entry-link-create-target="title" data-action="input-length#updateDisplay" data-input-length-max-value="255" style="overflow: hidden; height: 66px;"></textarea>
+                                <textarea id="entry_link_title" name="title" required="required" data-input-length-max-value="255" style="overflow: hidden; height: 66px;"></textarea>
                             </div>
                             <div>
-                                <textarea id="entry_link_body" name="entry_link[body]" placeholder="Body" data-controller="input-length rich-textarea autogrow"data-entry-link-create-target="description" data-action="input-length#updateDisplay" data-input-length-max-value="35000" style="overflow: hidden; height: 66px;"></textarea>
+                                <textarea id="entry_link_body" name="body" placeholder="Body" data-input-length-max-value="35000" style="overflow: hidden; height: 66px;"></textarea>
                             </div>
                             <div class="row actions">
                                 <ul>
