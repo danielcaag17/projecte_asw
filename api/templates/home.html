@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ca" style="font-size: 100%"><head><style type="text/css">.turbo-progress-bar {
   position: fixed;
@@ -14,8 +15,7 @@
 }
 </style>
     <title>kbin.social - Explore the Fediverse</title>
-
-    {% load static %}
+    <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
@@ -31,7 +31,7 @@
             </div>
             <menu class="head-nav__menu">
                 <li></li>
-                <li><a href="/api" class="active">Threads</a></li>
+                <li><a href="/" class="active">Threads</a></li>
                 <li><a href="/microblog" class="">Microblog</a></li>
                 <li><a href="/*" class="">All Content</a></li>
                 <li><a href="/people" class="">People</a></li>
