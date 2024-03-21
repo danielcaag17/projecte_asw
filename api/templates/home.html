@@ -1,26 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ca" style="font-size: 100%"><head><style type="text/css">.turbo-progress-bar {
-  position: fixed;
-  display: block;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: #0076ff;
-  z-index: 2147483647;
-  transition:
-    width 300ms ease-out,
-    opacity 150ms 150ms ease-in;
-  transform: translate3d(0, 0, 0);
-}
-</style>
+<html lang="ca" style="font-size: 100%">
+<head>
+    <style type="text/css">.turbo-progress-bar {
+        position: fixed;
+        display: block;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: #0076ff;
+        z-index: 2147483647;
+        transition: width 300ms ease-out,
+        opacity 150ms 150ms ease-in;
+        transform: translate3d(0, 0, 0);
+    }
+    </style>
     <title>kbin.social - Explore the Fediverse</title>
-    <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
+    <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
-
 
 
 <header id="header" class="header">
@@ -32,6 +32,7 @@
             <menu class="head-nav__menu">
                 <li></li>
                 <li><a href="/" class="active">Threads</a></li>
+                <li><a href="/photos" class="">Photos</a></li>
                 <li><a href="/microblog" class="">Microblog</a></li>
                 <li><a href="/*" class="">All Content</a></li>
                 <li><a href="/people" class="">People</a></li>
@@ -39,14 +40,16 @@
                 <li><a href="/magazines/collections" class="">Collections</a></li>
             </menu>
         </nav>
+
         <menu>
-            <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i class="fa-solid fa-plus"></i> Add</a>
+            <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
+                    class="fa-solid fa-plus"></i> Add</a>
                 <ul class="dropdown__menu">
                     <li><a href="/new" class="">Add new link</a></li>
-                        <li><a href="/new/article" class="">Add new thread</a></li>
-                        <li><a href="/new/photo" class="">Add new photo</a></li>
-                        <li><a class="" href="/microblog">Add new post</a></li>
-                        <li><a class="" href="/newMagazine">Create new magazine</a></li>
+                    <li><a href="/new/article" class="">Add new thread</a></li>
+                    <li><a href="/new/photo" class="">Add new photo</a></li>
+                    <li><a class="" href="/microblog">Add new post</a></li>
+                    <li><a class="" href="/newMagazine">Create new magazine</a></li>
                 </ul>
             </li>
             <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
@@ -60,5 +63,40 @@
             </li>
         </menu>
     </div>
-</header></body>
+</header>
+<div id="middle" class="page-entry-front">
+    <div class="kbin-container">
+        <main id="main" class="" data-controller="lightbox timeago">
+            <aside id="options" class="options options--top">
+                <menu class="options__main no-scroll">
+                    <li><a class="" href="/top">Highlights</a></li>
+                    <li><a class="" href="/">Popular</a></li>
+                    <li><a class="active" href="/newest">Newest</a></li>
+                    <li><a class="" href="/active">Active</a></li>
+                    <li><a class="" href="/commented">Commented</a></li>
+                </menu>
+            </aside>
+            <div id="content">
+                {% for thread in threads %}
+                    <article class="entry section subject">
+                        <header>
+                            <h2>
+                                <a href="{{ thread.url }}">{{ thread.title }}</a>
+                                <span class="entry__domain">
+                                    (<a href="{{ thread.url }}">{{ thread.url }}</a>)
+                                </span>
+                            </h2>
+                        </header>
+                        <aside class="meta entry__meta">
+                            <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
+                            <time class="timeago"
+                                  datetime="{{ thread.creation_data }}">{{ thread.creation_data }}</time>
+                        </aside>
+                    </article>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</div>
+</body>
 </html>
