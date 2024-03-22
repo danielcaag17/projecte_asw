@@ -18,9 +18,21 @@ class Endpoint1View(APIView):
 #S'haura de definir per cada subvista que existeix, es a dir, s'haura de modificar d'aqui i crear un html per cadascuna??
 def main(request):
     threads = Thread.objects.all().order_by('-creation_data')
-    context = {'threads': threads}
+    context = {'threads': threads,'active_option':'newest'}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context,request))
+
+def top(request):
+    threads = Thread.objects.all().order_by('creation_data')
+    context = {'threads': threads,'active_option':'top'}
+    template = loader.get_template('home.html')
+    return HttpResponse(template.render(context, request))
+
+def commented(request):
+    threads = Thread.objects.all().order_by('creation_data')
+    context = {'threads': threads,'active_option':'commented'}
+    template = loader.get_template('home.html')
+    return HttpResponse(template.render(context, request))
 
 
 def new_link(request):
