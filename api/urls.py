@@ -11,4 +11,6 @@ urlpatterns = [
     path('', views.main, name='main'),
     path('new', views.new_link, name='new_link'),
     path('create_link', views.create_link, name = 'create_link'),
+    path('top',views.top, name='top'),
+    path('commented',views.commented, name='commented')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

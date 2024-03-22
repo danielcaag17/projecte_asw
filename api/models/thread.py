@@ -1,5 +1,8 @@
+
+
 from django.db import models
 from .user import User
+from django.utils import timezone
 
 
 class Thread(models.Model):
@@ -11,4 +14,5 @@ class Thread(models.Model):
     title = models.TextField(max_length=255,default='')
     body = models.TextField(max_length=35000,null=True)
     url = models.TextField(max_length=35000,default='')
+    creation_data = models.DateTimeField(default=timezone.now)
 
