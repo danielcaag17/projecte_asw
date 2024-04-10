@@ -79,9 +79,9 @@
                     <article class="entry section subject">
                         <header>
                             <h2>
-                                <a href="{{ thread.url }}">{{ thread.title }}</a>
+                                <a href="{% url 'veure_thread' thread.id %}">{{ thread.title }}</a>
                                 <span class="entry__domain">
-                                    (<a href="{{ thread.url }}">{{ thread.url }}</a>)
+                                    (<a href="{% url 'veure_thread' thread.id %}">{{ thread.url }}</a>)
                                 </span>
                             </h2>
                         </header>
