@@ -5,17 +5,16 @@ from .user import User
 from django.utils import timezone
 
 
-class Thread(models.Model):
-    # Automaticament, si no s'especifica, django genera un id (int) com a PK
-    # Rang dels likes [0-2147483647]
-    num_likes = models.PositiveIntegerField(default=0)
+class Publicacio(models.Model):
+    num2_likes = models.PositiveIntegerField(default=0)
     num_dislikes = models.PositiveIntegerField(default=0)
     # En cas que l'author associat s'elimini, tots el threads seus s'elimines
-    author = models.ForeignKey(User, on_delete=models.CASCADE,default='default_user')
-    title = models.TextField(max_length=255,default='')
-    body = models.TextField(max_length=35000,null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default='default_user')
+    title = models.TextField(max_length=255, default='')
+    body = models.TextField(max_length=35000, null=True)
     creation_data = models.DateTimeField(default=timezone.now)
-    #TODO: CAL FER ALGO SIMILAR PER AL CAS EN EL QUE S'HAGI EDITAT EL THREAD/LINK
+
+    # TODO: CAL FER ALGO SIMILAR PER AL CAS EN EL QUE S'HAGI EDITAT EL THREAD/LINK
     def temps_desde_creacio(self):
         temps = timezone.now()
         diff = temps - self.creation_data
@@ -36,7 +35,7 @@ class Thread(models.Model):
             return "fa {} dies".format(dies)
         hores = diff.seconds // 3600
         if hores > 0:
-            if hores== 1: return "fa 1 hora"
+            if hores == 1: return "fa 1 hora"
             return "fa {} hores".format(hores)
         minuts = (diff.seconds % 3600) // 60
         if minuts > 0:
@@ -45,5 +44,9 @@ class Thread(models.Model):
 
         return "Just ara"
 
-class Link(Thread):
+
+class Thread(Publicacio):
+    pass
+
+class Link(Publicacio):
     url = models.TextField(max_length=35000,default='')

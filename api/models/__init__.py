@@ -1,2 +1,2 @@
 from .user import User
-from .thread import Thread, Link
+from .thread import *
