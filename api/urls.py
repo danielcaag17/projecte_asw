@@ -12,5 +12,6 @@ urlpatterns = [
     path('new', views.new_link, name='new_link'),
     path('create_link', views.create_link, name = 'create_link'),
     path('top',views.top, name='top'),
-    path('commented',views.commented, name='commented')
+    path('commented',views.commented, name='commented'),
+    path('magazines',views.view_magazines, name='view_magazines')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

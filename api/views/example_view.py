@@ -40,6 +40,10 @@ def new_link(request):
     return HttpResponse(template.render())
 
 
+def view_magazines(request):
+    template = loader.get_template('view_magazines.html')
+    return HttpResponse(template.render())
+
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
 def create_link(request):
     if request.method == 'POST':
