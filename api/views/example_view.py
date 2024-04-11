@@ -59,7 +59,7 @@ def create_link_thread(request):
             password="default_password",  # Defineix una contrasenya (criptografiada)
         )
 
-        # Creem una nova instància del model Link amb les dades proporcionades
+        # Creem una nova instància del model Thread o Link amb les dades proporcionades
         if url == None:
             thread = Thread.objects.create(
                 title=title,
