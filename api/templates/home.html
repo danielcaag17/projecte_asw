@@ -46,7 +46,7 @@
                     class="fa-solid fa-plus"></i> Add</a>
                 <ul class="dropdown__menu">
                     <li><a href="/new" class="">Add new link</a></li>
-                    <li><a href="/new/article" class="">Add new thread</a></li>
+                    <li><a href="/new/thread" class="">Add new thread</a></li>
                     <li><a href="/new/photo" class="">Add new photo</a></li>
                     <li><a class="" href="/microblog">Add new post</a></li>
                     <li><a class="" href="/newMagazine">Create new magazine</a></li>
@@ -71,7 +71,8 @@
                 <menu class="options__main no-scroll">
                     <li><a class="{% if active_option == 'top' %}active{% endif %}" href="/top">Top</a></li>
                     <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="/">Newest</a></li>
-                    <li><a class="{% if active_option == 'commented' %}active{% endif %}" href="/commented">Commented</a></li>
+                    <li><a class="{% if active_option == 'commented' %}active{% endif %}"
+                           href="/commented">Commented</a></li>
                 </menu>
             </aside>
             <div id="content">
@@ -80,16 +81,36 @@
                         <header>
                             <h2>
                                 <a href="{% url 'veure_thread' thread.id %}">{{ thread.title }}</a>
-                                <span class="entry__domain">
+                                <!--   <span class="entry__domain">
                                     (<a href="{% url 'veure_thread' thread.id %}">{{ thread.url }}</a>)
-                                </span>
+                                </span> -->
                             </h2>
                         </header>
                         <aside class="meta entry__meta">
                             <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
                             <time class="timeago"
-                                  datetime="{{ thread.creation_data }}">{{ thread.creation_data }}</time>
+                                  datetime="{{ thread.temps_desde_creacio }}">{{ thread.temps_desde_creacio }}</time>
+                            <!--AIXO HA DE SER PER POSAR EL MAGAZINE AMB EL SEU LINK    <a href="/m/news@lemmy.world" class="magazine-inline" title="@news@lemmy.world">
+                                                        news</a> -->
                         </aside>
+                <!--        <aside class="vote">
+                            <form class="vote__up">
+                                <button type="submitf" title="Vots positius" aria-label="Vots positius">
+                                    <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
+                                    <span>
+                                        <i class="fa-solid fa-arrow-up"></i>
+                                    </span>
+                                </button>
+                            </form>
+                            <form class="vote__down">
+                                <button type="submit" title="Vots negatius" aria-label="Vots negatius">
+                                    <span data-subject-target="downvoteCounter">3</span> <span><i
+                                        class="fa-solid fa-arrow-down"></i></span>
+                                </button>
+                                <input type="hidden" name="token"
+                                       value="84e7da4c73c.ioSODCUxwfZdj-925BPebgyW-2z8JstOW_7CO6nILBY.89bJaRdY9cIM_4Ul0yWRH0_0lFytZ4V2BM6kWpiOHCe8wuh-UFWgmmW4mA">
+                            </form>
+                        </aside> -->
                     </article>
                 {% endfor %}
             </div>

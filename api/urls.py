@@ -10,7 +10,8 @@ from django.conf import settings
 urlpatterns = [
     path('', views.main, name='main'),
     path('new', views.new_link, name='new_link'),
-    path('create_link', views.create_link, name = 'create_link'),
+path('new/thread', views.new_thread, name='new_thread'),
+    path('create_link_thread', views.create_link_thread, name = 'create_link'),
     path('top',views.top, name='top'),
     path('commented',views.commented, name='commented'),
     path('thread/<int:thread_id>/',views.veure_thread,name='veure_thread')

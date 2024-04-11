@@ -39,9 +39,12 @@ def new_link(request):
     template = loader.get_template('new_link.html')
     return HttpResponse(template.render())
 
+def new_thread(request):
+    template = loader.get_template('new_thread.html')
+    return HttpResponse(template.render())
 
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
-def create_link(request):
+def create_link_thread(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         body = request.POST.get('body')
@@ -56,14 +59,22 @@ def create_link(request):
             password="default_password",  # Defineix una contrasenya (criptografiada)
         )
 
-        # Creem una nova instància del model Thread amb les dades proporcionades
-        link = Thread.objects.create(
-            title=title,
-            body=body,
-            url=url,
-            author=user_prova,
-            creation_data=created_at
-        )
+        # Creem una nova instància del model Link amb les dades proporcionades
+        if url == None:
+            thread = Thread.objects.create(
+                title=title,
+                body=body,
+                author=user_prova,
+                creation_data=created_at
+            )
+        else:
+            link = Link.objects.create(
+                title=title,
+                body=body,
+                url=url,
+                author=user_prova,
+                creation_data=created_at
+            )
 
         # Un cop s'ha creat el fil de discussió, redirigeix l'usuari a alguna altra pàgina
         return redirect('main')
