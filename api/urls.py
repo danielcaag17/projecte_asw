@@ -16,4 +16,5 @@ urlpatterns = [
                   path('commented', views.commented, name='commented'),
                   path('thread/<int:thread_id>/', views.veure_thread, name='veure_thread'),
                   path('add_comment/<int:thread_id>/', views.add_comment, name='add_comment'),
+                  path('add_reply/<int:thread_id>/<int:comment_id>/', views.add_reply, name='add_reply'),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
