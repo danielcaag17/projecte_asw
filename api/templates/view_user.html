@@ -1,10 +1,153 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca" style="font-size: 100%">
 <head>
-    <meta charset="UTF-8">
+    <!--No cal posar type="text/css" donat que a HTML5 ja no s'utilitza
+        i el valor predeterminat de type és text/css -->
+    <style>
+        .turbo-progress-bar {
+          position: fixed;
+          display: block;
+          top: 0;
+          left: 0;
+          height: 3px;
+          background: #0076ff;
+          z-index: 2147483647;
+          transition:
+            width 300ms ease-out,
+            opacity 150ms 150ms ease-in;
+          transform: translate3d(0, 0, 0);
+        }
+    </style>
+    <!-- TODO: El nom usuari_predeterminat s'ha de canviar per l'usuari del moment -->
     <title>Profile - usuari_predeterminat - kbin.social</title>
+    <!-- TODO: Mirar bé quins links s'han de posar -->
+    <!--
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/build/824.b4cc3385.css" data-turbo-track="reload">
+    <link rel="stylesheet" href="/build/app.910c0aab.css" data-turbo-track="reload">
+    -->
+    <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
+    <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
+    <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
-<body>
+<body class="theme--light" data-controller="kbin notifications" data-turbo="false">
+    <header id="header" class="header">
+        <div class="kbin-container">
+            <nav class="head-nav">
+                <div class="brand">
+                    <div>
+                    <!-- TODO: posar les tres linies que donen més opcions -->
+                    </div>
+                    <a href="/">
+                        <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
+                        <!--
+                        <img id="logo" src="/kbin_logo.svg" alt="Home page" title="Home page">
+                        -->
+                    </a>
+                </div>
+                <!-- Menu superior -->
+                <menu class="head-nav__menu">
+                    <li></li>
+                    <li><a href="/all" class="">
+                        <span style="vertical-align: inherit;">Threads</span>
+                    </a></li>
+                    <li><a href="/microblog" class="">
+                        <span style="vertical-align: inherit;">Microblog</span>
+                    </a></li>
+                    <li><a href="/*" class=""> All Content </a></li>
+                    <li><a href="/people" class="">
+                            <span style="vertical-align: inherit;">People</span>
+                    </a></li>
+                    <li><a href="/magazines" class="">
+                        <span style="vertical-align: inherit;">Magazines</span>
+                    </a></li>
+                    <li><a href="/magazines/collections" class="">Collections</a></li>
+                </menu>
+            </nav>
+            <!-- Menu superior a la dreta -->
+            <menu>
+                <!-- Lupa -->
+                <li><a href="/search" class="icon" aria-label="Search" title="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span style="vertical-align: inherit;">Search</span>
+                </a></li>
+                <!-- '+' -->
+                <li class="dropdown">
+                    <a href="/new" class="icon" aria-label="Add" title="Add">
+                        <i class="fa-solid fa-plus"></i>
+                        <span style="vertical-align: inherit;">Add</span>
+                    </a>
+                    <ul class="dropdown__menu">
+                        <li><a href="/new" class="">
+                            <span style="vertical-align: inherit;">Add a new link</span>
+                        </a></li>
+                        <li><a href="/new/article" class="">
+                            <span style="vertical-align: inherit;">Add a new thread</span>
+                        </a></li>
+                        <li> <a href="/new/photo" class="">
+                            <span style="vertical-align: inherit;">Add a new photo</span>
+                        </a></li>
+                        <li><a class="" href="/microblog">
+                            <span style="vertical-align: inherit;">Add a new post</span>
+                        </a></li>
+                        <li><a class="" href="/newMagazine">
+                            <span style="vertical-align: inherit;">Create a new magazine</span>
+                        </a></li>
+                    </ul>
+                </li>
+                <!-- Choose a channel  -->
+                <li class="dropdown">
+                    <a href="/sub" class="icon" aria-label="Choose a channel" title="Choose a channel">
+                        <i class="fa-solid fa-list"></i>
+                        <span style="vertical-align: inherit;">Choose a channel</span>
+                    </a>
+                    <ul class="dropdown__menu">
+                        <li><a href="/sub" class="">
+                            <span style="vertical-align: inherit;">Subscribed</span>
+                        </a></li>
+                        <li><a href="/mod" class="">
+                            <span style="vertical-align: inherit;">Moderate</span>
+                        </a></li>
+                        <li><a href="/fav" class="">
+                            <span style="vertical-align: inherit;">Favorites</span>
+                        </a></li>
+                        <li><a href="/all" class="">
+                            <span style="vertical-align: inherit;">All</span>
+                        </a></li>
+                    </ul>
+                </li>
+                <!-- Login
+                    TODO: mirar com és amb login active i no -->
+                <li class="dropdown">
+                    <!-- TODO: de posar username -->
+                    <a class=" login active" href="/u/usuari_predeterminat">
+                        <!-- TODO: de posar username -->
+                        <span class="user-name">usuari_predeterminat</span>
+                    </a>
+                    <ul class="dropdown__menu">
+                        <!-- TODO: de posar username -->
+                        <li><a href="/u/usuari_predeterminat" class="">
+                            <span style="vertical-align: inherit;">Profile</span>
+                        </a></li>
+                        <li><a href="/settings/general" class="active">
+                            <span style="vertical-align: inherit;">Setting</span>
+                        </a></li>
+                        <li><a href="/profile/messages" class="">
+                            <span style="vertical-align: inherit;">Messages</span>
+                        </a></li>
+                        <li><a href="/settings/notifications" class="">
+                            <span style="vertical-align: inherit;">Notifications</span>
+                        </a></li>
+                        <!-- TODO: mirar logout -->
+                        <li><a href="/logout?_csrf_token=aaab5b318b90f6913e9a893f9756755.3kdlM8jiza_lwTyNWO81AwaotGeaf8EOhnKbcqRJ0uY.qA4ue4ysuNmWhVPBa7tGeWvt2CvFNopazibEEMJ-qoSnDS1Y-IOqnraWdQ">
+                            <span style="vertical-align: inherit;">Sign off</span>
+                        </a></li>
+                    </ul>
+                </li>
+            </menu>
+        </div>
+    </header>
 
 </body>
 </html>
