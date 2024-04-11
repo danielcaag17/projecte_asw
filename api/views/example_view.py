@@ -15,24 +15,30 @@ class Endpoint1View(APIView):
         return JsonResponse(data)
 
 
-#S'haura de definir per cada subvista que existeix, es a dir, s'haura de modificar d'aqui i crear un html per cadascuna??
-def main(request):
-    threads = Publicacio.objects.all().order_by('-creation_data')
-    context = {'threads': threads,'active_option':'newest'}
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render(context,request))
 
-def top(request):
-    threads = Thread.objects.all().order_by('creation_data')
-    context = {'threads': threads,'active_option':'top'}
+def main_list(request,ordre=None,filter=None):
+    links = Link.objects.all()
+    threads = Thread.objects.all()
+    if ordre == '': ordre = 'newest'
+
+    if filter == 'links':
+        tot = links
+    elif filter == 'threads':
+        tot = threads
+    else:
+        tot = list(links) + list(threads)
+
+    if ordre == 'top':
+        tot = sorted(tot, key=lambda x: x.num_likes, reverse=True)
+    elif ordre == 'newest':
+        tot = sorted(tot, key=lambda x: x.creation_data, reverse=True)
+    elif ordre == 'commented':
+        tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
+
+    context = {'threads': tot, 'active_option': ordre,'active_filter':filter}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
-def commented(request):
-    threads = Thread.objects.all().order_by('creation_data')
-    context = {'threads': threads,'active_option':'commented'}
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render(context, request))
 
 
 def new_link(request):
@@ -82,9 +88,42 @@ def create_link_thread(request):
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
 
+@csrf_exempt
+def like_thread(request,thread_id):
+    if request.method == 'POST':
+        thread = Publicacio.objects.get(pk=thread_id)
+        thread.num_likes += 1
+        thread.save()
+        next = request.POST.get('next', '/')
+        return redirect(next)
+    else:
+        return redirect('main')
+
+@csrf_exempt
+def dislike_thread(request,thread_id):
+    if request.method == 'POST':
+        thread = Publicacio.objects.get(pk=thread_id)
+        thread.num_dislikes += 1
+        thread.save()
+        next = request.POST.get('next', '/')
+        return redirect(next)
+    else:
+        return redirect('main')
+
+@csrf_exempt
+def boost_thread(request,thread_id):
+    if request.method == 'POST':
+        thread = Publicacio.objects.get(pk=thread_id)
+        thread.num_boosts += 1
+        thread.save()
+        next = request.POST.get('next', '/')
+        return redirect(next)
+    else:
+        return redirect('main')
+
 
 def veure_thread(request,thread_id):
-    thread = Thread.objects.get(pk=thread_id)
+    thread = Publicacio.objects.get(pk=thread_id)
     context = {'thread': thread}
  #   template = loader.get_template('veure_thread.html')
     return render(request,'veure_thread.html',context)

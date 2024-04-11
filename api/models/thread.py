@@ -6,13 +6,15 @@ from django.utils import timezone
 
 
 class Publicacio(models.Model):
-    num2_likes = models.PositiveIntegerField(default=0)
+    num_likes = models.PositiveIntegerField(default=0)
     num_dislikes = models.PositiveIntegerField(default=0)
     # En cas que l'author associat s'elimini, tots el threads seus s'elimines
     author = models.ForeignKey(User, on_delete=models.CASCADE, default='default_user')
     title = models.TextField(max_length=255, default='')
     body = models.TextField(max_length=35000, null=True)
     creation_data = models.DateTimeField(default=timezone.now)
+    num_coments = models.PositiveIntegerField(default=0)
+    num_boosts = models.PositiveIntegerField(default=0)
 
     # TODO: CAL FER ALGO SIMILAR PER AL CAS EN EL QUE S'HAGI EDITAT EL THREAD/LINK
     def temps_desde_creacio(self):
