@@ -1,8 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -15,22 +16,24 @@ class Endpoint1View(APIView):
         return JsonResponse(data)
 
 
-#S'haura de definir per cada subvista que existeix, es a dir, s'haura de modificar d'aqui i crear un html per cadascuna??
+# S'haura de definir per cada subvista que existeix, es a dir, s'haura de modificar d'aqui i crear un html per cadascuna??
 def main(request):
     threads = Thread.objects.all().order_by('-creation_data')
-    context = {'threads': threads,'active_option':'newest'}
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render(context,request))
-
-def top(request):
-    threads = Thread.objects.all().order_by('creation_data')
-    context = {'threads': threads,'active_option':'top'}
+    context = {'threads': threads, 'active_option': 'newest'}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
+
+def top(request):
+    threads = Thread.objects.all().order_by('creation_data')
+    context = {'threads': threads, 'active_option': 'top'}
+    template = loader.get_template('home.html')
+    return HttpResponse(template.render(context, request))
+
+
 def commented(request):
     threads = Thread.objects.all().order_by('creation_data')
-    context = {'threads': threads,'active_option':'commented'}
+    context = {'threads': threads, 'active_option': 'commented'}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
@@ -72,8 +75,24 @@ def create_link(request):
         return redirect('/new')
 
 
-def veure_thread(request,thread_id):
+def veure_thread(request, thread_id):
     thread = Thread.objects.get(pk=thread_id)
-    context = {'thread': thread}
- #   template = loader.get_template('veure_thread.html')
-    return render(request,'veure_thread.html',context)
+    comments = Comment.objects.filter(thread_id=thread_id)
+    context = {'thread': thread, 'comments': comments}
+    #   template = loader.get_template('veure_thread.html')
+    return render(request, 'veure_thread.html', context)
+
+
+@csrf_exempt
+def add_comment(request, thread_id):
+    print(f"Valor de thread_id: {thread_id}")
+    thread = Thread.objects.get(pk=thread_id)
+    if request.method == 'POST':
+        body = request.POST.get('entry_comment[body]')
+        if body:
+            default_user = User.objects.get(username='default_user')
+            existing_comment = Comment.objects.filter(body=body, author=default_user, thread=thread).first()
+            if existing_comment is None:
+                comment = Comment(body=body, author=default_user, thread=thread, creation_data=timezone.now())
+                comment.save()
+        return redirect('veure_thread', thread_id=thread_id)
