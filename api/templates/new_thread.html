@@ -66,8 +66,8 @@
                         <h2>Add new</h2>
                     </div>
                     <menu class="options__main">
-                        <li><a href="/new" class="active">link</a></li>
-                        <li><a href="/new/thread" class="">thread</a></li>
+                        <li><a href="/new" class="">link</a></li>
+                        <li><a href="/new/thread" class="active">thread</a></li>
                         <li><a href="/new/photo" class="">photo</a></li>
                         <li><a href="/microblog">post</a></li>
                         <li><a href="/newMagazine" class="">magazine</a></li>
@@ -76,10 +76,6 @@
                 <div id="content" class="section">
                     <div class="container" data-controller="entry-link-create">
                         <form action ="/create_link_thread" name="entry_link" method="post" class="entry-create" enctype="multipart/form-data">{% csrf_token %}
-                            <div>
-                                <label for="entry_link_url" class="required">URL</label>
-                                <input type="text" id="entry_link_url" name="url" required="required" inputmode="url" >
-                            </div>
                             <div>
                                 <label for="entry_link_title" class="required">Title</label>
                                 <textarea id="entry_link_title" name="title" required="required" data-input-length-max-value="255" style="overflow: hidden; height: 66px;"></textarea>
@@ -91,7 +87,7 @@
                                 <ul>
                                     <li>
                                         <div>
-                                            <button type="submit" id="entry_link_submit" name="entry_link[submit]" class="btn btn__primary">Afegir nou link</button>
+                                            <button type="submit" id="entry_link_submit" name="entry_link[submit]" class="btn btn__primary">Afegir nou thread</button>
                                         </div>
                                     </li>
                                 </ul>
