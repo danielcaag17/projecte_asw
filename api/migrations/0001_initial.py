@@ -2,6 +2,8 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
+import django.db.models.deletion
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -13,6 +15,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Publicacio',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('num2_likes', models.PositiveIntegerField(default=0)),
+                ('num_dislikes', models.PositiveIntegerField(default=0)),
+                ('title', models.TextField(default='', max_length=255)),
+                ('body', models.TextField(max_length=35000, null=True)),
+                ('creation_data', models.DateTimeField(default=django.utils.timezone.now)),
+            ],
+        ),
+        migrations.CreateModel(
             name='User',
             fields=[
                 ('username', models.CharField(max_length=32, primary_key=True, serialize=False)),
@@ -21,14 +34,23 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Link',
+            fields=[
+                ('publicacio_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='api.publicacio')),
+                ('url', models.TextField(default='', max_length=35000)),
+            ],
+            bases=('api.publicacio',),
+        ),
+        migrations.CreateModel(
             name='Thread',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('num_likes', models.PositiveIntegerField(default=0)),
-                ('title', models.TextField(default='', max_length=255)),
-                ('body', models.TextField(max_length=35000, null=True)),
-                ('url', models.TextField(default='', max_length=35000)),
-                ('author', models.ForeignKey(default='default_user', on_delete=django.db.models.deletion.CASCADE, to='api.user')),
+                ('publicacio_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='api.publicacio')),
             ],
+            bases=('api.publicacio',),
+        ),
+        migrations.AddField(
+            model_name='publicacio',
+            name='author',
+            field=models.ForeignKey(default='default_user', on_delete=django.db.models.deletion.CASCADE, to='api.user'),
         ),
     ]
