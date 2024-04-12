@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ca" style="font-size: 100%"><head><style type="text/css">.turbo-progress-bar {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: #0076ff;
+  z-index: 2147483647;
+  transition:
+    width 300ms ease-out,
+    opacity 150ms 150ms ease-in;
+  transform: translate3d(0, 0, 0);
+}
+</style>
+    <title>New Magazine</title>
+    <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
+    <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
+    <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
+</head>
+<body class="theme--light" data-controller="kbin notifications" data-turbo="false">
+    <header id="header" class="header">
+        <div class="kbin-container">
+            <nav class="head-nav">
+                <div class="brand">
+                    <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
+                </div>
+                <menu class="head-nav__menu">
+                    <li></li>
+                    <li><a href="/" class="active">Threads</a></li>
+                    <li><a href="/microblog" class="">Microblog</a></li>
+                    <li><a href="/*" class="">All Content</a></li>
+                    <li><a href="/people" class="">People</a></li>
+                    <li><a href="/magazines" class="">Magazines</a></li>
+                    <li><a href="/magazines/collections" class="">Collections</a></li>
+                </menu>
+            </nav>
+            <menu>
+                <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i class="fa-solid fa-plus"></i> Add</a>
+                    <ul class="dropdown__menu">
+                        <li><a href="/new" class="">Add new link</a></li>
+                            <li><a href="/new/article" class="">Add new thread</a></li>
+                            <li><a href="/new/photo" class="">Add new photo</a></li>
+                            <li><a class="" href="/microblog">Add new post</a></li>
+                            <li><a class="" href="/newMagazine">Create new magazine</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
+                    <ul class="dropdown__menu">
+                        <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
+                        <li><a href="/settings/general" class="">Settings</a></li>
+                        <li><a href="/profile/messages" class="">Messages</a></li>
+                        <li><a href="/settings/notifications" class="">Notifications</a></li>
+                        <li><a href="/logout">Log out</a></li>
+                    </ul>
+                </li>
+            </menu>
+        </div>
+    </header>
+<div id="content" class="section">
+        <div class="container">
+            <form name="magazine" method="post">
+            <div><label for="magazine_name" class="required">Nombre</label><input type="text" id="magazine_name" name="magazine[name]" required="required" placeholder="/m/" data-controller="input-length" data-action="input-length#updateDisplay" data-input-length-max-value="25"><div id="magazine_name_max_length" class="length-indicator">0/25</div></div>
+            <div><label for="magazine_title" class="required">Título</label><input type="text" id="magazine_title" name="magazine[title]" required="required" data-controller="input-length autogrow" data-action="input-length#updateDisplay" data-input-length-max-value="50" style="overflow: hidden; height: 51px;"><div id="magazine_title_max_length" class="length-indicator">0/50</div></div>
+            <markdown-toolbar for="magazine_description" class="markdown meta" data-controller="markdown-toolbar" role="toolbar" tabindex="0">
+    <md-bold title="Negrita" aria-label="Negrita">
+        <i class="fa-solid fa-bold"></i>
+    </md-bold>
+    <md-italic title="Cursiva" aria-label="Cursiva">
+        <i class="fa-solid fa-italic"></i>
+    </md-italic>
+    <md-strikethrough title="Tachado" aria-label="Tachado">
+        <i class="fa-solid fa-strikethrough"></i>
+    </md-strikethrough>
+    <md-header title="Encabezado" aria-label="Encabezado">
+        <i class="fa-solid fa-heading"></i>
+    </md-header>
+    <md-quote title="Cita" aria-label="Cita">
+        <i class="fa-solid fa-quote-left"></i>
+    </md-quote>
+    <md-code title="Código" aria-label="Código">
+        <i class="fa-solid fa-code"></i>
+    </md-code>
+    <md-link title="Enlace" aria-label="Enlace">
+        <i class="fa-solid fa-link"></i>
+    </md-link>
+    <md-image title="Imagen" aria-label="Imagen">
+        <i class="fa-solid fa-image"></i>
+    </md-image>
+    <md-unordered-list title="Lista sin ordenar" aria-label="Lista sin ordenar">
+        <i class="fa-solid fa-list"></i>
+    </md-unordered-list>
+    <md-ordered-list title="Lista ordenada" aria-label="Lista ordenada">
+        <i class="fa-solid fa-list-ol"></i>
+    </md-ordered-list>
+    <md-mention title="Mención" aria-label="Mención">
+        <i class="fa-solid fa-at"></i>
+    </md-mention>
+    <md-kbin title="Spoiler" aria-label="Spoiler" data-action="click->markdown-toolbar#addSpoiler">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+    </md-kbin>
+</markdown-toolbar>
+            <div><textarea id="magazine_description" name="magazine[description]" placeholder="Descripción" data-controller="input-length rich-textarea autogrow" data-action="input-length#updateDisplay" data-input-length-max-value="10000" style="overflow: hidden; height: 70px;"></textarea><div id="magazine_description_max_length" class="length-indicator">0/10000</div></div>
+            <markdown-toolbar for="magazine_rules" class="markdown meta" data-controller="markdown-toolbar" role="toolbar" tabindex="0">
+    <md-bold title="Negrita" aria-label="Negrita">
+        <i class="fa-solid fa-bold"></i>
+    </md-bold>
+    <md-italic title="Cursiva" aria-label="Cursiva">
+        <i class="fa-solid fa-italic"></i>
+    </md-italic>
+    <md-strikethrough title="Tachado" aria-label="Tachado">
+        <i class="fa-solid fa-strikethrough"></i>
+    </md-strikethrough>
+    <md-header title="Encabezado" aria-label="Encabezado">
+        <i class="fa-solid fa-heading"></i>
+    </md-header>
+    <md-quote title="Cita" aria-label="Cita">
+        <i class="fa-solid fa-quote-left"></i>
+    </md-quote>
+    <md-code title="Código" aria-label="Código">
+        <i class="fa-solid fa-code"></i>
+    </md-code>
+    <md-link title="Enlace" aria-label="Enlace">
+        <i class="fa-solid fa-link"></i>
+    </md-link>
+    <md-image title="Imagen" aria-label="Imagen">
+        <i class="fa-solid fa-image"></i>
+    </md-image>
+    <md-unordered-list title="Lista sin ordenar" aria-label="Lista sin ordenar">
+        <i class="fa-solid fa-list"></i>
+    </md-unordered-list>
+    <md-ordered-list title="Lista ordenada" aria-label="Lista ordenada">
+        <i class="fa-solid fa-list-ol"></i>
+    </md-ordered-list>
+    <md-mention title="Mención" aria-label="Mención">
+        <i class="fa-solid fa-at"></i>
+    </md-mention>
+    <md-kbin title="Spoiler" aria-label="Spoiler" data-action="click->markdown-toolbar#addSpoiler">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+    </md-kbin>
+</markdown-toolbar>
+            <div><textarea id="magazine_rules" name="magazine[rules]" placeholder="Reglas" data-controller="input-length rich-textarea autogrow" data-action="input-length#updateDisplay" data-input-length-max-value="10000" style="overflow: hidden; height: 70px;"></textarea><div id="magazine_rules_max_length" class="length-indicator">0/10000</div></div>
+            <div class="checkbox"><label for="magazine_isAdult">18+ / NSFW</label><input type="checkbox" id="magazine_isAdult" name="magazine[isAdult]" value="1"></div>
+            <div class="row actions">
+                <div class="float-end"><button type="submit" id="magazine_submit" name="magazine[submit]" class="btn btn__primary">Crear una nueva revista</button></div>
+            </div>
+            <input type="hidden" id="magazine__token" name="magazine[_token]" value="962fe.RDjFB2D4kz9Mztc9fUmIGeT6fGvzzhyxrVOBsjFMjTI.cg2CdBWT12V--p9OBB7AULOgFwW_90nD4hrO_F4I5mZ0WqhPJZr3cgit4w"></form>
+        </div>
+    </div>
+
+</body>
+</html>
