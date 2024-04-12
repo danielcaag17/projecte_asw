@@ -45,6 +45,14 @@ def new_link(request):
     template = loader.get_template('new_link.html')
     return HttpResponse(template.render())
 
+def view_magazines(request):
+    template = loader.get_template("view_magazines.html")
+    return HttpResponse(template.render())
+
+def new_magazine(request):
+    template = loader.get_template("new_magazine.html")
+    return HttpResponse(template.render())
+
 def new_thread(request):
     template = loader.get_template('new_thread.html')
     return HttpResponse(template.render())
