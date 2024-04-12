@@ -70,3 +70,10 @@ def create_link(request):
     else:
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
+
+
+def veure_thread(request,thread_id):
+    thread = Thread.objects.get(pk=thread_id)
+    context = {'thread': thread}
+ #   template = loader.get_template('veure_thread.html')
+    return render(request,'veure_thread.html',context)
