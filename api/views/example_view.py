@@ -40,7 +40,7 @@ def new_link(request):
     return HttpResponse(template.render())
 
 def view_magazines(request):
-    template = loader.get_template("new_magazine.html")
+    template = loader.get_template("view_magazines.html")
     return HttpResponse(template.render())
 
 def new_magazine(request):
