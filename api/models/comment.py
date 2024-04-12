@@ -1,7 +1,7 @@
 from django.db import models
 from .user import User
 from django.utils import timezone
-from .thread import Thread
+from .thread import *
 
 
 class Comment(models.Model):
@@ -16,4 +16,4 @@ class Comment(models.Model):
     num_dislikes = models.PositiveIntegerField(default=0)
     level = models.PositiveIntegerField(default=1)
     # En cas que el thread associat s'elimini, tots els seus comentaris s'eliminen
-    thread = models.ForeignKey(Thread, on_delete=models.CASCADE, default='default_thread')
+    thread = models.ForeignKey(Publicacio, on_delete=models.CASCADE, default='default_thread')

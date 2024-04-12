@@ -13,7 +13,6 @@ urlpatterns = [
     path('commented/<str:filter>/', views.main_list,{'ordre':'commented'}, name='commented_filter'),
     path('thread/<int:thread_id>/',views.veure_thread,name='veure_thread'),
     path('new', views.new_link, name='new_link'),
-    path('create_link', views.create_link, name='create_link'),
     path('add_comment/<int:thread_id>/', views.add_comment, name='add_comment'),
     path('add_reply/<int:thread_id>/<int:comment_id>/', views.add_reply, name='add_reply'),
     path('new/thread', views.new_thread, name='new_thread'),
