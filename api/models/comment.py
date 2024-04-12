@@ -14,6 +14,6 @@ class Comment(models.Model):
     # Rang dels likes [0-2147483647]
     num_likes = models.PositiveIntegerField(default=0)
     num_dislikes = models.PositiveIntegerField(default=0)
-
+    level = models.PositiveIntegerField(default=1)
     # En cas que el thread associat s'elimini, tots els seus comentaris s'eliminen
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE, default='default_thread')

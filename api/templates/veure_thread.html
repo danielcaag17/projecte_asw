@@ -239,69 +239,8 @@
                          data-controller="subject-list comments-wrap"
                          data-action="notifications:EntryCommentCreatedNotification@window->subject-list#increaseCounter">
                     {% load humanize %}
-                    {% for comment in comments %}
-                        <blockquote class="section comment entry-comment subject comment-level--1"
-                                    id="entry-comment-6141738" data-controller="comment subject mentions"
-                                    data-subject-parent-value="" data-action="">
-                            <header>
-                                <a
-                                        data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
-                                        class="user-inline"
-                                        title="Correu del user">
-                                    {{ comment.author.username }}</a>,
-                                <time class="timeago">{{ comment.creation_data|timesince}}</time>
-                            </header>
-                            <figure>
-                                <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
-                                   data-mentions-username-param="Correu del user">
-                                    <div class="no-avatar"></div>
-                                </a>
-                            </figure>
-                            <div class="content" style="">
-                                <p>{{ comment.body }}</p>
-                            </div>
-
-                            <aside class="vote">
-                                <form method="post" class="vote__up">
-                                    <button type="submit" title="Favorito" aria-label="Favorito"
-                                            data-action="subject#vote">
-                                        <span data-subject-target="favCounter">0</span> <span><i
-                                            class="fa-solid fa-arrow-up"></i></span>
-                                    </button>
-                                    <input type="hidden" name="token"
-                                           value="60ff0c14f9e35e6a75bec98c99.mT1WbCeXf6UWbT_mYbHuFGRXxUnEwxwzS2fMNELv5s0.30siDUOuDc0nBVqSENKCTA0YlCHptWxRJgyucSioi5_efAYLUPJKziYZeg">
-                                </form>
-                                <form method="post" class="vote__down">
-                                    <button type="submit" title="Votos negativos" aria-label="Votos negativos"
-                                            data-action="subject#vote" class="vote__up">
-                                        <span data-subject-target="downvoteCounter">0</span> <span><i
-                                            class="fa-solid fa-arrow-down"></i></span>
-                                    </button>
-                                    <input type="hidden" name="token"
-                                           value="eef764ee7e85233c30bcb.tJSvg20gN3OprsuVmVn9qPxLe-H0hBdA5kJmrUUX0Kc.5sfj61xjZRvj5aH4wDqo4ZV5LYWF9Udwogsk4ixItZX69ebENENEJNrqhg">
-                                </form>
-                            </aside>
-
-                            <footer>
-                                <menu>
-                                    <li>
-                                        <a class="stretched-link"
-                                           href="/m/asklemmy@lemmy.ml/t/955403/Using-gaming-controllers-for-anything-other-than-gaming/comment/6141738#add-comment"
-                                           data-action="subject#getForm">responder</a>
-                                    </li>
-                                    <li>
-                                        <form method="post" action="/ecb/6141738">
-                                            <input type="hidden" name="token"
-                                                   value="6c0178466d64b63748c406eb20a3c1b.3nO8A2Cc-W2N003-ab24tuhKmE3dlkknjT_4ZlIJFL4.ryftcjXyyyrjuj_NNonr84x7_zml4gV0tQ-xIWpzc--zNcZGNMy_HcK-Jg">
-                                            <button class="boost-link stretched-link" type="submit"
-                                                    data-action="subject#favourite">
-                                                impulsar <span class="hidden"
-                                                               data-subject-target="upvoteCounter">(0)</span>
-                                            </button>
-                                        </form>
-                                    </li>
-                            </footer>
-                        </blockquote>
+                    {% for comment in comments_root %}
+                        {% include 'comments_tree.html' with comment=comment %}
                     {% endfor %}
                 </section>
 </body>
