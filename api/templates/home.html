@@ -42,11 +42,16 @@
         </nav>
 
         <menu>
+            <li>
+                <a href="/cerca" class="icon" aria-label="Search" title="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                </a>
+            </li>
             <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
                     class="fa-solid fa-plus"></i> Add</a>
                 <ul class="dropdown__menu">
                     <li><a href="/new" class="">Add new link</a></li>
-                    <li><a href="/new/article" class="">Add new thread</a></li>
+                    <li><a href="/new/thread" class="">Add new thread</a></li>
                     <li><a href="/new/photo" class="">Add new photo</a></li>
                     <li><a class="" href="/microblog">Add new post</a></li>
                     <li><a class="" href="/newMagazine">Create new magazine</a></li>
@@ -69,9 +74,35 @@
         <main id="main" class="" data-controller="lightbox timeago">
             <aside id="options" class="options options--top">
                 <menu class="options__main no-scroll">
-                    <li><a class="{% if active_option == 'top' %}active{% endif %}" href="/top">Top</a></li>
-                    <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="/">Newest</a></li>
-                    <li><a class="{% if active_option == 'commented' %}active{% endif %}" href="/commented">Commented</a></li>
+                    <li><a class="{% if active_option == 'top' %}active{% endif %}" href="/top/{{ active_filter }}">Top</a></li>
+                    <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="/newest/{{ active_filter }}">Newest</a></li>
+                    <li><a class="{% if active_option == 'commented' %}active{% endif %}"
+                           href="/commented/{{ active_filter }}">Commented</a></li>
+                </menu>
+                <menu class="options__filters">
+                    <li class="dropdown">
+                        <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i class="fa-solid fa-filter"></i>
+                            Filtrar per tipus
+                        </button>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="/{{ active_option }}/tot" class="{% if active_filter == 'tot' %}active{% endif %}">
+                                    Tot
+                                </a>
+                            </li>
+                            <li>
+                            <a href="/{{ active_option }}/links" class="{% if active_filter == 'links' %}active{% endif %}">
+                            <!--     <a href="{{ request.path }}/Links "class="{% if active_filter == 'links' %}active{% endif %}"> -->
+                                    Links
+                                </a>
+                            </li>
+                            <li>
+                                 <a href="/{{ active_option }}/threads" class="{% if active_filter == 'threads' %}active{% endif %}">
+                                    Threads
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </menu>
             </aside>
             <div id="content">
@@ -79,17 +110,61 @@
                     <article class="entry section subject">
                         <header>
                             <h2>
-                                <a href="{% url 'veure_thread' thread.id %}">{{ thread.title }}</a>
-                                <span class="entry__domain">
-                                    (<a href="{% url 'veure_thread' thread.id %}">{{ thread.url }}</a>)
-                                </span>
+                                <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id %}">{{ thread.title }}</a>
+                                {% if thread.url != none %}
+                                    <span class="entry__domain">
+                                        (<a href="http://{{ thread.url }}">{{ thread.url }}</a>) <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
+                                    </span>
+                                {% endif %}
                             </h2>
                         </header>
                         <aside class="meta entry__meta">
                             <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
                             <time class="timeago"
-                                  datetime="{{ thread.creation_data }}">{{ thread.creation_data }}</time>
+                                  datetime="{{ thread.temps_desde_creacio }}">{{ thread.temps_desde_creacio }}</time>
+                            <!--AIXO HA DE SER PER POSAR EL MAGAZINE AMB EL SEU LINK    <a href="/m/news@lemmy.world" class="magazine-inline" title="@news@lemmy.world">
+                                                        news</a> -->
                         </aside>
+                        <aside class="vote">
+                            <form action="{% url 'like_thread' thread.id %}" name = "like_thread" method="post" class="vote__up">
+                                <input type = "hidden" name="next" value="{{ request.path }}">
+                                <button type="submit" title="Vots positius" aria-label="Vots positius">
+                                    <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
+                                    <span>
+                                        <i class="fa-solid fa-arrow-up"></i>
+                                    </span>
+                                </button>
+                            </form>
+                            <form action="{% url 'dislike_thread' thread.id %}" name = "dislike_thread" method="post" class="vote__down">
+                                <input type = "hidden" name="next" value="{{ request.path }}">
+                                <button type="submit" title="Vots negatius" aria-label="Vots negatius">
+                                    <span data-subject-target="downvoteCounter">{{ thread.num_dislikes }}</span> <span><i
+                                        class="fa-solid fa-arrow-down"></i></span>
+                                </button>
+                                <input type="hidden" name="token"
+                                       value="84e7da4c73c.ioSODCUxwfZdj-925BPebgyW-2z8JstOW_7CO6nILBY.89bJaRdY9cIM_4Ul0yWRH0_0lFytZ4V2BM6kWpiOHCe8wuh-UFWgmmW4mA">
+                            </form>
+                        </aside>
+                        <footer>
+                            <menu>
+                                <li>
+                                    <a class="stretched-link" href="{% url 'veure_thread' thread.id %}"><span data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
+                                </li>
+                                <li>
+                                    <form action="{% url 'boost_thread' thread.id %}" name = "boost_thread" method="post">
+                                        <input type = "hidden" name="next" value="{{ request.path }}">
+                                        <button class="boost-link stretched-link" type="submit"
+                                            data-action="subject#favourite">boost
+                                            {% if thread.num_boosts != 0 %}
+                                                <span class="" data-subject-target="upvoteCounter">({{ thread.num_boosts }})</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </li>
+                            </menu>
+                            <div data-subject-target="container" class="js-container">
+                            </div>
+                        </footer>
                     </article>
                 {% endfor %}
             </div>

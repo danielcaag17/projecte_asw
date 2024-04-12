@@ -5964,7 +5964,7 @@
     font-family: Font Awesome\ 6 Free;
     font-style: normal;
     font-weight: 900;
-    src: url(/build/fonts/fa-solid-900.b6879d41.woff2) format("woff2"), url(/build/fonts/fa-solid-900.d75e3fd1.ttf) format("truetype")
+    src: url(/static/fonts/fa-solid-900.b6879d41.woff2) format("woff2"), url(/static/fonts/fa-solid-900.d75e3fd1.ttf) format("truetype")
 }
 
 .fa-solid, .fas {
