@@ -5,17 +5,36 @@ from django.db.models import Q
 from ..models import *
 
 
-def view_cercador(request):
-    template = loader.get_template('cercador.html')
-    return HttpResponse(template.render())
-
-
-def cercar(request):
+def view_cercador(request,ordre=None,filter=None):
     keyword = request.GET.get('keyword')
-    publicacions = sorted(list(Link.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword)))
-                    + list(Thread.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))), key=lambda x: x.creation_data, reverse=True)
+    if (keyword == None or (all(char.isspace() for char in keyword))): #Mostrem només el camp per fer la cerca
+        template = loader.get_template('cercador.html')
+        return HttpResponse(template.render())
 
-    context = {'threads': publicacions, 'es_cerca': True, 'num_publicacions': len(publicacions)}
+    else: #Busquem totes les publicacions que contenen en el titol i el cos la keyword indicada
+        links = Link.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))
+        threads = Thread.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))
 
-    template = loader.get_template('cercador.html')
-    return HttpResponse(template.render(context, request))
+        if ordre == '': ordre = 'newest'
+
+        if filter == 'links':
+            tot = links
+        elif filter == 'threads':
+            tot = threads
+        else:
+            tot = list(links) + list(threads)
+
+        if ordre == 'top':
+            tot = sorted(tot, key=lambda x: x.num_likes, reverse=True)
+        elif ordre == 'newest':
+            tot = sorted(tot, key=lambda x: x.creation_data, reverse=True)
+        elif ordre == 'commented':
+            tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
+
+        context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'es_cerca': True, 'num_publicacions': len(tot)}
+
+
+        template = loader.get_template('cercador.html')
+        return HttpResponse(template.render(context, request))
+
+

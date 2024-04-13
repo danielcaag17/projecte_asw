@@ -1,12 +1,11 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, redirect
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-
 
 class Endpoint1View(APIView):
     def get(self, request):
@@ -95,7 +94,14 @@ def like_thread(request,thread_id):
         thread.num_likes += 1
         thread.save()
         next = request.POST.get('next', '/')
-        return redirect(next)
+        if ('cercador' in next):
+            keyword = request.POST.get('keyword', '')
+            ordre =request.POST.get('ordre', '')
+            filter = request.POST.get('filter', '')
+            if (filter == None): filter = 'tot'
+            #next = "/cercador/{}/{}?keyword={}".format(next,ordre,filter,keyword)
+            next = next + '?keyword=' + keyword
+        return HttpResponseRedirect(next)
     else:
         return redirect('main')
 
@@ -106,7 +112,14 @@ def dislike_thread(request,thread_id):
         thread.num_dislikes += 1
         thread.save()
         next = request.POST.get('next', '/')
-        return redirect(next)
+        if ('cercador' in next):
+            keyword = request.POST.get('keyword', '')
+            ordre = request.POST.get('ordre', '')
+            filter = request.POST.get('filter', '')
+            if (filter == None): filter = 'tot'
+            # next = "/cercador/{}/{}?keyword={}".format(next,ordre,filter,keyword)
+            next = next + '?keyword=' + keyword
+        return HttpResponseRedirect(next)
     else:
         return redirect('main')
 
@@ -117,7 +130,15 @@ def boost_thread(request,thread_id):
         thread.num_boosts += 1
         thread.save()
         next = request.POST.get('next', '/')
-        return redirect(next)
+        if ('cercador' in next):
+            keyword = request.POST.get('keyword', '')
+            ordre = request.POST.get('ordre', '')
+            filter = request.POST.get('filter', '')
+            if (filter == None): filter = 'tot'
+            # next = "/cercador/{}/{}?keyword={}".format(next,ordre,filter,keyword)
+            next = next + '?keyword=' + keyword
+        return HttpResponseRedirect(next)
+
     else:
         return redirect('main')
 

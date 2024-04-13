@@ -3,7 +3,6 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
-
 urlpatterns = [
     path('', views.main_list,{'ordre':'newest','filter':'tot'}, name='main'),
     path('newest/<str:filter>/', views.main_list,{'ordre':'newest'}, name='newest_filter'),
@@ -21,6 +20,12 @@ urlpatterns = [
     path('like/<int:thread_id>/',views.like_thread,name='like_thread'),
     path('dislike/<int:thread_id>/',views.dislike_thread,name='dislike_thread'),
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),
-    path('cercador',views.view_cercador,name='cercador'),
-    path('cercar',views.cercar,name='cercar')
+    path('cercador',views.view_cercador,{'ordre':'newest','filter':'tot'},name='cercador'),
+    path('cercador/newest/<str:filter>/', views.view_cercador,{'ordre':'newest'},name='cercador_newest'),
+    path('cercador/newest/', views.view_cercador,{'filter':'tot','ordre':'newest'},name='cercador_newest'),
+    path('cercador/top/<str:filter>/', views.view_cercador,{'ordre':'top'},name='cercador_top'),
+    path('cercador/top/', views.view_cercador,{'filter':'tot','ordre':'top'},name='cercador_top'),
+    path('cercador/commented/<str:filter>/', views.view_cercador,{'ordre':'commented'},name='cercador_commented'),
+    path('cercador/commented/', views.view_cercador,{'filter':'tot', 'ordre':'commented'},name='cercador_commented')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
