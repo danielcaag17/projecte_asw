@@ -93,14 +93,7 @@ def like_thread(request,thread_id):
         thread = Publicacio.objects.get(pk=thread_id)
         thread.num_likes += 1
         thread.save()
-        next = request.POST.get('next', '/')
-        if ('cercador' in next):
-            keyword = request.POST.get('keyword', '')
-            ordre =request.POST.get('ordre', '')
-            filter = request.POST.get('filter', '')
-            if (filter == None): filter = 'tot'
-            #next = "/cercador/{}/{}?keyword={}".format(next,ordre,filter,keyword)
-            next = next + '?keyword=' + keyword
+        next = url_redireccio(request)
         return HttpResponseRedirect(next)
     else:
         return redirect('main')
@@ -111,14 +104,7 @@ def dislike_thread(request,thread_id):
         thread = Publicacio.objects.get(pk=thread_id)
         thread.num_dislikes += 1
         thread.save()
-        next = request.POST.get('next', '/')
-        if ('cercador' in next):
-            keyword = request.POST.get('keyword', '')
-            ordre = request.POST.get('ordre', '')
-            filter = request.POST.get('filter', '')
-            if (filter == None): filter = 'tot'
-            # next = "/cercador/{}/{}?keyword={}".format(next,ordre,filter,keyword)
-            next = next + '?keyword=' + keyword
+        next = url_redireccio(request)
         return HttpResponseRedirect(next)
     else:
         return redirect('main')
@@ -129,14 +115,7 @@ def boost_thread(request,thread_id):
         thread = Publicacio.objects.get(pk=thread_id)
         thread.num_boosts += 1
         thread.save()
-        next = request.POST.get('next', '/')
-        if ('cercador' in next):
-            keyword = request.POST.get('keyword', '')
-            ordre = request.POST.get('ordre', '')
-            filter = request.POST.get('filter', '')
-            if (filter == None): filter = 'tot'
-            # next = "/cercador/{}/{}?keyword={}".format(next,ordre,filter,keyword)
-            next = next + '?keyword=' + keyword
+        next = url_redireccio(request)
         return HttpResponseRedirect(next)
 
     else:
@@ -148,7 +127,6 @@ def veure_thread(request, thread_id):
     comments_root = Comment.objects.filter(thread_id=thread_id, level=1)
     replies = Reply.objects.filter(comment_root__in=comments_root)
     context = {'thread': thread, 'comments_root': comments_root, 'replies': replies}
-    #   template = loader.get_template('veure_thread.html')
     return render(request, 'veure_thread.html', context)
 
 
@@ -179,3 +157,11 @@ def add_reply(request, thread_id, comment_id):
             reply = Reply(comment_root=comment_root, comment_reply=comment_reply)
             reply.save()
     return redirect('veure_thread', thread_id=thread.id)
+
+
+def url_redireccio(request):
+    next = request.POST.get('next', '/')
+    if 'cercador' in next:
+        keyword = request.POST.get('keyword', '')
+        next = "{}?keyword={}".format(next,keyword)
+    return next
