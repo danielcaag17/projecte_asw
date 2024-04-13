@@ -57,6 +57,10 @@ def new_thread(request):
     template = loader.get_template('new_thread.html')
     return HttpResponse(template.render())
 
+def view_magazines(request):
+    template = loader.get_template('view_magazines.html')
+    return HttpResponse(template.render())
+
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
 def create_link_thread(request):
     if request.method == 'POST':
