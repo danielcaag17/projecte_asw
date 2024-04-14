@@ -15,7 +15,9 @@ def add_comment(request, thread_id):
             default_user = User.objects.get(username='default_user')
             comment = Comment(body=body, author=default_user, thread=thread, creation_data=timezone.now())
             comment.save()
-    return redirect('veure_thread', thread_id=thread_id)
+    order = request.session.get('order')
+    request.session['order'] = order
+    return redirect('veure_thread', thread_id=thread_id, order=order)
 
 
 @csrf_exempt
@@ -31,7 +33,9 @@ def add_reply(request, thread_id, comment_id):
             comment_reply.save()
             reply = Reply(comment_root=comment_root, comment_reply=comment_reply)
             reply.save()
-    return redirect('veure_thread', thread_id=thread.id)
+    order = request.session.get('order')
+    request.session['order'] = order
+    return redirect('veure_thread', thread_id=thread.id, order=order)
 
 
 @csrf_exempt
@@ -52,9 +56,12 @@ def like_comment(request, thread_id, comment_id):
             vote = Vote_comment.objects.get(comment=comment, user=user)
             vote.delete()
         comment.save()
-        return redirect('veure_thread', thread_id=thread_id)
+        order = request.session.get('order')
+        request.session['order'] = order
+        return redirect('veure_thread', thread_id=thread_id, order=order)
     else:
         return redirect('main')
+
 
 @csrf_exempt
 def dislike_comment(request, thread_id, comment_id):
@@ -74,6 +81,8 @@ def dislike_comment(request, thread_id, comment_id):
             vote = Vote_comment.objects.get(comment=comment, user=user)
             vote.delete()
         comment.save()
-        return redirect('veure_thread', thread_id=thread_id)
+        order = request.session.get('order')
+        request.session['order'] = order
+        return redirect('veure_thread', thread_id=thread_id, order=order)
     else:
         return redirect('main')

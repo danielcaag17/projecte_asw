@@ -50,19 +50,17 @@ def all_magazines(request):
     magazines = Magazine.objects.all()
     context = {'magazines': magazines}
 
-
     template = loader.get_template("all_magazines.html")
     return HttpResponse(template.render(context, request))
 
-  
+
 @csrf_exempt
 def new_magazine(request):
-
     if request.method == 'POST':
 
         name = request.POST.get('name')
 
-        #author = request.POST.get('author')
+        # author = request.POST.get('author')
         creation_date = timezone.now().isoformat()
         title = request.POST.get('title')
         description = request.POST.get('description')
@@ -71,19 +69,18 @@ def new_magazine(request):
 
         magazine = Magazine.objects.create(
             name=name,
-            #author=author,
+            # author=author,
             creation_date=creation_date,
             title=title,
             description=description,
             rules=rules,
-            nsfw = nsfw
+            nsfw=nsfw
         )
 
         return redirect('main')
     else:
         template = loader.get_template("new_magazine.html")
         return HttpResponse(template.render())
-
 
 
 def new_thread(request):
@@ -168,11 +165,18 @@ def boost_thread(request, thread_id):
         return redirect('main')
 
 
-def veure_thread(request, thread_id):
+def veure_thread(request, thread_id, order):
     thread = Publicacio.objects.get(pk=thread_id)
-    comments_root = Comment.objects.filter(thread_id=thread_id, level=1)
+
+    if order == 'newest':
+        comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('-creation_data')
+    elif order == 'oldest':
+        comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('creation_data')
+    else:
+        comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('-num_likes')
     replies = Reply.objects.filter(comment_root__in=comments_root)
     context = {'thread': thread, 'comments_root': comments_root, 'replies': replies}
+    request.session['order'] = order
     return render(request, 'veure_thread.html', context)
 
 
