@@ -7,6 +7,8 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
+from ..models.magazine import Magazine
+
 
 class Endpoint1View(APIView):
     def get(self, request):
@@ -44,23 +46,48 @@ def new_link(request):
     return HttpResponse(template.render())
 
 
-def view_magazines(request):
-    template = loader.get_template("view_magazines.html")
-    return HttpResponse(template.render())
+def all_magazines(request):
+    magazines = Magazine.objects.all()
+    context = {'magazines': magazines}
 
 
+    template = loader.get_template("all_magazines.html")
+    return HttpResponse(template.render(context, request))
+
+  
+@csrf_exempt
 def new_magazine(request):
-    template = loader.get_template("new_magazine.html")
-    return HttpResponse(template.render())
+
+    if request.method == 'POST':
+
+        name = request.POST.get('name')
+
+        #author = request.POST.get('author')
+        creation_date = timezone.now().isoformat()
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        rules = request.POST.get('rules')
+        nsfw = request.POST.get('isAdult')
+
+        magazine = Magazine.objects.create(
+            name=name,
+            #author=author,
+            creation_date=creation_date,
+            title=title,
+            description=description,
+            rules=rules,
+            nsfw = nsfw
+        )
+
+        return redirect('main')
+    else:
+        template = loader.get_template("new_magazine.html")
+        return HttpResponse(template.render())
+
 
 
 def new_thread(request):
     template = loader.get_template('new_thread.html')
-    return HttpResponse(template.render())
-
-
-def view_magazines(request):
-    template = loader.get_template('view_magazines.html')
     return HttpResponse(template.render())
 
 
@@ -147,6 +174,13 @@ def veure_thread(request, thread_id):
     replies = Reply.objects.filter(comment_root__in=comments_root)
     context = {'thread': thread, 'comments_root': comments_root, 'replies': replies}
     return render(request, 'veure_thread.html', context)
+
+
+def veure_magazine(request, magazine_id):
+    magazine = Magazine.objects.get(pk=magazine_id)
+
+    context = {'magazine': magazine}
+    return render(request, 'veure_magazine.html', context)
 
 
 def url_redireccio(request):
