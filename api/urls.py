@@ -21,6 +21,12 @@ urlpatterns = [
     path('like/<int:thread_id>/',views.like_thread,name='like_thread'),
     path('dislike/<int:thread_id>/',views.dislike_thread,name='dislike_thread'),
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),
-    path('magazines', views.view_magazines, name='view_magazines'),
-    path('newMagazine', views.new_magazine, name='new_magazine')
+
+    path('magazine/<int:magazine_id>/',views.veure_magazine, name='veure_magazine'),
+    path('magazines', views.all_magazines, name='all_magazines'),
+
+
+    path('newMagazine', views.new_magazine, name='new_magazine'),
+
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
