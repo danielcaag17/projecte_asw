@@ -26,6 +26,12 @@ urlpatterns = [
     path('cercador/top/<str:filter>/', views.view_cercador,{'ordre':'top'},name='cercador_top'),
     path('cercador/top/', views.view_cercador,{'filter':'tot','ordre':'top'},name='cercador_top'),
     path('cercador/commented/<str:filter>/', views.view_cercador,{'ordre':'commented'},name='cercador_commented'),
-    path('cercador/commented/', views.view_cercador,{'filter':'tot', 'ordre':'commented'},name='cercador_commented')
+    path('cercador/commented/', views.view_cercador,{'filter':'tot', 'ordre':'commented'},name='cercador_commented'),
+    path('magazines', views.view_magazines, name='view_magazines'),
+    path('newMagazine', views.new_magazine, name='new_magazine')
+    path('create_link', views.create_link, name = 'create_link'),
+    path('top',views.top, name='top'),
+    path('commented',views.commented, name='commented'),
+    path('magazines',views.view_magazines, name='view_magazines'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
