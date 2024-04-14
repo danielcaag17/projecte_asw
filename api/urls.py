@@ -17,8 +17,13 @@ urlpatterns = [
     path('add_reply/<int:thread_id>/<int:comment_id>/', views.add_reply, name='add_reply'),
     path('new/thread', views.new_thread, name='new_thread'),
     path('create_link_thread', views.create_link_thread, name = 'create_link'),
-    path('like/<int:thread_id>/',views.like_thread,name='like_thread'),
+
+    #TODO: CANVIAR VIEW D'AQUESTES DUES URLS. FER EN UNA SOLA QUE SIGUI "votar(<int:thread_id> JA PASSO ATRIBUT INDICANT SI ES POSITIU O NEGATIU
+    path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),
+    path('like/<int:thread_id>/',views.votar_publicacio,name='like_thread'),
     path('dislike/<int:thread_id>/',views.dislike_thread,name='dislike_thread'),
+
+
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),
     path('cercador',views.view_cercador,{'ordre':'newest','filter':'tot'},name='cercador'),
     path('cercador/newest/<str:filter>/', views.view_cercador,{'ordre':'newest'},name='cercador_newest'),
@@ -28,10 +33,7 @@ urlpatterns = [
     path('cercador/commented/<str:filter>/', views.view_cercador,{'ordre':'commented'},name='cercador_commented'),
     path('cercador/commented/', views.view_cercador,{'filter':'tot', 'ordre':'commented'},name='cercador_commented'),
     path('magazines', views.view_magazines, name='view_magazines'),
-    path('newMagazine', views.new_magazine, name='new_magazine')
-    path('create_link', views.create_link, name = 'create_link'),
-    path('top',views.top, name='top'),
-    path('commented',views.commented, name='commented'),
+    path('newMagazine', views.new_magazine, name='new_magazine'),
     path('magazines',views.view_magazines, name='view_magazines'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
