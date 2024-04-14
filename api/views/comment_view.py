@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
@@ -31,3 +32,48 @@ def add_reply(request, thread_id, comment_id):
             reply = Reply(comment_root=comment_root, comment_reply=comment_reply)
             reply.save()
     return redirect('veure_thread', thread_id=thread.id)
+
+
+@csrf_exempt
+def like_comment(request, thread_id, comment_id):
+    if request.method == 'POST':
+        user = User.objects.get(username='default_user')
+        comment = Comment.objects.get(pk=comment_id)
+        if not Vote_comment.objects.filter(comment=comment, user=user, type='like').exists():
+            comment.num_likes += 1
+            if Vote_comment.objects.filter(comment=comment, user=user, type='dislike').exists():
+                comment.num_dislikes -= 1
+                vote = Vote_comment.objects.get(comment=comment, user=user)
+                vote.delete()
+            new_vote = Vote_comment(comment=comment, user=user, type='like')
+            new_vote.save()
+        else:
+            comment.num_likes -= 1
+            vote = Vote_comment.objects.get(comment=comment, user=user)
+            vote.delete()
+        comment.save()
+        return redirect('veure_thread', thread_id=thread_id)
+    else:
+        return redirect('main')
+
+@csrf_exempt
+def dislike_comment(request, thread_id, comment_id):
+    if request.method == 'POST':
+        user = User.objects.get(username='default_user')
+        comment = Comment.objects.get(pk=comment_id)
+        if not Vote_comment.objects.filter(comment=comment, user=user, type='dislike').exists():
+            comment.num_dislikes += 1
+            if Vote_comment.objects.filter(comment=comment, user=user, type='like').exists():
+                comment.num_likes -= 1
+                vote = Vote_comment.objects.get(comment=comment, user=user)
+                vote.delete()
+            new_vote = Vote_comment(comment=comment, user=user, type='dislike')
+            new_vote.save()
+        else:
+            comment.num_dislikes -= 1
+            vote = Vote_comment.objects.get(comment=comment, user=user)
+            vote.delete()
+        comment.save()
+        return redirect('veure_thread', thread_id=thread_id)
+    else:
+        return redirect('main')

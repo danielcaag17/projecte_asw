@@ -35,7 +35,9 @@ url_users = [
 
 url_comments = [
     path('add_comment/<int:thread_id>/', views.add_comment, name='add_comment'),
-    path('add_reply/<int:thread_id>/<int:comment_id>/', views.add_reply, name='add_reply')
+    path('add_reply/<int:thread_id>/<int:comment_id>/', views.add_reply, name='add_reply'),
+    path('like/<int:thread_id>/<int:comment_id>/', views.like_comment, name='like_comment'),
+    path('dislike/<int:thread_id>/<int:comment_id>/', views.dislike_comment, name='dislike_comment'),
 ]
 
 url_magazines = [
