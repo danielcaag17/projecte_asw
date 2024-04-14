@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, redirect
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+
 
 class Endpoint1View(APIView):
     def get(self, request):
@@ -14,8 +15,7 @@ class Endpoint1View(APIView):
         return JsonResponse(data)
 
 
-
-def main_list(request,ordre=None,filter=None):
+def main_list(request, ordre=None, filter=None):
     links = Link.objects.all()
     threads = Thread.objects.all()
     if ordre == '': ordre = 'newest'
@@ -34,31 +34,35 @@ def main_list(request,ordre=None,filter=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre,'active_filter':filter}
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
-
 
 
 def new_link(request):
     template = loader.get_template('new_link.html')
     return HttpResponse(template.render())
 
+
 def view_magazines(request):
     template = loader.get_template("view_magazines.html")
     return HttpResponse(template.render())
+
 
 def new_magazine(request):
     template = loader.get_template("new_magazine.html")
     return HttpResponse(template.render())
 
+
 def new_thread(request):
     template = loader.get_template('new_thread.html')
     return HttpResponse(template.render())
 
+
 def view_magazines(request):
     template = loader.get_template('view_magazines.html')
     return HttpResponse(template.render())
+
 
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
 def create_link_thread(request):
@@ -99,8 +103,9 @@ def create_link_thread(request):
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
 
+
 @csrf_exempt
-def like_thread(request,thread_id):
+def like_thread(request, thread_id):
     if request.method == 'POST':
         thread = Publicacio.objects.get(pk=thread_id)
         thread.num_likes += 1
@@ -110,8 +115,9 @@ def like_thread(request,thread_id):
     else:
         return redirect('main')
 
+
 @csrf_exempt
-def dislike_thread(request,thread_id):
+def dislike_thread(request, thread_id):
     if request.method == 'POST':
         thread = Publicacio.objects.get(pk=thread_id)
         thread.num_dislikes += 1
@@ -121,8 +127,9 @@ def dislike_thread(request,thread_id):
     else:
         return redirect('main')
 
+
 @csrf_exempt
-def boost_thread(request,thread_id):
+def boost_thread(request, thread_id):
     if request.method == 'POST':
         thread = Publicacio.objects.get(pk=thread_id)
         thread.num_boosts += 1
@@ -142,38 +149,9 @@ def veure_thread(request, thread_id):
     return render(request, 'veure_thread.html', context)
 
 
-@csrf_exempt
-def add_comment(request, thread_id):
-    print(f"Valor de thread_id: {thread_id}")
-    thread = Publicacio.objects.get(pk=thread_id)
-    if request.method == 'POST':
-        body = request.POST.get('entry_comment[body]')
-        if body:
-            default_user = User.objects.get(username='default_user')
-            comment = Comment(body=body, author=default_user, thread=thread, creation_data=timezone.now())
-            comment.save()
-    return redirect('veure_thread', thread_id=thread_id)
-
-
-@csrf_exempt
-def add_reply(request, thread_id, comment_id):
-    comment_root = Comment.objects.get(pk=comment_id)
-    thread = Publicacio.objects.get(pk=thread_id)
-    if request.method == 'POST':
-        body = request.POST.get('entry_comment[body]')
-        if body:
-            default_user = User.objects.get(username='default_user')
-            comment_reply = Comment(body=body, author=default_user, thread=thread, creation_data=timezone.now(),
-                              level=comment_root.level + 1)
-            comment_reply.save()
-            reply = Reply(comment_root=comment_root, comment_reply=comment_reply)
-            reply.save()
-    return redirect('veure_thread', thread_id=thread.id)
-
-
 def url_redireccio(request):
     next = request.POST.get('next', '/')
     if 'cercador' in next:
         keyword = request.POST.get('keyword', '')
-        next = "{}?keyword={}".format(next,keyword)
+        next = "{}?keyword={}".format(next, keyword)
     return next
