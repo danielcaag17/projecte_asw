@@ -20,8 +20,6 @@ urlpatterns = [
 
     #TODO: CANVIAR VIEW D'AQUESTES DUES URLS. FER EN UNA SOLA QUE SIGUI "votar(<int:thread_id> JA PASSO ATRIBUT INDICANT SI ES POSITIU O NEGATIU
     path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),
-    path('like/<int:thread_id>/',views.votar_publicacio,name='like_thread'),
-    path('dislike/<int:thread_id>/',views.dislike_thread,name='dislike_thread'),
 
 
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),

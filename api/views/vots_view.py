@@ -20,7 +20,6 @@ def votar_publicacio(request, thread_id):
   #      else:
             #Mirem si l'usuari ja ha votat
             if Vot.objects.filter(user=user, publicacio=publicacio).exists():
-                print("JA EXISTEIX")
                 vot = Vot.objects.get(user=user, publicacio=publicacio)
 
                 if tipus_vot == 'positiu':
@@ -58,10 +57,12 @@ def votar_publicacio(request, thread_id):
                     nou_vot.positiu = False
                     publicacio.save()
                 nou_vot.save()
+    return redirect(url_redireccio(request))
 
 
-    return redirect('main')
-    # Renderizar la plantilla de la publicación (aquí debes devolver la página donde se encuentra la publicación)
-    #return render(request, 'tu_app/plantilla_de_publicacion.html', {'publicacio': publicacio})
-
-
+def url_redireccio(request):
+    next = request.POST.get('next', '/')
+    if 'cercador' in next:
+        keyword = request.POST.get('keyword', '')
+        next = "{}?keyword={}".format(next,keyword)
+    return next

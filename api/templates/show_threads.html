@@ -21,7 +21,6 @@
     </aside>
     <aside class="vote">
         <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
-                <!--      "{% url 'like_thread' thread.id %}" name="like_thread" method="post" class="vote__up"> -->
             <input type="hidden" name="next" value="{{ request.path }}">
             <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
             <input type="hidden" name="vote_type" value="positiu">

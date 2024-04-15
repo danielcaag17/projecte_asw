@@ -99,27 +99,7 @@ def create_link_thread(request):
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
 
-@csrf_exempt
-def like_thread(request,thread_id):
-    if request.method == 'POST':
-        thread = Publicacio.objects.get(pk=thread_id)
-        thread.num_likes += 1
-        thread.save()
-        next = url_redireccio(request)
-        return HttpResponseRedirect(next)
-    else:
-        return redirect('main')
 
-@csrf_exempt
-def dislike_thread(request,thread_id):
-    if request.method == 'POST':
-        thread = Publicacio.objects.get(pk=thread_id)
-        thread.num_dislikes += 1
-        thread.save()
-        next = url_redireccio(request)
-        return HttpResponseRedirect(next)
-    else:
-        return redirect('main')
 
 @csrf_exempt
 def boost_thread(request,thread_id):
