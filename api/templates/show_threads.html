@@ -20,9 +20,10 @@
         <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
     </aside>
     <aside class="vote">
-        <form action="{% url 'like_thread' thread.id %}" name="like_thread" method="post" class="vote__up">
+        <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
             <input type="hidden" name="next" value="{{ request.path }}">
             <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
+            <input type="hidden" name="vote_type" value="positiu">
             <button type="submit" title="Vots positius" aria-label="Vots positius">
                 <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
                 <span>
@@ -30,9 +31,10 @@
                                     </span>
             </button>
         </form>
-        <form action="{% url 'dislike_thread' thread.id %}" name="dislike_thread" method="post" class="vote__down">
+        <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
             <input type="hidden" name="next" value="{{ request.path }}">
             <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
+            <input type="hidden" name="vote_type" value="negatiu">
             <button type="submit" title="Vots negatius" aria-label="Vots negatius">
                 <span data-subject-target="downvoteCounter">{{ thread.num_dislikes }}</span> <span><i
                     class="fa-solid fa-arrow-down"></i></span>
