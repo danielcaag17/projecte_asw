@@ -7,7 +7,6 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
-from ..models.magazine import Magazine
 
 
 class Endpoint1View(APIView):
@@ -42,8 +41,10 @@ def main_list(request, ordre=None, filter=None):
 
 
 def new_link(request):
+    magazines = Magazine.objects.all()
+    context = {'magazines': magazines}
     template = loader.get_template('new_link.html')
-    return HttpResponse(template.render())
+    return HttpResponse(template.render(context,request))
 
 
 def all_magazines(request):

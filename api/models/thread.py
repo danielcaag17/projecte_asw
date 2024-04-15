@@ -1,5 +1,6 @@
 from django.db import models
 from .user import User
+from .magazine import Magazine
 from django.utils import timezone
 
 
@@ -13,6 +14,7 @@ class Publicacio(models.Model):
     creation_data = models.DateTimeField(default=timezone.now)
     num_coments = models.PositiveIntegerField(default=0)
     num_boosts = models.PositiveIntegerField(default=0)
+    magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE,null=True)
 
     # TODO: CAL FER ALGO SIMILAR PER AL CAS EN EL QUE S'HAGI EDITAT EL THREAD/LINK
     def temps_desde_creacio(self):
