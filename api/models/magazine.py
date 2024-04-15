@@ -13,7 +13,7 @@ class Magazine(models.Model):
     # info de creació
     name = models.CharField(max_length=25)
     title = models.CharField(max_length=50)
-    description = models.TextField(max_length=10000, null=True)
+    # description = models.TextField(max_length=10000, null=True)
     rules = models.TextField(max_length=10000, null=True)
     nsfw = models.BooleanField(null=True)
 
