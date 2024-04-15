@@ -25,11 +25,11 @@ SECRET_KEY = 'django-insecure-+9)qx*(waqx7qc8ndjhmu#6pr_24jr4=cuj(_e4#n1=*po4ilq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['bravo13-36a68ba47d34.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
-SITE_ID = 2
+SITE_ID = 3
 
 INSTALLED_APPS = [
     'django.contrib.admin',
