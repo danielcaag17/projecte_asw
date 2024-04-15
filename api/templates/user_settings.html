@@ -147,10 +147,10 @@
                     <div></div>
                     <menu class="options__main">
                         <li>
-                            <a href="/settings/general" class=""> general </a>
+                            <a href="/settings/general" class="active"> general </a>
                         </li>
                         <li>
-                            <a href="/settings/profile" class="active"> profile </a>
+                            <a href="/settings/profile" class=""> profile </a>
                         </li>
                         <li>
                             <a href="/settings/email" class=""> email </a>
@@ -176,89 +176,7 @@
                         </li>
                     </menu>
                 </aside>
-                {% include 'section_user.html' %}
-                <div id="content" class="section">
-                    <div class="container">
-                        <h1 hidden>Profile</h1>
-                        <form name="user_basic" method="post" enctype="multipart/form-data">
-                            <markdown-toolbar for="user_basic_about" class="markdown meta"
-                                              data-controller="markdown-toolbar">
-                                <md-bold title="Bold" aria-label="Bold">
-                                    <i class="fa-solid fa-bold"></i>
-                                </md-bold>
-                                <md-italic title="Italics" aria-label="Italics">
-                                    <i class="fa-solid fa-italic"></i>
-                                </md-italic>
-                                <md-strikethrough title="Strikethrough" aria-label="Strikethrough">
-                                    <i class="fa-solid fa-strikethrough"></i>
-                                </md-strikethrough>
-                                <md-header title="Header" aria-label="Header">
-                                    <i class="fa-solid fa-heading"></i>
-                                </md-header>
-                                <md-quote title="Appointment" aria-label="Appointment">
-                                    <i class="fa-solid fa-quote-left"></i>
-                                </md-quote>
-                                <md-code title="Code" aria-label="Code">
-                                    <i class="fa-solid fa-code"></i>
-                                </md-code>
-                                <md-link title="Link" aria-label="Link">
-                                    <i class="fa-solid fa-link"></i>
-                                </md-link>
-                                <md-image title="Image" aria-label="Image">
-                                    <i class="fa-solid fa-image"></i>
-                                </md-image>
-                                <md-unordered-list title="Unordered list" aria-label="Unordered list">
-                                    <i class="fa-solid fa-list"></i>
-                                </md-unordered-list>
-                                <md-ordered-list title="Sorted list" aria-label="Sorted list">
-                                    <i class="fa-solid fa-list-ol"></i>
-                                </md-ordered-list>
-                                <md-mention title="Mention" aria-label="Mention">
-                                    <i class="fa-solid fa-at"></i>
-                                </md-mention>
-                                <md-kbin title="Spoiler" aria-label="Spoiler"
-                                         data-action="click->markdown-toolbar#addSpoiler">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                </md-kbin>
-                            </markdown-toolbar>
-                            <div><textarea id="user_basic_about" name="user_basic[about]" placeholder="About"
-                                           data-controller="input-length rich-textarea autogrow"
-                                           data-entry-link-create-target="user_about"
-                                           data-action="input-length#updateDisplay"
-                                           data-input-length-max-value="512"></textarea>
-                                <div id="user_basic_about_max_length" class="length-indicator"><span style="vertical-align: inherit;">0/512</span>></div>
-                            </div>
-                            <div><label for="user_basic_username">User name</label><input type="text"
-                                                                                                   id="user_basic_username"
-                                                                                                   name="user_basic[username]"
-                                                                                                   data-controller="input-length autogrow"
-                                                                                                   data-entry-link-create-target="user_about"
-                                                                                                   data-action="input-length#updateDisplay"
-                                                                                                   data-input-length-max-value="30"
-                                                                                                   value="usuari_predeterminat">
-                                                                                                    <!-- TODO: revisar -->
-                                <div id="user_basic_username_max_length" class="length-indicator"><span style="vertical-align: inherit;">0/30</span>></div>
-                            </div>
-                            <div><label for="user_basic_avatar">Avatar</label><input type="file" id="user_basic_avatar"
-                                                                                     name="user_basic[avatar]"></div>
-                                                                                    <!-- TODO: revisar -->
-                            <div><label for="user_basic_cover">Front page</label><input type="file" id="user_basic_cover"
-                                                                                     name="user_basic[cover]"></div>
-                                                                                    <!-- TODO: revisar -->
-                            <div class="row actions">
-                                <div>
-                                    <button type="submit" id="user_basic_submit" name="user_basic[submit]"
-                                            class="btn btn__primary">Keep
-                                    </button>
-                                </div>
-                            </div>
-                            <input type="hidden" id="user_basic__token" name="user_basic[_token]"
-                                   value="e5c400b009a20577ac4f70c68b2b.-xT-wwdOBcVGBx1haI3Wxuczaut0oslfVSzO49xE_jw.glvOrEZ3bb0tSCsYHOiQoKpCCNwu15gzAFWdu70UjgTKQpKobitO8XFvRA">
-                        </form>
-                    </div>
-                </div>
             </main>
         </div>
     </div>
 </body>
-</html>
