@@ -34,7 +34,8 @@
                 </ul>
             </li>
             {% if user.is_authenticated %}
-                <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">{{user.profile}}</span></a>
+                <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span
+                        class="user-name">{{ user.profile }}</span></a>
                     <ul class="dropdown__menu">
                         <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
                         <li><a href="/settings/general" class="">Settings</a></li>
@@ -43,9 +44,13 @@
                         <li><a href="/logout">Log out</a></li>
                     </ul>
                 </li>
-            {%  else %}
+            {% else %}
                 {% load socialaccount %}
-                <a href="{% provider_login_url 'google' %}?next=/">Log in</a>
+                <form action="{% provider_login_url 'google' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Continue with Google</button>
+                </form>
+
             {% endif %}
         </menu>
     </div>
