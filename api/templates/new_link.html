@@ -1,106 +1,127 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ca" style="font-size: 100%"><head><style type="text/css">.turbo-progress-bar {
-  position: fixed;
-  display: block;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: #0076ff;
-  z-index: 2147483647;
-  transition:
-    width 300ms ease-out,
-    opacity 150ms 150ms ease-in;
-  transform: translate3d(0, 0, 0);
-}
-</style>
-    <title>kbin.social - Explore the Fediverse</title>
-    <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
+<html lang="ca" style="font-size: 100%">
+<head>
+    <style type="text/css">.turbo-progress-bar {
+        position: fixed;
+        display: block;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: #0076ff;
+        z-index: 2147483647;
+        transition: width 300ms ease-out,
+        opacity 150ms 150ms ease-in;
+        transform: translate3d(0, 0, 0);
+    }
+    </style>
+    <title>Add new link - kbin.social</title>
+    <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
-    <header id="header" class="header">
-        <div class="kbin-container">
-            <nav class="head-nav">
-                <div class="brand">
-                    <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
-                </div>
-                <menu class="head-nav__menu">
-                    <li></li>
-                    <li><a href="/" class="active">Threads</a></li>
-                    <li><a href="/microblog" class="">Microblog</a></li>
-                    <li><a href="/*" class="">All Content</a></li>
-                    <li><a href="/people" class="">People</a></li>
-                    <li><a href="/magazines" class="">Magazines</a></li>
-                    <li><a href="/magazines/collections" class="">Collections</a></li>
-                </menu>
-            </nav>
-            <menu>
-                <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i class="fa-solid fa-plus"></i> Add</a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/new" class="">Add new link</a></li>
-                            <li><a href="/new/thread" class="">Add new thread</a></li>
-                            <li><a href="/new/photo" class="">Add new photo</a></li>
-                            <li><a class="" href="/microblog">Add new post</a></li>
-                            <li><a class="" href="/newMagazine">Create new magazine</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
-                        <li><a href="/settings/general" class="">Settings</a></li>
-                        <li><a href="/profile/messages" class="">Messages</a></li>
-                        <li><a href="/settings/notifications" class="">Notifications</a></li>
-                        <li><a href="/logout">Log out</a></li>
-                    </ul>
-                </li>
+<header id="header" class="header">
+    <div class="kbin-container">
+        <nav class="head-nav">
+            <div class="brand">
+                <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
+            </div>
+            <menu class="head-nav__menu">
+                <li></li>
+                <li><a href="/" class="active">Threads</a></li>
+                <li><a href="/microblog" class="">Microblog</a></li>
+                <li><a href="/*" class="">All Content</a></li>
+                <li><a href="/people" class="">People</a></li>
+                <li><a href="/magazines" class="">Magazines</a></li>
+                <li><a href="/magazines/collections" class="">Collections</a></li>
             </menu>
-        </div>
-    </header>
-    <div id="middle" class="page-entry-create page-entry-create-link">
-        <div class="kbin-container">
-            <main id="main" data-controller="lightbox timeago" class="">
-                <aside class="options options--top options-activity">
-                    <div class="options__title">
-                        <h2>Add new</h2>
-                    </div>
-                    <menu class="options__main">
-                        <li><a href="/new" class="active">link</a></li>
-                        <li><a href="/new/thread" class="">thread</a></li>
-                        <li><a href="/new/photo" class="">photo</a></li>
-                        <li><a href="/microblog">post</a></li>
-                        <li><a href="/newMagazine" class="">magazine</a></li>
-                    </menu>
-                </aside>
-                <div id="content" class="section">
-                    <div class="container" data-controller="entry-link-create">
-                        <form action ="/create_link_thread" name="entry_link" method="post" class="entry-create" enctype="multipart/form-data">{% csrf_token %}
-                            <div>
-                                <label for="entry_link_url" class="required">URL</label>
-                                <input type="text" id="entry_link_url" name="url" required="required" inputmode="url" >
-                            </div>
-                            <div>
-                                <label for="entry_link_title" class="required">Title</label>
-                                <textarea id="entry_link_title" name="title" required="required" data-input-length-max-value="255" style="overflow: hidden; height: 66px;"></textarea>
-                            </div>
-                            <div>
-                                <textarea id="entry_link_body" name="body" placeholder="Body" data-input-length-max-value="35000" style="overflow: hidden; height: 66px;"></textarea>
-                            </div>
-                            <div class="row actions">
-                                <ul>
-                                    <li>
-                                        <div>
-                                            <button type="submit" id="entry_link_submit" name="entry_link[submit]" class="btn btn__primary">Afegir nou link</button>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </main>
-        </div>
+        </nav>
+        <menu>
+            <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
+                    class="fa-solid fa-plus"></i> Add</a>
+                <ul class="dropdown__menu">
+                    <li><a href="/new" class="">Add new link</a></li>
+                    <li><a href="/new/thread" class="">Add new thread</a></li>
+                    <li><a href="/new/photo" class="">Add new photo</a></li>
+                    <li><a class="" href="/microblog">Add new post</a></li>
+                    <li><a class="" href="/newMagazine">Create new magazine</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
+                <ul class="dropdown__menu">
+                    <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
+                    <li><a href="/settings/general" class="">Settings</a></li>
+                    <li><a href="/profile/messages" class="">Messages</a></li>
+                    <li><a href="/settings/notifications" class="">Notifications</a></li>
+                    <li><a href="/logout">Log out</a></li>
+                </ul>
+            </li>
+        </menu>
     </div>
+</header>
+<div id="middle" class="page-entry-create page-entry-create-link">
+    <div class="kbin-container">
+        <main id="main" data-controller="lightbox timeago" class="">
+            <aside class="options options--top options-activity">
+                <div class="options__title">
+                    <h2>Add new</h2>
+                </div>
+                <menu class="options__main">
+                    <li><a href="/new" class="active">link</a></li>
+                    <li><a href="/new/thread" class="">thread</a></li>
+                    <li><a href="/new/photo" class="">photo</a></li>
+                    <li><a href="/microblog">post</a></li>
+                    <li><a href="/newMagazine" class="">magazine</a></li>
+                </menu>
+            </aside>
+            <div id="content" class="section">
+                <div class="container" data-controller="entry-link-create">
+                    <form action="/create_link_thread" name="entry_link" method="post" class="entry-create"
+                          enctype="multipart/form-data">
+                        <div>
+                            <label for="entry_link_url" class="required">URL</label>
+                            <input type="text" id="entry_link_url" name="url" required="required" inputmode="url">
+                        </div>
+                        <div>
+                            <label for="entry_link_title" class="required">Title</label>
+                            <textarea id="entry_link_title" name="title" required="required"
+                                      data-input-length-max-value="255"
+                                      style="overflow: hidden; height: 66px;"></textarea>
+                        </div>
+                        <div>
+                            <textarea id="entry_link_body" name="body" placeholder="Body"
+                                      data-input-length-max-value="35000"
+                                      style="overflow: hidden; height: 66px;"></textarea>
+                        </div>
+
+                        <div style="width: 100%;">
+                            <label for="magazine_select" style="display: block; margin-bottom: 5px;">Magazine</label>
+                            <select name="magazine" id="magazine_select" style="width: 100%; border-style: solid; height: 50px"
+                                    required="required">
+                                <option value="" selected>Select a Magazine</option>
+                                {% for magazine in magazines %}
+                                    <option value="{{ magazine.id }}">{{ magazine.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row actions">
+                            <ul>
+                                <li>
+                                    <div>
+                                        <button type="submit" id="entry_link_submit" name="entry_link[submit]"
+                                                class="btn btn__primary">Afegir nou link
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
 </body>
 </html>
