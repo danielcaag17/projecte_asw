@@ -3,7 +3,7 @@
 <article class="entry section subject">
     <header>
         <h2>
-            <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id %}">{{ thread.title }}</a>
+            <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
             {% if thread.url != none %}
                 <span class="entry__domain">
                                         (<a href="http://{{ thread.url }}">{{ thread.url }}</a>)
@@ -42,7 +42,7 @@
     <footer>
         <menu>
             <li>
-                <a class="stretched-link" href="{% url 'veure_thread' thread.id %}"><span
+                <a class="stretched-link" href="{% url 'veure_thread' thread.id 'top' %}"><span
                         data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
             </li>
             <li>

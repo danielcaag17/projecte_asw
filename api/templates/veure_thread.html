@@ -164,33 +164,21 @@
                     <div></div>
                     <menu class="options__main">
                         <li>
-                            <a href="home.html"
-                               class="active">
-                                destacado
+                            <a href="{% url 'veure_thread' thread.id 'top' %}"
+                               class="{% if request.session.order == 'top' %}active{% endif %}">
+                                top
                             </a>
                         </li>
                         <li>
-                            <a href="home.html"
-                               class="">
-                                popular
+                            <a href="{% url 'veure_thread' thread.id 'newest' %}"
+                               class="{% if request.session.order == 'newest' %}active{% endif %}">
+                                newest
                             </a>
                         </li>
                         <li>
-                            <a href="home.html"
-                               class="">
-                                activo
-                            </a>
-                        </li>
-                        <li>
-                            <a href="home.html"
-                               class="">
-                                más reciente
-                            </a>
-                        </li>
-                        <li>
-                            <a href="home.html"
-                               class="">
-                                más antiguo
+                            <a href="{% url 'veure_thread' thread.id 'oldest' %}"
+                               class="{% if request.session.order == 'oldest' %}active{% endif %}">
+                                oldest
                             </a>
                         </li>
                     </menu>
