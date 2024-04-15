@@ -6,3 +6,8 @@ from django.template import loader
 def view_user(request):
     template = loader.get_template('view_user.html')
     return HttpResponse(template.render())
+
+
+def edit_user(request):
+    template = loader.get_template('edit_user.html')
+    return HttpResponse(template.render())

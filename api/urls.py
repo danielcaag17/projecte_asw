@@ -30,7 +30,8 @@ url_threads = [
 ]
 
 url_users = [
-    path('u/usuari_predeterminat', views.view_user, name='view_user')
+    path('u/usuari_predeterminat', views.view_user, name='view_user'),
+    path('settings/profile', views.edit_user, name='edit_user'),
 ]
 
 url_comments = [
