@@ -1,4 +1,6 @@
 from .user import User
 from .comment import Comment
 from .reply import Reply
-from .thread import Thread,Link,Publicacio
+from .thread import Thread, Link, Publicacio
+from .magazine import Magazine
+from .vote_comment import Vote_comment

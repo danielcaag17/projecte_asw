@@ -6,7 +6,8 @@
             <a
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
-                    title="Correu del user">
+                    title="Correu del user"
+                    href="{% url 'view_user' %}">
                 {{ comment.author.username }}</a>,
             <time class="timeago">{{ comment.creation_data|timesince }}</time>
         </header>
@@ -21,19 +22,21 @@
         </div>
 
         <aside class="vote">
-            <form method="post" class="vote__up">
+            <form method="post" class="vote__up"
+                  action="{% url 'like_comment' thread_id=thread.id comment_id=comment.id %}">
                 <button type="submit" title="Favorito" aria-label="Favorito"
                         data-action="subject#vote">
-                    <span data-subject-target="favCounter">0</span> <span><i
+                    <span data-subject-target="favCounter">{{ comment.num_likes }}</span> <span><i
                         class="fa-solid fa-arrow-up"></i></span>
                 </button>
                 <input type="hidden" name="token"
                        value="60ff0c14f9e35e6a75bec98c99.mT1WbCeXf6UWbT_mYbHuFGRXxUnEwxwzS2fMNELv5s0.30siDUOuDc0nBVqSENKCTA0YlCHptWxRJgyucSioi5_efAYLUPJKziYZeg">
             </form>
-            <form method="post" class="vote__down">
+            <form method="post" class="vote__down"
+                  action="{% url 'dislike_comment' thread_id=thread.id comment_id=comment.id %}">
                 <button type="submit" title="Votos negativos" aria-label="Votos negativos"
                         data-action="subject#vote" class="vote__up">
-                    <span data-subject-target="downvoteCounter">0</span> <span><i
+                    <span data-subject-target="downvoteCounter">{{ comment.num_dislikes }}</span> <span><i
                         class="fa-solid fa-arrow-down"></i></span>
                 </button>
                 <input type="hidden" name="token"
@@ -104,7 +107,8 @@
             <a
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
-                    title="Correu del user">
+                    title="Correu del user"
+                    href="{% url 'view_user' %}">
                 {{ reply.comment_reply.author.username }}</a>,
             <time class="timeago">{{ reply.comment_reply.creation_data|timesince }}</time>
         </header>
@@ -119,19 +123,21 @@
         </div>
 
         <aside class="vote">
-            <form method="post" class="vote__up">
+            <form method="post" class="vote__up"
+                  action="{% url 'like_comment' thread.id reply.comment_reply.id %}">
                 <button type="submit" title="Favorito" aria-label="Favorito"
                         data-action="subject#vote">
-                    <span data-subject-target="favCounter">0</span> <span><i
+                    <span data-subject-target="favCounter">{{ reply.comment_reply.num_likes }}</span> <span><i
                         class="fa-solid fa-arrow-up"></i></span>
                 </button>
                 <input type="hidden" name="token"
                        value="60ff0c14f9e35e6a75bec98c99.mT1WbCeXf6UWbT_mYbHuFGRXxUnEwxwzS2fMNELv5s0.30siDUOuDc0nBVqSENKCTA0YlCHptWxRJgyucSioi5_efAYLUPJKziYZeg">
             </form>
-            <form method="post" class="vote__down">
+            <form method="post" class="vote__down"
+                  action="{% url 'dislike_comment' thread.id reply.comment_reply.id %}">
                 <button type="submit" title="Votos negativos" aria-label="Votos negativos"
                         data-action="subject#vote" class="vote__up">
-                    <span data-subject-target="downvoteCounter">0</span> <span><i
+                    <span data-subject-target="downvoteCounter">{{ reply.comment_reply.num_dislikes }}</span> <span><i
                         class="fa-solid fa-arrow-down"></i></span>
                 </button>
                 <input type="hidden" name="token"
@@ -145,17 +151,6 @@
                     <a class="stretched-link"
                        onclick="document.getElementById('reply_{{ reply.comment_reply.id }}').style.display = 'block';"
                        data-action=" subject#getForm">responder</a>
-                </li>
-                <li>
-                    <form method="post" action="/ecb/6141738">
-                        <input type="hidden" name="token"
-                               value="6c0178466d64b63748c406eb20a3c1b.3nO8A2Cc-W2N003-ab24tuhKmE3dlkknjT_4ZlIJFL4.ryftcjXyyyrjuj_NNonr84x7_zml4gV0tQ-xIWpzc--zNcZGNMy_HcK-Jg">
-                        <button class="boost-link stretched-link" type="submit"
-                                data-action="subject#favourite">
-                            impulsar <span class="hidden"
-                                           data-subject-target="upvoteCounter">(0)</span>
-                        </button>
-                    </form>
                 </li>
             </menu>
             <h3 hidden="">Añadir un comentario</h3>

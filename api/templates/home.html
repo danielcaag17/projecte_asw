@@ -23,6 +23,7 @@
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
 
 
+
 {% include 'base.html' %}
 <div id="middle" class="page-entry-front">
     <div class="kbin-container">
@@ -65,10 +66,10 @@
                     <article class="entry section subject">
                         <header>
                             <h2>
-                                <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id %}">{{ thread.title }}</a>
+                                <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
                                 {% if thread.url != none %}
                                     <span class="entry__domain">
-                                        (<a href="http://{{ thread.url }}">{{ thread.url }}</a>) <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
+                                        (<a href="https://{{ thread.url }}">{{ thread.url }}</a>) <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
                                     </span>
                                 {% endif %}
                             </h2>
@@ -103,7 +104,7 @@
                         <footer>
                             <menu>
                                 <li>
-                                    <a class="stretched-link" href="{% url 'veure_thread' thread.id %}"><span data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
+                                    <a class="stretched-link" href="{% url 'veure_thread' thread.id 'top' %}"><span data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
                                 </li>
                                 <li>
                                     <form action="{% url 'boost_thread' thread.id %}" name = "boost_thread" method="post">
