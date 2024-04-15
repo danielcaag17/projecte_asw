@@ -5,9 +5,9 @@ from django.contrib.auth.hashers import make_password, check_password
 class User(models.Model):
     # Podem definir el maxim de caracters de username
     username = models.CharField(max_length=32, primary_key=True)
-    description = models.TextField()
-    cover = models.ImageField()
-    avatar = models.ImageField()
+    description = models.TextField(default="")
+    cover = models.ImageField(default="")
+    avatar = models.ImageField(default="")
 
     # TODO: s'ha de veure quins camps respecte el registre s'han de tenir donat que es fa per google
     email = models.EmailField(unique=True)
