@@ -6,9 +6,9 @@
             <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
             {% if thread.url != none %}
                 <span class="entry__domain">
-                                        (<a href="http://{{ thread.url }}">{{ thread.url }}</a>)
+                (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
                     <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
-                                    </span>
+                </span>
             {% endif %}
         </h2>
     </header>

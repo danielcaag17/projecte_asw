@@ -118,6 +118,14 @@ def create_link_thread(request):
                 creation_data=created_at,
             )
         else:
+            if url.startswith("https://"):
+                url = url[len("https://"):]
+            elif url.startswith("http://"):
+                url = url[len("http://"):]
+
+            if not url.startswith("www."):
+                url = f"www.{url}"
+            url = url.strip('/')
             link = Link.objects.create(
                 title=title,
                 body=body,
