@@ -16,8 +16,8 @@
         <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
         <time class="timeago"
               datetime="{{ thread.temps_desde_creacio }}">{{ thread.temps_desde_creacio }}</time>
-        <!--AIXO HA DE SER PER POSAR EL MAGAZINE AMB EL SEU LINK    <a href="/m/news@lemmy.world" class="magazine-inline" title="@news@lemmy.world">
-                                    news</a> -->
+        <span> to </span>
+        <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
     </aside>
     <aside class="vote">
         <form action="{% url 'like_thread' thread.id %}" name="like_thread" method="post" class="vote__up">

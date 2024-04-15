@@ -85,8 +85,10 @@ def new_magazine(request):
 
 
 def new_thread(request):
+    magazines = Magazine.objects.all()
+    context = {'magazines': magazines}
     template = loader.get_template('new_thread.html')
-    return HttpResponse(template.render())
+    return HttpResponse(template.render(context,request))
 
 
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
@@ -95,6 +97,7 @@ def create_link_thread(request):
         title = request.POST.get('title')
         body = request.POST.get('body')
         url = request.POST.get('url')
+        magazine = Magazine.objects.get(id=request.POST.get('magazine'))
         created_at = timezone.now().isoformat()
 
         if body == '':
@@ -111,7 +114,8 @@ def create_link_thread(request):
                 title=title,
                 body=body,
                 author=user_prova,
-                creation_data=created_at
+                magazine=magazine,
+                creation_data=created_at,
             )
         else:
             link = Link.objects.create(
@@ -119,6 +123,7 @@ def create_link_thread(request):
                 body=body,
                 url=url,
                 author=user_prova,
+                magazine=magazine,
                 creation_data=created_at
             )
 

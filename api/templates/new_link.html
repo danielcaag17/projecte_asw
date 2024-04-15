@@ -15,7 +15,7 @@
         transform: translate3d(0, 0, 0);
     }
     </style>
-    <title>kbin.social - Explore the Fediverse</title>
+    <title>Add new link - kbin.social</title>
     <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
@@ -78,7 +78,7 @@
             <div id="content" class="section">
                 <div class="container" data-controller="entry-link-create">
                     <form action="/create_link_thread" name="entry_link" method="post" class="entry-create"
-                          enctype="multipart/form-data">{% csrf_token %}
+                          enctype="multipart/form-data">
                         <div>
                             <label for="entry_link_url" class="required">URL</label>
                             <input type="text" id="entry_link_url" name="url" required="required" inputmode="url">
@@ -95,33 +95,16 @@
                                       style="overflow: hidden; height: 66px;"></textarea>
                         </div>
 
-               <!--         <div>
-                            <select id="entry_link_magazine_autocomplete" name="entry_link[magazine][autocomplete]"
-                                    required="required" data-controller="symfony--ux-autocomplete--autocomplete"
-                                    data-symfony--ux-autocomplete--autocomplete-url-value="/autocomplete/magazine_autocomplete_type"
-                                    data-symfony--ux-autocomplete--autocomplete-max-results-value="10"
-                                    data-symfony--ux-autocomplete--autocomplete-no-results-found-text-value="No results found"
-                                    data-symfony--ux-autocomplete--autocomplete-no-more-results-text-value="No more results"
-                                    data-symfony--ux-autocomplete--autocomplete-preload-value="focus" tabindex="-1"
-                                    class="tomselected ts-hidden-accessible">
-                                <option value="" selected="selected">Select a magazine</option>
+                        <div style="width: 100%;">
+                            <label for="magazine_select" style="display: block; margin-bottom: 5px;">Magazine</label>
+                            <select name="magazine" id="magazine_select" style="width: 100%; border-style: solid; height: 50px"
+                                    required="required">
+                                <option value="" selected>Select a Magazine</option>
+                                {% for magazine in magazines %}
+                                    <option value="{{ magazine.id }}">{{ magazine.name }}</option>
+                                {% endfor %}
                             </select>
-                            <div class="ts-wrapper single plugin-clear_button plugin-virtual_scroll required invalid has-options">
-                                <div class="ts-control"><input type="text" autocomplete="off" size="1" tabindex="0"
-                                                               role="combobox" aria-haspopup="listbox"
-                                                               aria-expanded="false"
-                                                               aria-controls="entry_link_magazine_autocomplete-ts-dropdown"
-                                                               id="entry_link_magazine_autocomplete-ts-control"
-                                                               placeholder="Select a magazine">
-                                    <div class="clear-button" title="">⨯</div>
-                                </div>
-                                <div class="ts-dropdown single plugin-clear_button plugin-virtual_scroll"
-                                     style="display: none;">
-                                    <div role="listbox" tabindex="-1" class="ts-dropdown-content"
-                                         id="entry_link_magazine_autocomplete-ts-dropdown"></div>
-                                </div>
-                            </div>
-                        </div> -->
+                        </div>
 
                         <div class="row actions">
                             <ul>
