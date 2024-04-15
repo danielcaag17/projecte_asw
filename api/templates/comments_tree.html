@@ -6,7 +6,8 @@
             <a
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
-                    title="Correu del user">
+                    title="Correu del user"
+                    href="{% url 'view_user' %}">
                 {{ comment.author.username }}</a>,
             <time class="timeago">{{ comment.creation_data|timesince }}</time>
         </header>
@@ -106,7 +107,8 @@
             <a
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
-                    title="Correu del user">
+                    title="Correu del user"
+                    href="{% url 'view_user' %}">
                 {{ reply.comment_reply.author.username }}</a>,
             <time class="timeago">{{ reply.comment_reply.creation_data|timesince }}</time>
         </header>
