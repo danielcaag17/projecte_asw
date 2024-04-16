@@ -100,3 +100,15 @@ def edit_comment(request, thread_id, comment_id):
     order = request.session.get('order')
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread_id, order=order)
+
+@csrf_exempt
+def delete_comment(request, thread_id, comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    replies = Reply.objects.filter(comment_root=comment)
+    for reply in replies:
+        reply_comment = reply.comment_reply
+        reply_comment.delete()
+    comment.delete()
+    order = request.session.get('order')
+    request.session['order'] = order
+    return redirect('veure_thread', thread_id=thread_id, order=order)

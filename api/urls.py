@@ -43,6 +43,7 @@ url_comments = [
     path('like/<int:thread_id>/<int:comment_id>/', views.like_comment, name='like_comment'),
     path('dislike/<int:thread_id>/<int:comment_id>/', views.dislike_comment, name='dislike_comment'),
     path('edit_comment/<int:thread_id>/<int:comment_id>/', views.edit_comment, name='edit_comment'),
+    path('delete_comment/<int:thread_id>/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]
 
 url_magazines = [

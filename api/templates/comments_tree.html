@@ -61,6 +61,13 @@
                        onclick="document.getElementById('edit_{{ comment.id }}').style.display = 'block';"
                        data-action=" subject#getForm">edit</a>
                 </li>
+                <li>
+                    <!-- TODO: check if user is the author of the comment -->
+                    <a class="stretched-link"
+                       onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                       href="{% url 'delete_comment' thread_id=thread.id comment_id=comment.id %}"
+                       data-action=" subject#getForm">delete</a>
+                </li>
             </menu>
             <h3 hidden="">Añadir un comentario</h3>
             <form id="reply_{{ comment.id }}" name="entry_comment" method="post"
@@ -182,7 +189,13 @@
                     <a class="stretched-link"
                        onclick="document.getElementById('edit_{{ reply.comment_reply.id }}').style.display = 'block';"
                        data-action=" subject#getForm">edit</a>
-
+                </li>
+                <li>
+                    <!-- TODO: check if user is the author of the comment -->
+                    <a class="stretched-link"
+                       onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                       href="{% url 'delete_comment' thread_id=thread.id comment_id=reply.comment_reply.id %}"
+                       data-action=" subject#getForm">delete</a>
                 </li>
             </menu>
             <h3 hidden="">Añadir un comentario</h3>
