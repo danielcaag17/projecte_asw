@@ -12590,6 +12590,27 @@ aside.comments {
     font-weight: 700 !important
 }
 
+.dropdown__menu form {
+    border: 0 !important;
+    border-radius: 0 !important;
+    color: var(--kbin-meta-link-color) !important;
+    display: block !important;
+    font-weight: 400 !important;
+    padding: .5rem 1rem !important;
+    text-align: left;
+    text-decoration: none;
+    width: 100%
+}
+
+.dropdown__menu form:hover {
+    background: var(--kbin-bg) !important;
+    color: var(--kbin-meta-link-hover-color) !important
+}
+
+.dropdown__menu form.active {
+    font-weight: 700 !important
+}
+
 .dropdown__menu button {
     background: var(--kbin-button-secondary-bg);
     color: var(--kbin-button-secondary-text-color);

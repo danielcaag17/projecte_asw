@@ -17,9 +17,10 @@ class Endpoint1View(APIView):
         return JsonResponse(data)
 
 
-def main_list(request, ordre=None, filter=None):
+def main_list(request, ordre=None, filter=None, username=None):
     links = Link.objects.all()
     threads = Thread.objects.all()
+    username = request.GET.get('username')
     if ordre == '': ordre = 'newest'
 
     if filter == 'links':
@@ -36,7 +37,7 @@ def main_list(request, ordre=None, filter=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter}
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter, 'username': username}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
