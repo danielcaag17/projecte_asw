@@ -11,6 +11,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, default='default_user')
     body = models.TextField(max_length=35000, null=True)
     creation_data = models.DateTimeField(default=timezone.now)
+    last_edited = models.DateTimeField(null=True)
     # Rang dels likes [0-2147483647]
     num_likes = models.PositiveIntegerField(default=0)
     num_dislikes = models.PositiveIntegerField(default=0)
