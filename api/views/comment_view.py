@@ -86,3 +86,17 @@ def dislike_comment(request, thread_id, comment_id):
         return redirect('veure_thread', thread_id=thread_id, order=order)
     else:
         return redirect('main')
+
+
+@csrf_exempt
+def edit_comment(request, thread_id, comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    if request.method == 'POST':
+        body = request.POST.get('entry_comment[body]')
+        if body:
+            comment.body = body
+            comment.last_edited = timezone.now()
+            comment.save()
+    order = request.session.get('order')
+    request.session['order'] = order
+    return redirect('veure_thread', thread_id=thread_id, order=order)
