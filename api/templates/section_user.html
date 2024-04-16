@@ -4,9 +4,8 @@
             <div class="user-main" id="content">
                 <div>
                     <div class="row">
-                        <!-- TODO: de posar username -->
-                        <h1><span style="vertical-align: inherit;">usuari_predeterminat</span></h1>
-                            <small><span style="vertical-align: inherit;">@usuari_predeterminat@kbin.social</span></small>
+                        <h1><span style="vertical-align: inherit;">{{ user.username }}</span></h1>
+                            <small><span style="vertical-align: inherit;">@{{ user.username }}@kbin.social</span></small>
                     </div>
                     <aside class="user__actions" data-controller="subs">
                         <div class='action'>

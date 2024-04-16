@@ -7,9 +7,13 @@ from django.urls import reverse
 from ..models import User
 
 
-def view_user(request):
+def view_user(request, username):
     template = loader.get_template('view_user.html')
-    return HttpResponse(template.render())
+    obj = User.objects.get(username=username)
+    context = {'user': obj}
+    # numero amics, numero threads + threads_id, numero comments + comments_id + parents, boost
+    # count = Friends.objects.filter(user=username).count()
+    return HttpResponse(template.render(context, request))
 
 
 def get_username(user_email):
