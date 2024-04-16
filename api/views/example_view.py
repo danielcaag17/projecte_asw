@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-
+from django.contrib.auth.models import User as DjangoUser
 from ..models.magazine import Magazine
 
 
@@ -17,10 +17,19 @@ class Endpoint1View(APIView):
         return JsonResponse(data)
 
 
-def main_list(request, ordre=None, filter=None, username=None):
+def main_list(request, ordre=None, filter=None):
     links = Link.objects.all()
     threads = Thread.objects.all()
-    username = request.GET.get('username')
+    user = request.GET.get('user')
+    django_username = request.GET.get('django_user')
+    djangoUser = {}
+    if user is not None and django_username is not None:
+        djangoUser = {
+            'user': DjangoUser.objects.get(username=django_username),
+            'username': user,
+        }
+        print(djangoUser)
+
     if ordre == '': ordre = 'newest'
 
     if filter == 'links':
@@ -37,7 +46,8 @@ def main_list(request, ordre=None, filter=None, username=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter, 'username': username}
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter, 'user': djangoUser}
+    print(context)
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 

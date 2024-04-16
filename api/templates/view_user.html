@@ -98,9 +98,18 @@
                         <li><a href="/u/{{ user.username }}" class="active">
                             <span style="vertical-align: inherit;">Profile</span>
                         </a></li>
-                        <li><a href="/settings/general" class="">
-                            <span style="vertical-align: inherit;">Setting</span>
-                        </a></li>
+                        <li>
+                            <form action="/settings/general" method="post" class="">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit">Setting</button>
+                            </form>
+                            <!--
+                            <a href="/settings/general" class="">
+                                <span style="vertical-align: inherit;">Setting</span>
+                            </a>
+                            -->
+                        </li>
                         <li><a href="/profile/messages" class="">
                             <span style="vertical-align: inherit;">Messages</span>
                         </a></li>

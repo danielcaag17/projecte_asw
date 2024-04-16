@@ -22,24 +22,29 @@ def get_username(user_email):
 
 def login(request):
     user_email = request.user.email
+    djando_username = request.user.username
     user_username = get_username(user_email)
     User.objects.get_or_create(
         username=user_username,
         email=user_email,
     )
     if request.user.is_authenticated:
-        url = reverse('main') + f'?ordre=""&filter=""&username={user_username}'
+        url = reverse('main') + f'?django_user={djando_username}&user={user_username}'
         return redirect(url)
 
 
-def edit_user(request):
+def edit_user(request, username):
     template = loader.get_template('edit_user.html')
-    return HttpResponse(template.render())
+    obj = User.objects.get(username=username)
+    context = {'user': obj}
+    return HttpResponse(template.render(context, request))
 
 
-def settings(request):
+def settings(request, username):
     template = loader.get_template('user_settings.html')
-    return HttpResponse(template.render())
+    obj = User.objects.get(username=username)
+    context = {'user': obj}
+    return HttpResponse(template.render(context, request))
 
 
 def logout_view(request):

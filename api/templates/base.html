@@ -23,7 +23,7 @@
                     <i class="fa-solid fa-magnifying-glass"></i> Search
                 </a>
             </li>
-            {% if user.is_authenticated %}
+            {% if user.user.is_authenticated %}
                 <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
                         class="fa-solid fa-plus"></i> Add</a>
                     <ul class="dropdown__menu">
@@ -34,10 +34,10 @@
                         <li><a class="" href="/newMagazine">Create new magazine</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a class=" login" href="/u/{{ username }}"><span
-                        class="user-name">{{ username }}</span></a>
+                <li class="dropdown"><a class=" login" href="/u/{{ user.username }}"><span
+                        class="user-name">{{ user.username }}</span></a>
                     <ul class="dropdown__menu">
-                        <li><a href="/u/{{ username }}" class="">Profile</a></li>
+                        <li><a href="/u/{{ user.username }}" class="">Profile</a></li>
                         <li><a href="/settings/general" class="">Setting</a></li>
                         <li><a href="/profile/messages" class="">Messages</a></li>
                         <li><a href="/settings/notifications" class="">Notifications</a></li>
