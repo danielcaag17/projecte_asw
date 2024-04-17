@@ -1,4 +1,5 @@
 from django.urls import path,include
+from django.urls import path,include
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -14,7 +15,9 @@ url_threads = [
     path('new/thread', views.new_thread, name='new_thread'),
     path('create_link_thread', views.create_link_thread, name = 'create_link'),
 
-    path('editar/<int:thread_id>/', views.editar_thread, name='edit_thread'),
+    path('editar/thread/<int:thread_id>/', views.editar_thread, name='edit_thread'),
+
+    path('eliminar/<int:thread_id>/', views.eliminar_publicacio, name='eliminar_publicacio'),
 
     path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),

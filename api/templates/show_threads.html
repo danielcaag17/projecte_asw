@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<article class="entry section subject{% if thread.author.email == user.email %} own{% endif %}{% if single %} entry--single section--top{% endif %}">
+<article
+        class="entry section subject{% if thread.author.email == user.email %} own{% endif %}{% if single %} entry--single section--top{% endif %}">
     <header>
         <h1>
             <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
@@ -66,11 +67,20 @@
             </li>
             <li>
                 {% if thread.author.email == user.email %}
-                    <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
-                        <button class="boost-link stretched-link" type="submit"
-                                data-action="subject#favourite">editar
-                        </button>
-                    </form>
+                    <li>
+                        <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
+                            <button class="boost-link stretched-link" type="submit"
+                                    data-action="subject#favourite">editar
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="{% url 'eliminar_publicacio' thread.id %}" name="eliminar_publicacio" method="post">
+                            <button class="boost-link stretched-link" type="submit"
+                                    data-action="subject#favourite">eliminar
+                            </button>
+                        </form>
+                    </li>
                 {% endif %}
             </li>
         </menu>

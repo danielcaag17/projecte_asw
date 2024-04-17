@@ -23,37 +23,43 @@
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
 
 
-
 {% include 'base.html' %}
 <div id="middle" class="page-entry-front">
     <div class="kbin-container">
         <main id="main" class="" data-controller="lightbox timeago">
             <aside id="options" class="options options--top">
                 <menu class="options__main no-scroll">
-                    <li><a class="{% if active_option == 'top' %}active{% endif %}" href="/top/{{ active_filter }}">Top</a></li>
-                    <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="/newest/{{ active_filter }}">Newest</a></li>
+                    <li><a class="{% if active_option == 'top' %}active{% endif %}"
+                           href="/top/{{ active_filter }}">Top</a></li>
+                    <li><a class="{% if active_option == 'newest' %}active{% endif %}"
+                           href="/newest/{{ active_filter }}">Newest</a></li>
                     <li><a class="{% if active_option == 'commented' %}active{% endif %}"
                            href="/commented/{{ active_filter }}">Commented</a></li>
                 </menu>
                 <menu class="options__filters">
                     <li class="dropdown">
-                        <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i class="fa-solid fa-filter"></i>
+                        <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i
+                                class="fa-solid fa-filter"></i>
                             Filtrar per tipus
                         </button>
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="/{{ active_option }}/tot" class="{% if active_filter == 'tot' %}active{% endif %}">
+                                <a href="/{{ active_option }}/tot"
+                                   class="{% if active_filter == 'tot' %}active{% endif %}">
                                     Tot
                                 </a>
                             </li>
                             <li>
-                            <a href="/{{ active_option }}/links" class="{% if active_filter == 'links' %}active{% endif %}">
-                            <!--     <a href="{{ request.path }}/Links "class="{% if active_filter == 'links' %}active{% endif %}"> -->
+                                <a href="/{{ active_option }}/links"
+                                   class="{% if active_filter == 'links' %}active{% endif %}">
+                                    <!--     <a href="{{ request.path }}/Links "class="{% if active_filter == 'links' %}
+                                        active{% endif %}"> -->
                                     Links
                                 </a>
                             </li>
                             <li>
-                                 <a href="/{{ active_option }}/threads" class="{% if active_filter == 'threads' %}active{% endif %}">
+                                <a href="/{{ active_option }}/threads"
+                                   class="{% if active_filter == 'threads' %}active{% endif %}">
                                     Threads
                                 </a>
                             </li>
@@ -61,6 +67,11 @@
                     </li>
                 </menu>
             </aside>
+            {% if eliminat %}
+                <div class="alert alert__success" role="alert">
+                    The thread has been successfully deleted.
+                </div>
+            {% endif %}
             <div id="content">
                 {% for thread in threads %}
                     {% include 'show_threads.html' %}
