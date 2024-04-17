@@ -16,7 +16,6 @@ class Publicacio(models.Model):
     num_boosts = models.PositiveIntegerField(default=0)
     magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE)
 
-    # TODO: CAL FER ALGO SIMILAR PER AL CAS EN EL QUE S'HAGI EDITAT EL THREAD/LINK
     def temps_desde_creacio(self):
         temps = timezone.now()
         diff = temps - self.creation_data

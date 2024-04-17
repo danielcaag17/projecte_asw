@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<article class="entry section subject">
+<article class="entry section subject{% if thread.author.email == user.email %} own{% endif %}{% if single %} entry--single section--top{% endif %}">
     <header>
-        <h2>
+        <h1>
             <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
             {% if thread.url != none %}
                 <span class="entry__domain">
                 (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
                 </span>
             {% endif %}
-        </h2>
+        </h1>
     </header>
+    {% if single %}
+        <div class="entry__body">
+            <div class="content formatted" style="">
+                <p>asdf</p>
+            </div>
+        </div>
+    {% endif %}
     <aside class="meta entry__meta">
         <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
         <time class="timeago"
               datetime="{{ thread.temps_desde_creacio }}">{{ thread.temps_desde_creacio }}</time>
         <span> to </span>
-        <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
+        <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline"
+           title="{{ thread.magazine.name }}">{{ thread.magazine.name }}</a>
     </aside>
     <aside class="vote">
-        <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
+        <form action="{% url 'votar_thread' thread.id %}" name="votar_thread" method="post" class="vote__up">
             <input type="hidden" name="next" value="{{ request.path }}">
             <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
             <input type="hidden" name="vote_type" value="positiu">
@@ -28,7 +36,7 @@
                 <span><i class="fa-solid fa-arrow-up"></i></span>
             </button>
         </form>
-        <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
+        <form action="{% url 'votar_thread' thread.id %}" name="votar_thread" method="post" class="vote__down">
             <input type="hidden" name="next" value="{{ request.path }}">
             <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
             <input type="hidden" name="vote_type" value="negatiu">
@@ -47,7 +55,7 @@
             <li>
                 <form action="{% url 'boost_thread' thread.id %}" name="boost_thread" method="post">
                     <input type="hidden" name="next" value="{{ request.path }}">
-                    <input type="hidden" name = "keyword" value = "{{ request.GET.keyword }}">
+                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
                     <button class="boost-link stretched-link" type="submit"
                             data-action="subject#favourite">boost
                         {% if thread.num_boosts != 0 %}
@@ -55,6 +63,15 @@
                         {% endif %}
                     </button>
                 </form>
+            </li>
+            <li>
+                {% if thread.author.email == user.email %}
+                    <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
+                        <button class="boost-link stretched-link" type="submit"
+                                data-action="subject#favourite">editar
+                        </button>
+                    </form>
+                {% endif %}
             </li>
         </menu>
         <div data-subject-target="container" class="js-container">

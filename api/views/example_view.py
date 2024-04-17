@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 
 class Endpoint1View(APIView):
@@ -17,8 +18,21 @@ class Endpoint1View(APIView):
         return JsonResponse(data)
 
 
-def main_list(request, ordre=None, filter=None):
+@csrf_exempt
+def editar_thread(request, thread_id):
+    thread = Thread.objects.get(pk=thread_id)
+    if request.method == "POST":
+        thread.title = request.POST.get('title')
+        thread.body = request.POST.get('body')
+        thread.save()
+        return veure_thread(request, thread_id,'top',True)
+    else:
+        tit = thread.title
+        template = loader.get_template('edit_thread.html')
+        return HttpResponse(template.render({'thread':thread,'titol':thread.title,'body':thread.body,
+                                             'magazine':thread.magazine.name}, request))
 
+def main_list(request, ordre=None, filter=None):
     links = Link.objects.all()
     threads = Thread.objects.all()
 
@@ -39,7 +53,9 @@ def main_list(request, ordre=None, filter=None):
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
     context = {'threads': tot, 'active_option': ordre, 'active_filter': filter}
-    print(context)
+
+
+
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
@@ -162,7 +178,7 @@ def boost_thread(request, thread_id):
         return redirect('main')
 
 
-def veure_thread(request, thread_id, order):
+def veure_thread(request, thread_id, order,edited=False):
     thread = Publicacio.objects.get(pk=thread_id)
 
     if order == 'newest':
@@ -172,7 +188,7 @@ def veure_thread(request, thread_id, order):
     else:
         comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('-num_likes')
     replies = Reply.objects.filter(comment_root__in=comments_root)
-    context = {'thread': thread, 'comments_root': comments_root, 'replies': replies}
+    context = {'thread': thread, 'comments_root': comments_root, 'replies': replies,'editat':edited,'single':True}
     request.session['order'] = order
     return render(request, 'veure_thread.html', context)
 
