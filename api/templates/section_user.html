@@ -1,11 +1,21 @@
 <div class="section">
     <div class="user-box">
-        <div class="">
+        <div class="with-cover with-avatar">
+            <!-- TODO: posar la url corresponent a src -->
+            <img height="220" width="100%" class="cover"
+                 src="https://kbin.social/media/cache/resolve/user_cover/ee/42/ee4280a60e78166c7f06e2f15c493a6db5235205a9a29c7dfd5d94286840f50b.png"
+                 alt="@Linkerbaan@lemmy.world">
             <div class="user-main" id="content">
                 <div>
                     <div class="row">
+                        <figure>
+                            <!-- TODO: posar la url corresponent a src -->
+                            <img width="100" height="100" style="max-width: 100px; max-height: 100px;"
+                                 src="https://kbin.social/media/cache/resolve/avatar_thumb/6e/7c/6e7c796abf660c477a93e1ddcde754cb6c690b5e31fd0c6aa9257edc0cb49aa1.png"
+                                 alt="@Linkerbaan@lemmy.world avatar">
+                        </figure>
                         <h1><span style="vertical-align: inherit;">{{ user.username }}</span></h1>
-                            <small><span style="vertical-align: inherit;">@{{ user.username }}@kbin.social</span></small>
+                        <small><span style="vertical-align: inherit;">@{{ user.username }}@kbin.social</span></small>
                     </div>
                     <aside class="user__actions" data-controller="subs">
                         <div class='action'>
