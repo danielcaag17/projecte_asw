@@ -5,7 +5,7 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def add_comment(request, thread_id):
     print(f"Valor de thread_id: {thread_id}")
@@ -21,7 +21,7 @@ def add_comment(request, thread_id):
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread_id, order=order)
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def add_reply(request, thread_id, comment_id):
     comment_root = Comment.objects.get(pk=comment_id)
@@ -40,7 +40,7 @@ def add_reply(request, thread_id, comment_id):
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread.id, order=order)
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def like_comment(request, thread_id, comment_id):
     if request.method == 'POST':
@@ -66,7 +66,7 @@ def like_comment(request, thread_id, comment_id):
     else:
         return redirect('main')
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def dislike_comment(request, thread_id, comment_id):
     if request.method == 'POST':
@@ -92,7 +92,7 @@ def dislike_comment(request, thread_id, comment_id):
     else:
         return redirect('main')
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def edit_comment(request, thread_id, comment_id):
     comment = Comment.objects.get(pk=comment_id)
@@ -106,7 +106,7 @@ def edit_comment(request, thread_id, comment_id):
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread_id, order=order)
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def delete_comment(request, thread_id, comment_id):
     comment = Comment.objects.get(pk=comment_id)

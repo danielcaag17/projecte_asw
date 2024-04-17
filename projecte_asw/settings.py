@@ -160,11 +160,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-def google_login():
-    from allauth.socialaccount.templatetags.socialaccount import provider_login_url
-    return provider_login_url('google')
+#&redirect_uri=login
 
-
+SOCIALACCOUNT_LOGIN_ON_GET = True
+LOGIN_URL = '/accounts/google/login'
 LOGIN_REDIRECT_URL = '/login'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
