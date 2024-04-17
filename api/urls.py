@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -35,7 +35,7 @@ url_users = [
     path('settings/general', views.settings, name='settings'),
     path('settings/profile', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),
-    path('logout', views.logout_view, name='logout')
+    path('logout', views.logout_view, name='logout'),
 ]
 
 url_comments = [

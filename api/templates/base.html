@@ -23,17 +23,18 @@
                     <i class="fa-solid fa-magnifying-glass"></i> Search
                 </a>
             </li>
+
+            <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
+                    class="fa-solid fa-plus"></i> Add</a>
+                <ul class="dropdown__menu">
+                    <li><a href="/new" class="">Add new link</a></li>
+                    <li><a href="/new/thread" class="">Add new thread</a></li>
+                    <li><a href="/new/photo" class="">Add new photo</a></li>
+                    <li><a class="" href="/microblog">Add new post</a></li>
+                    <li><a class="" href="/newMagazine">Create new magazine</a></li>
+                </ul>
+            </li>
             {% if user.user.is_authenticated %}
-                <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
-                        class="fa-solid fa-plus"></i> Add</a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/new" class="">Add new link</a></li>
-                        <li><a href="/new/thread" class="">Add new thread</a></li>
-                        <li><a href="/new/photo" class="">Add new photo</a></li>
-                        <li><a class="" href="/microblog">Add new post</a></li>
-                        <li><a class="" href="/newMagazine">Create new magazine</a></li>
-                    </ul>
-                </li>
                 <li class="dropdown"><a class=" login" href="/u/{{ user.username }}"><span
                         class="user-name">{{ user.username }}</span></a>
                     <ul class="dropdown__menu">
@@ -44,41 +45,9 @@
                         <li><a href="/logout">Sing off</a></li>
                     </ul>
                 </li>
-            <!-- No s'ha iniciat la sessió -->
-            <!-- TODO: millorar format -->
+                <!-- No s'ha iniciat la sessió -->
             {% else %}
                 {% load socialaccount %}
-                <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
-                        class="fa-solid fa-plus"></i> Add</a>
-                    <ul class="dropdown__menu">
-                        <li>
-                            <form action="{% provider_login_url 'google' %}" method="post" class="">
-                                {% csrf_token %}
-                                <button type="submit">Add new link</button>
-                            </form>
-                        </li>
-                        <li>
-                            <form action="{% provider_login_url 'google' %}" method="post" class="">
-                                {% csrf_token %}
-                                <button type="submit">Add new thread</button>
-                            </form>
-                        </li>
-                        <li>
-                            <form action="{% provider_login_url 'google' %}" method="post" class="">
-                                {% csrf_token %}
-                                <button type="submit">Add new photo</button>
-                            </form>
-                        </li>
-                        <!-- Amb la sessió no iniciada es pot accedir, però no es pot crear un microblog -->
-                        <li><a class="" href="/microblog">Add new post</a></li>
-                        <li>
-                            <form action="{% provider_login_url 'google' %}" method="post" class="">
-                                {% csrf_token %}
-                                <button type="submit">Create new magazine</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
                 <form action="{% provider_login_url 'google' %}" method="post">
                     {% csrf_token %}
                     <button type="submit">Log in</button>

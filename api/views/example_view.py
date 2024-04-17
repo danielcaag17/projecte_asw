@@ -7,12 +7,15 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.decorators import login_required
 
 class Endpoint1View(APIView):
     def get(self, request):
         # Example respeñonse data
         data = {"message": "Hello World"}
         return JsonResponse(data)
+
+
 
 
 def main_list(request, ordre=None, filter=None):
@@ -49,7 +52,7 @@ def main_list(request, ordre=None, filter=None):
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
-
+@login_required(redirect_field_name='login')
 def new_link(request):
     magazines = Magazine.objects.all()
     context = {'magazines': magazines}
@@ -64,7 +67,7 @@ def all_magazines(request):
     template = loader.get_template("all_magazines.html")
     return HttpResponse(template.render(context, request))
 
-
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def new_magazine(request):
     if request.method == 'POST':
@@ -94,12 +97,15 @@ def new_magazine(request):
         template = loader.get_template("new_magazine.html")
         return HttpResponse(template.render())
 
-
+@login_required(redirect_field_name='login')
 def new_thread(request):
     magazines = Magazine.objects.all()
     context = {'magazines': magazines}
     template = loader.get_template('new_thread.html')
     return HttpResponse(template.render(context,request))
+
+
+
 
 
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
@@ -110,11 +116,11 @@ def create_link_thread(request):
         url = request.POST.get('url')
         magazine = Magazine.objects.get(id=request.POST.get('magazine'))
         created_at = timezone.now().isoformat()
-
+        author_email = request.user.email
+        user = User.objects.get(email=author_email)
         if body == '':
             body = None
-            author_email = request.user.email
-            user = User.objects.get(email=author_email)
+
 
         # Creem una nova instància del model Thread o Link amb les dades proporcionades
         if url == None:
@@ -149,6 +155,7 @@ def create_link_thread(request):
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
 
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def boost_thread(request, thread_id):
     if request.method == 'POST':

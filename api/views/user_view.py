@@ -2,9 +2,11 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 
 from ..models import User
+
+
 
 
 def view_user(request, username):
@@ -21,6 +23,7 @@ def get_username(user_email):
 
 
 def login(request):
+    print("He passat pel login")
     user_email = request.user.email
     djando_username = request.user.username
     user_username = get_username(user_email)
