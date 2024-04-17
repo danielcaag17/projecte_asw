@@ -19,7 +19,9 @@ class Magazine(models.Model):
 
     # info estadística
     n_threads = models.PositiveIntegerField(default=0)
-    n_comments = models.PositiveIntegerField(default=0)
     n_links = models.PositiveIntegerField(default=0)
     n_elements = models.PositiveIntegerField(default=0)
     n_suscriptions = models.PositiveIntegerField(default=0)
+
+    def total_comments(self):
+        return sum(publicacio.num_coments for publicacio in self.publicacio_set.all())
