@@ -7,7 +7,7 @@
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
                     title="Correu del user"
-                    href="{% url 'view_user' %}">
+                    href="{% url 'view_user' comment.author.username %}">
                 {{ comment.author.username }}</a>,
             <time class="timeago">{{ comment.creation_data|timesince }}</time>
             {% if comment.last_edited %}
@@ -136,7 +136,7 @@
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
                     title="Correu del user"
-                    href="{% url 'view_user' %}">
+                    href="{% url 'view_user' comment.author.username %}">
                 {{ reply.comment_reply.author.username }}</a>,
             <time class="timeago">{{ reply.comment_reply.creation_data|timesince }}</time>
             {% if reply.comment_reply.last_edited %}

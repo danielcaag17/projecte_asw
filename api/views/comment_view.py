@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from ..models import *
@@ -12,8 +13,9 @@ def add_comment(request, thread_id):
     if request.method == 'POST':
         body = request.POST.get('entry_comment[body]')
         if body:
-            default_user = User.objects.get(username='default_user')
-            comment = Comment(body=body, author=default_user, thread=thread, creation_data=timezone.now())
+            user_email = request.user.email
+            user = User.objects.get(email=user_email)
+            comment = Comment(body=body, author=user, thread=thread, creation_data=timezone.now())
             comment.save()
     order = request.session.get('order')
     request.session['order'] = order
@@ -27,8 +29,9 @@ def add_reply(request, thread_id, comment_id):
     if request.method == 'POST':
         body = request.POST.get('entry_comment[body]')
         if body:
-            default_user = User.objects.get(username='default_user')
-            comment_reply = Comment(body=body, author=default_user, thread=thread, creation_data=timezone.now(),
+            user_email = request.user.email
+            user = User.objects.get(email=user_email)
+            comment_reply = Comment(body=body, author=user, thread=thread, creation_data=timezone.now(),
                                     level=comment_root.level + 1)
             comment_reply.save()
             reply = Reply(comment_root=comment_root, comment_reply=comment_reply)
@@ -41,7 +44,8 @@ def add_reply(request, thread_id, comment_id):
 @csrf_exempt
 def like_comment(request, thread_id, comment_id):
     if request.method == 'POST':
-        user = User.objects.get(username='default_user')
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
         comment = Comment.objects.get(pk=comment_id)
         if not Vote_comment.objects.filter(comment=comment, user=user, type='like').exists():
             comment.num_likes += 1
@@ -66,7 +70,8 @@ def like_comment(request, thread_id, comment_id):
 @csrf_exempt
 def dislike_comment(request, thread_id, comment_id):
     if request.method == 'POST':
-        user = User.objects.get(username='default_user')
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
         comment = Comment.objects.get(pk=comment_id)
         if not Vote_comment.objects.filter(comment=comment, user=user, type='dislike').exists():
             comment.num_dislikes += 1
@@ -100,6 +105,7 @@ def edit_comment(request, thread_id, comment_id):
     order = request.session.get('order')
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread_id, order=order)
+
 
 @csrf_exempt
 def delete_comment(request, thread_id, comment_id):
