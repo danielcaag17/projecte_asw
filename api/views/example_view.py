@@ -7,8 +7,6 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.models import User as DjangoUser
-from ..models.magazine import Magazine
-
 
 class Endpoint1View(APIView):
     def get(self, request):
@@ -53,8 +51,10 @@ def main_list(request, ordre=None, filter=None):
 
 
 def new_link(request):
+    magazines = Magazine.objects.all()
+    context = {'magazines': magazines}
     template = loader.get_template('new_link.html')
-    return HttpResponse(template.render())
+    return HttpResponse(template.render(context,request))
 
 
 def all_magazines(request):
@@ -95,8 +95,10 @@ def new_magazine(request):
 
 
 def new_thread(request):
+    magazines = Magazine.objects.all()
+    context = {'magazines': magazines}
     template = loader.get_template('new_thread.html')
-    return HttpResponse(template.render())
+    return HttpResponse(template.render(context,request))
 
 
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
@@ -105,6 +107,7 @@ def create_link_thread(request):
         title = request.POST.get('title')
         body = request.POST.get('body')
         url = request.POST.get('url')
+        magazine = Magazine.objects.get(id=request.POST.get('magazine'))
         created_at = timezone.now().isoformat()
 
         if body == '':
@@ -121,14 +124,24 @@ def create_link_thread(request):
                 title=title,
                 body=body,
                 author=user_prova,
-                creation_data=created_at
+                magazine=magazine,
+                creation_data=created_at,
             )
         else:
+            if url.startswith("https://"):
+                url = url[len("https://"):]
+            elif url.startswith("http://"):
+                url = url[len("http://"):]
+
+            if not url.startswith("www."):
+                url = f"www.{url}"
+            url = url.strip('/')
             link = Link.objects.create(
                 title=title,
                 body=body,
                 url=url,
                 author=user_prova,
+                magazine=magazine,
                 creation_data=created_at
             )
 
@@ -137,31 +150,6 @@ def create_link_thread(request):
     else:
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
-
-
-@csrf_exempt
-def like_thread(request, thread_id):
-    if request.method == 'POST':
-        thread = Publicacio.objects.get(pk=thread_id)
-        thread.num_likes += 1
-        thread.save()
-        next = url_redireccio(request)
-        return HttpResponseRedirect(next)
-    else:
-        return redirect('main')
-
-
-@csrf_exempt
-def dislike_thread(request, thread_id):
-    if request.method == 'POST':
-        thread = Publicacio.objects.get(pk=thread_id)
-        thread.num_dislikes += 1
-        thread.save()
-        next = url_redireccio(request)
-        return HttpResponseRedirect(next)
-    else:
-        return redirect('main')
-
 
 @csrf_exempt
 def boost_thread(request, thread_id):

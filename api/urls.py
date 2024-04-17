@@ -13,8 +13,9 @@ url_threads = [
     path('new', views.new_link, name='new_link'),
     path('new/thread', views.new_thread, name='new_thread'),
     path('create_link_thread', views.create_link_thread, name = 'create_link'),
-    path('like/<int:thread_id>/',views.like_thread,name='like_thread'),
-    path('dislike/<int:thread_id>/',views.dislike_thread,name='dislike_thread'),
+
+    #TODO: CANVIAR VIEW D'AQUESTES DUES URLS. FER EN UNA SOLA QUE SIGUI "votar(<int:thread_id> JA PASSO ATRIBUT INDICANT SI ES POSITIU O NEGATIU
+    path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),
     path('cercador', views.view_cercador, {'ordre': 'newest', 'filter': 'tot'}, name='cercador'),
     path('cercador/newest/<str:filter>/', views.view_cercador, {'ordre': 'newest'},
@@ -42,6 +43,8 @@ url_comments = [
     path('add_reply/<int:thread_id>/<int:comment_id>/', views.add_reply, name='add_reply'),
     path('like/<int:thread_id>/<int:comment_id>/', views.like_comment, name='like_comment'),
     path('dislike/<int:thread_id>/<int:comment_id>/', views.dislike_comment, name='dislike_comment'),
+    path('edit_comment/<int:thread_id>/<int:comment_id>/', views.edit_comment, name='edit_comment'),
+    path('delete_comment/<int:thread_id>/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]
 
 url_magazines = [

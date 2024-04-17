@@ -10,6 +10,10 @@
                     href="{% url 'view_user' %}">
                 {{ comment.author.username }}</a>,
             <time class="timeago">{{ comment.creation_data|timesince }}</time>
+            {% if comment.last_edited %}
+                (edited
+                <time class="timeago">{{ comment.last_edited|timesince }}</time> ago)
+            {% endif %}
         </header>
         <figure>
             <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
@@ -52,15 +56,17 @@
                        data-action=" subject#getForm">responder</a>
                 </li>
                 <li>
-                    <form method="post" action="/ecb/6141738">
-                        <input type="hidden" name="token"
-                               value="6c0178466d64b63748c406eb20a3c1b.3nO8A2Cc-W2N003-ab24tuhKmE3dlkknjT_4ZlIJFL4.ryftcjXyyyrjuj_NNonr84x7_zml4gV0tQ-xIWpzc--zNcZGNMy_HcK-Jg">
-                        <button class="boost-link stretched-link" type="submit"
-                                data-action="subject#favourite">
-                            impulsar <span class="hidden"
-                                           data-subject-target="upvoteCounter">(0)</span>
-                        </button>
-                    </form>
+                    <!-- TODO: check if user is the author of the comment -->
+                    <a class="stretched-link"
+                       onclick="document.getElementById('edit_{{ comment.id }}').style.display = 'block';"
+                       data-action=" subject#getForm">edit</a>
+                </li>
+                <li>
+                    <!-- TODO: check if user is the author of the comment -->
+                    <a class="stretched-link"
+                       onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                       href="{% url 'delete_comment' thread_id=thread.id comment_id=comment.id %}"
+                       data-action=" subject#getForm">delete</a>
                 </li>
             </menu>
             <h3 hidden="">Añadir un comentario</h3>
@@ -75,10 +81,6 @@
                         data-action="input-length#updateDisplay"
                         data-input-length-max-value="5000"
                         style="overflow: hidden; height: 66px;"></textarea>
-                    <div id="entry_comment_6616cdb65f3850.74137319_body_max_length"
-                         class="length-indicator">
-                        0/5000
-                    </div>
                 </div>
                 <div class="row actions">
                     <ul>
@@ -88,6 +90,32 @@
                                         id="entry_comment_6616cdb65f3850.74137319_submit"
                                         name="entry_comment[submit]" class="btn btn__primary"
                                         data-action="subject#sendForm">Añadir un comentario
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+            <form id="edit_{{ comment.id }}" name="edit_comment" method="post"
+                  action="{% url 'edit_comment' thread_id=thread.id comment_id=comment.id %}"
+                  class="comment-add" enctype="multipart/form-data" style="display: none">
+                {% csrf_token %}
+                <div><label for="entry_comment_6616cdb65f3850.74137319_body"></label><textarea
+                        id="entry_comment_6616cdb65f3850.74137319_body"
+                        name="entry_comment[body]"
+                        data-controller="input-length rich-textarea autogrow"
+                        data-action="input-length#updateDisplay"
+                        data-input-length-max-value="5000"
+                        style="overflow: hidden; height: 66px;">{{ comment.body }}</textarea>
+                </div>
+                <div class="row actions">
+                    <ul>
+                        <li class="dropdown">
+                            <div>
+                                <button type="submit"
+                                        id="entry_comment_6616cdb65f3850.74137319_submit"
+                                        name="entry_comment[submit]" class="btn btn__primary"
+                                        data-action="subject#sendForm">Update comment
                                 </button>
                             </div>
                         </li>
@@ -111,6 +139,10 @@
                     href="{% url 'view_user' %}">
                 {{ reply.comment_reply.author.username }}</a>,
             <time class="timeago">{{ reply.comment_reply.creation_data|timesince }}</time>
+            {% if reply.comment_reply.last_edited %}
+                (edited
+                <time class="timeago">{{ reply.comment_reply.last_edited|timesince }}</time> ago)
+            {% endif %}
         </header>
         <figure>
             <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
@@ -152,6 +184,19 @@
                        onclick="document.getElementById('reply_{{ reply.comment_reply.id }}').style.display = 'block';"
                        data-action=" subject#getForm">responder</a>
                 </li>
+                <li>
+                    <!-- TODO: check if user is the author of the comment -->
+                    <a class="stretched-link"
+                       onclick="document.getElementById('edit_{{ reply.comment_reply.id }}').style.display = 'block';"
+                       data-action=" subject#getForm">edit</a>
+                </li>
+                <li>
+                    <!-- TODO: check if user is the author of the comment -->
+                    <a class="stretched-link"
+                       onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                       href="{% url 'delete_comment' thread_id=thread.id comment_id=reply.comment_reply.id %}"
+                       data-action=" subject#getForm">delete</a>
+                </li>
             </menu>
             <h3 hidden="">Añadir un comentario</h3>
             <form id="reply_{{ reply.comment_reply.id }}" name="entry_comment" method="post"
@@ -166,10 +211,6 @@
                         data-action="input-length#updateDisplay"
                         data-input-length-max-value="5000"
                         style="overflow: hidden; height: 66px;"></textarea>
-                    <div id="entry_comment_6616cdb65f3850.74137319_body_max_length"
-                         class="length-indicator">
-                        0/5000
-                    </div>
                 </div>
                 <div class="row actions">
                     <ul>
@@ -180,6 +221,32 @@
                                         name="entry_comment[submit]"
                                         class="btn btn__primary"
                                         data-action="subject#sendForm">Añadir un comentario
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+            <form id="edit_{{ reply.comment_reply.id }}" name="edit_comment" method="post"
+                  action="{% url 'edit_comment' thread_id=thread.id comment_id=reply.comment_reply.id %}"
+                  class="comment-add" enctype="multipart/form-data" style="display: none">
+                {% csrf_token %}
+                <div><label for="entry_comment_6616cdb65f3850.74137319_body"></label><textarea
+                        id="entry_comment_6616cdb65f3850.74137319_body"
+                        name="entry_comment[body]"
+                        data-controller="input-length rich-textarea autogrow"
+                        data-action="input-length#updateDisplay"
+                        data-input-length-max-value="5000"
+                        style="overflow: hidden; height: 66px;">{{ reply.comment_reply.body }}</textarea>
+                </div>
+                <div class="row actions">
+                    <ul>
+                        <li class="dropdown">
+                            <div>
+                                <button type="submit"
+                                        id="entry_comment_6616cdb65f3850.74137319_submit"
+                                        name="entry_comment[submit]" class="btn btn__primary"
+                                        data-action="subject#sendForm">Update comment
                                 </button>
                             </div>
                         </li>
