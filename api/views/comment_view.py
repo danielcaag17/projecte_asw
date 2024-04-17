@@ -17,6 +17,8 @@ def add_comment(request, thread_id):
             user = User.objects.get(email=user_email)
             comment = Comment(body=body, author=user, thread=thread, creation_data=timezone.now())
             comment.save()
+            thread.num_coments += 1
+            thread.save()
     order = request.session.get('order')
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread_id, order=order)
@@ -36,6 +38,8 @@ def add_reply(request, thread_id, comment_id):
             comment_reply.save()
             reply = Reply(comment_root=comment_root, comment_reply=comment_reply)
             reply.save()
+            thread.num_coments += 1
+            thread.save()
     order = request.session.get('order')
     request.session['order'] = order
     return redirect('veure_thread', thread_id=thread.id, order=order)
@@ -111,9 +115,14 @@ def edit_comment(request, thread_id, comment_id):
 def delete_comment(request, thread_id, comment_id):
     comment = Comment.objects.get(pk=comment_id)
     replies = Reply.objects.filter(comment_root=comment)
+    thread = Publicacio.objects.get(pk=thread_id)
     for reply in replies:
         reply_comment = reply.comment_reply
         reply_comment.delete()
+        thread.num_coments -= 1
+        thread.save()
+    thread.num_coments -= 1
+    thread.save()
     comment.delete()
     order = request.session.get('order')
     request.session['order'] = order
