@@ -16,7 +16,7 @@ url_threads = [
     path('create_link_thread', views.create_link_thread, name = 'create_link'),
 
     path('editar/thread/<int:thread_id>/', views.editar_thread, name='edit_thread'),
-
+    path('editar/link/<int:thread_id>/', views.editar_link, name='editar_link'),
     path('eliminar/<int:thread_id>/', views.eliminar_publicacio, name='eliminar_publicacio'),
 
     path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),

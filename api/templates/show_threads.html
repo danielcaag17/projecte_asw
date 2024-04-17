@@ -5,7 +5,7 @@
     <header>
         <h1>
             <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
-            {% if thread.url != none %}
+            {% if thread.url != None %}
                 <span class="entry__domain">
                 (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
                 </span>
@@ -15,7 +15,7 @@
     {% if single %}
         <div class="entry__body">
             <div class="content formatted" style="">
-                <p>asdf</p>
+                <p>{{ thread.body }}</p>
             </div>
         </div>
     {% endif %}
@@ -68,14 +68,23 @@
             <li>
                 {% if thread.author.email == user.email %}
                     <li>
-                        <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
-                            <button class="boost-link stretched-link" type="submit"
-                                    data-action="subject#favourite">editar
-                            </button>
-                        </form>
+                        {% if thread.url == '' %}
+                            <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
+                                <button class="boost-link stretched-link" type="submit"
+                                        data-action="subject#favourite">editar
+                                </button>
+                            </form>
+                        {% else %}
+                            <form action="{% url 'editar_link' thread.id %}" name="editar_link" method="get">
+                                <button class="boost-link stretched-link" type="submit"
+                                        data-action="subject#favourite">editar
+                                </button>
+                            </form>
+                        {% endif %}
                     </li>
                     <li>
-                        <form action="{% url 'eliminar_publicacio' thread.id %}" name="eliminar_publicacio" method="post">
+                        <form action="{% url 'eliminar_publicacio' thread.id %}" name="eliminar_publicacio"
+                              method="post">
                             <button class="boost-link stretched-link" type="submit"
                                     data-action="subject#favourite">eliminar
                             </button>
