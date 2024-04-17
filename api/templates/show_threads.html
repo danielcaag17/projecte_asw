@@ -7,7 +7,6 @@
             {% if thread.url != none %}
                 <span class="entry__domain">
                 (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
-                    <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
                 </span>
             {% endif %}
         </h2>
@@ -26,9 +25,7 @@
             <input type="hidden" name="vote_type" value="positiu">
             <button type="submit" title="Vots positius" aria-label="Vots positius">
                 <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
-                <span>
-                                        <i class="fa-solid fa-arrow-up"></i>
-                                    </span>
+                <span><i class="fa-solid fa-arrow-up"></i></span>
             </button>
         </form>
         <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
