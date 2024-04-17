@@ -131,7 +131,7 @@
                 <!-- Options top -->
                 <aside class="options" id="options">
                     <div></div>
-                    <menu class="options__main">
+                    <menu class="options__main" style="align-items: center; justify-content: center;">
                         <li><a href="/u/{{ user.username }}" class="active">
                             <span style="vertical-align: inherit;">general view</span>
                         </a></li>
@@ -156,43 +156,15 @@
                             <span style="vertical-align: inherit;">answers (0)</span>
                         </a></li>
                         <!-- TODO: de posar username -->
+                        <!-- TODO: ha d'estar la incio iniciada -->
                         <li><a href="/u/usuari_predeterminat/boosts" class="">
                             <!-- TODO: posar variable -->
                             <span style="vertical-align: inherit;">reposts (0)</span>
                         </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/following" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">following (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/followers" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">followers (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/subscriptions" class="opacity-50">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">subscriptions (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/reputation/threads" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">reputation (0)</span>
-                        </a></li>
-                    </menu>
-                    <!-- Scroll -->
-                    <!-- TODO: falta que funcioni -->
-                    <menu class="scroll">
-                        <li class="scroll-left">
-                            <i class="fa-solid fa-circle-left"></i>
-                        </li><li class="scroll-right">
-                            <i class="fa-solid fa-circle-right"></i>
-                        </li>
                     </menu>
                 </aside>
                 <!-- Options -->
-                <aside class="options options--top" id="options">
+                <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
                         <!-- TODO: vincular user -->
@@ -221,81 +193,6 @@
                                 commented
                             </font></font>
                         </a></li>
-                    </menu>
-                    <menu class="options__layout">
-                        <li class="dropdown">
-                            <button aria-label="Change view" title="Change view">
-                                <i class="fa-solid fa-table-list"></i>
-                                <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                    Change view
-                                </font></font></button>
-                            <ul class="dropdown__menu">
-                                <li>
-                                    <a class="active" href="/settings/theme/kbin_entries_compact/false">
-                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                            classic view
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a class="" href="/settings/theme/kbin_entries_compact/true">
-                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                            compact view
-                                    </font></font></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </menu>
-                    <menu class="options__filters">
-                        <li class="dropdown">
-                            <button aria-label="Sort by chronological order" title="Sort by chronological order">
-                                <i class="fa-solid fa-clock"></i>
-                                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        Sort by chronological order
-                                    </font></font></button>
-                            <ul class="dropdown__menu">
-                                <!-- TODO: falta vincular user -->
-                                <li>
-                                    <a href="/u/usuari_predeterminat" class="active"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        ∞
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/3h" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        3h
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/6h" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        6h
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/12h" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        12h
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1d" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 day
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1w" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 week
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1m" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 month
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1y" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 year
-                                    </font></font></a>
-                                </li>
-                            </ul>
-                        </li>
                     </menu>
                 </aside>
                 <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
