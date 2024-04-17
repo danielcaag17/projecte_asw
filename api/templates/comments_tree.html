@@ -15,12 +15,6 @@
                 <time class="timeago">{{ comment.last_edited|timesince }}</time> ago)
             {% endif %}
         </header>
-        <figure>
-            <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
-               data-mentions-username-param="Correu del user">
-                <div class="no-avatar"></div>
-            </a>
-        </figure>
         <div class="content" style="">
             <p>{{ comment.body }}</p>
         </div>
@@ -144,12 +138,6 @@
                 <time class="timeago">{{ reply.comment_reply.last_edited|timesince }}</time> ago)
             {% endif %}
         </header>
-        <figure>
-            <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
-               data-mentions-username-param="Correu del user">
-                <div class="no-avatar"></div>
-            </a>
-        </figure>
         <div class="content" style="">
             <p>{{ reply.comment_reply.body }}</p>
         </div>
