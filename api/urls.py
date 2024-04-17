@@ -32,6 +32,9 @@ url_threads = [
 
 url_users = [
     path('u/<str:username>', views.view_user, name='view_user'),
+    path('u/<str:username>/top', views.view_top, name='view_top'),
+    path('u/<str:username>/newest', views.view_newest, name='view_newest'),
+    path('u/<str:username>/commented', views.view_commented, name='view_commented'),
     path('settings/general', views.settings, name='settings'),
     path('settings/profile', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),

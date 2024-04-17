@@ -16,6 +16,18 @@ def view_user(request, username):
     return HttpResponse(template.render(context, request))
 
 
+def view_top(request, username):
+    pass
+
+
+def view_newest(request, username):
+    pass
+
+
+def view_commented(request, username):
+    pass
+
+
 def get_username(user_email):
     return user_email.split('@')[0]
 
