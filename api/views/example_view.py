@@ -71,7 +71,8 @@ def new_magazine(request):
 
         name = request.POST.get('name')
 
-        # author = request.POST.get('author')
+        author_email = request.user.email
+        author = User.objects.get(email=author_email)
         creation_date = timezone.now().isoformat()
         title = request.POST.get('title')
         description = request.POST.get('description')
@@ -80,7 +81,7 @@ def new_magazine(request):
 
         magazine = Magazine.objects.create(
             name=name,
-            # author=author,
+            author=author,
             creation_date=creation_date,
             title=title,
             description=description,
@@ -112,18 +113,15 @@ def create_link_thread(request):
 
         if body == '':
             body = None
-        user_prova, _ = User.objects.get_or_create(
-            username='default_user',  # Aquí defines el nom d'usuari desitjat
-            email='example@example.com',  # Defineix una adreça de correu electrònic
-            password="default_password",  # Defineix una contrasenya (criptografiada)
-        )
+            author_email = request.user.email
+            user = User.objects.get(email=author_email)
 
         # Creem una nova instància del model Thread o Link amb les dades proporcionades
         if url == None:
             thread = Thread.objects.create(
                 title=title,
                 body=body,
-                author=user_prova,
+                author=user,
                 magazine=magazine,
                 creation_data=created_at,
             )
@@ -140,7 +138,7 @@ def create_link_thread(request):
                 title=title,
                 body=body,
                 url=url,
-                author=user_prova,
+                author=user,
                 magazine=magazine,
                 creation_data=created_at
             )
