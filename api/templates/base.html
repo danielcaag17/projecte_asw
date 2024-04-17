@@ -34,11 +34,11 @@
                     <li><a class="" href="/newMagazine">Create new magazine</a></li>
                 </ul>
             </li>
-            {% if user.user.is_authenticated %}
-                <li class="dropdown"><a class=" login" href="/u/{{ user.username }}"><span
-                        class="user-name">{{ user.username }}</span></a>
+            {% if user.is_authenticated %}
+                <li class="dropdown"><a class=" login" href="/u/{{ usuari.username }}"><span
+                        class="user-name">{{ usuari.username }}</span></a>
                     <ul class="dropdown__menu">
-                        <li><a href="/u/{{ user.username }}" class="">Profile</a></li>
+                        <li><a href="/u/{{ usuari.username }}" class="">Profile</a></li>
                         <li><a href="/settings/general" class="">Setting</a></li>
                         <li><a href="/profile/messages" class="">Messages</a></li>
                         <li><a href="/settings/notifications" class="">Notifications</a></li>

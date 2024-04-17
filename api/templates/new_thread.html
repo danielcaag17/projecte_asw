@@ -21,45 +21,8 @@
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
-<header id="header" class="header">
-    <div class="kbin-container">
-        <nav class="head-nav">
-            <div class="brand">
-                <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
-            </div>
-            <menu class="head-nav__menu">
-                <li></li>
-                <li><a href="/" class="active">Threads</a></li>
-                <li><a href="/microblog" class="">Microblog</a></li>
-                <li><a href="/*" class="">All Content</a></li>
-                <li><a href="/people" class="">People</a></li>
-                <li><a href="/magazines" class="">Magazines</a></li>
-                <li><a href="/magazines/collections" class="">Collections</a></li>
-            </menu>
-        </nav>
-        <menu>
-            <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i
-                    class="fa-solid fa-plus"></i> Add</a>
-                <ul class="dropdown__menu">
-                    <li><a href="/new" class="">Add new link</a></li>
-                    <li><a href="/new/thread" class="">Add new thread</a></li>
-                    <li><a href="/new/photo" class="">Add new photo</a></li>
-                    <li><a class="" href="/microblog">Add new post</a></li>
-                    <li><a class="" href="/newMagazine">Create new magazine</a></li>
-                </ul>
-            </li>
-            <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
-                <ul class="dropdown__menu">
-                    <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
-                    <li><a href="/settings/general" class="">Settings</a></li>
-                    <li><a href="/profile/messages" class="">Messages</a></li>
-                    <li><a href="/settings/notifications" class="">Notifications</a></li>
-                    <li><a href="/logout">Log out</a></li>
-                </ul>
-            </li>
-        </menu>
-    </div>
-</header>
+
+{% include 'base.html' %}
 <div id="middle" class="page-entry-create page-entry-create-link">
     <div class="kbin-container">
         <main id="main" data-controller="lightbox timeago" class="">

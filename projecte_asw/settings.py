@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['bravo13-36a68ba47d34.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
-SITE_ID = 5
+SITE_ID = 7
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -70,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'api.middleware.AddUserToContextMiddleware'
 ]
 
 ROOT_URLCONF = 'projecte_asw.urls'
@@ -85,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'api.context_processors.usuari_context_processor',
             ],
         },
     },
