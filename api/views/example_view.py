@@ -208,7 +208,7 @@ def veure_magazine(request, magazine_id, ordre=None, filter=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'magazine': magazine, 'threads': tot}
+    context = {'magazine': magazine, 'threads': tot, 'active_filter': filter}
     return render(request, 'veure_magazine.html', context)
 
 

@@ -51,14 +51,11 @@ url_magazines = [
     path('magazine/<int:magazine_id>/',views.veure_magazine, name='veure_magazine'),
 
     path('magazine/<int:magazine_id>/newest/<str:filter>/', views.veure_magazine, {'ordre': 'newest'}, name='veure_magazine_newest'),
+    path('magazine/<int:magazine_id>/top/<str:filter>/', views.veure_magazine, {'ordre': 'top'}, name='veure_magazine_top'),
+    path('magazine/<int:magazine_id>/comments/<str:filter>/', views.veure_magazine, {'ordre': 'comment'}, name='veure_magazine_comments'),
 
-    path('magazine/<int:magazine_id>/top/<str:filter>/', views.veure_magazine, {'ordre': 'top'}, name='veure_magazine_top_filtre'),
-    path('magazine/<int:magazine_id>/top/', views.veure_magazine, {'ordre': 'top', 'filter': 'tot'},
-         name='veure_magazine_top'),
 
-    path('magazine/<int:magazine_id>/commented/<str:filter>/', views.veure_magazine, {'ordre': 'commented'}, name='veure_magazine_commented'),
-    path('magazine/<int:magazine_id>/commented/', views.veure_magazine, {'ordre': 'commented', 'filter': 'tot'},
-         name='veure_magazine_commented'),
+
 
     path('magazines', views.all_magazines, name='all_magazines'),
     path('magazines/threads', views.all_magazines, {'ordre': 'threads'}, name='all_magazines_thread'),
