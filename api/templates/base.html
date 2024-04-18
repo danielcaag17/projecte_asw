@@ -32,16 +32,17 @@
                         class="user-name">{{ usuari.username }}</span></a>
                     <ul class="dropdown__menu">
                         <li><a href="/u/{{ usuari.username }}" class="">Profile</a></li>
+                        <li><a href="{% url 'edit_user' usuari.username %}" class="">Settings</a></li>
                         <li><a href="/logout">Sing off</a></li>
                     </ul>
                 </li>
                 <!-- No s'ha iniciat la sessió -->
             {% else %}
                 {% load socialaccount %}
-                <form action="{% provider_login_url 'google' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Log in</button>
-                </form>
+                <a class="login" href="/accounts/google/login">
+                    Log in
+                </a>
+
 
             {% endif %}
         </menu>

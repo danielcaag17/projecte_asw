@@ -1,5 +1,5 @@
+from django.apps import apps
 from django.db import models
-from django.contrib.auth.hashers import make_password, check_password
 
 
 class User(models.Model):
@@ -10,4 +10,17 @@ class User(models.Model):
     avatar = models.ImageField(default="")
     email = models.EmailField(unique=True)
 
+    @property
+    def total_threads(self):
+        publicacio = apps.get_model('api', 'Publicacio')
+        return publicacio.objects.filter(author=self.username).count()
 
+    @property
+    def total_comments(self):
+        comment = apps.get_model('api', 'Comment')
+        return comment.objects.filter(author=self.username).count()
+
+    @property
+    def total_boosts(self):
+        boost = apps.get_model('api', 'Boost')
+        return boost.objects.filter(user=self.username).count()

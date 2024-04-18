@@ -4,11 +4,21 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.urls import reverse,reverse_lazy
 from itertools import chain
-
+from django.db.models import Value, CharField
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
 from ..models import *
 
 
-
+@csrf_exempt
+def sort(all, ordre):
+    if ordre == 'top':
+        res = sorted(all, key=lambda x: x.num_likes, reverse=True)
+    elif ordre == 'newest':
+        res = sorted(all, key=lambda x: x.creation_data, reverse=True)
+    elif ordre == 'commented':
+        res = sorted(all, key=lambda x: x.num_coments, reverse=True)
+    return res
 
 def view_user(request, username, filter=None,ordre=None,select='threads'):
     template = loader.get_template('view_user.html')
@@ -65,7 +75,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
     return HttpResponse(template.render(context, request))
 
 
-
 def ordena(links,threads,ordre,filter):
     if filter == 'links':
         tot = links
@@ -81,14 +90,14 @@ def ordena(links,threads,ordre,filter):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
     return tot
+  
 
-
-
-
+@csrf_exempt
 def get_username(user_email):
     return user_email.split('@')[0]
 
 
+@csrf_exempt
 def login(request):
     print("He passat pel login")
     user_email = request.user.email
@@ -103,20 +112,43 @@ def login(request):
         return redirect(url)
 
 
+@csrf_exempt
 def edit_user(request, username):
-    template = loader.get_template('edit_user.html')
-    obj = User.objects.get(username=username)
-    context = {'user': obj}
-    return HttpResponse(template.render(context, request))
+    if request.method == "POST":
+        obj = User.objects.get(username=username)
+        description = request.POST.get('description')
+        if description is not None:
+            obj.description = description
+        avatar = request.FILES.get('avatar')
+        if avatar is not None:
+            avatar_name = default_storage.save('avatar/' + avatar.name, avatar)
+            obj.avatar = default_storage.url(avatar_name)
+        cover = request.FILES.get('cover')
+        if cover is not None:
+            cover_name = default_storage.save('cover/' + cover.name, cover)
+            obj.cover = default_storage.url(cover_name)
+        obj.save()
+        template = loader.get_template('edit_user.html')
+        context = {'usuari': obj}
+        return HttpResponse(template.render(context))
+    else:
+        template = loader.get_template('edit_user.html')
+        obj = User.objects.get(username=username)
+        context = {'user': obj}
+        return HttpResponse(template.render(context, request))
 
 
-def settings(request, username):
+@csrf_exempt
+def settings(request):
     template = loader.get_template('user_settings.html')
-    obj = User.objects.get(username=username)
-    context = {'user': obj}
-    return HttpResponse(template.render(context, request))
+    # obj = User.objects.get(username=username)
+    # context = {'user': obj}
+    return HttpResponse(template.render())
 
 
+@csrf_exempt
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+

@@ -53,16 +53,15 @@
                                     <td>
                                         <a class="magazine-inline stretched-link"
                                            href="{% url 'veure_magazine_newest' magazine.id 'tot' %}">{{ magazine.name }}</a>
-
                                     </td>
-                                    <td>
-                                        <p>{{ magazine.total_threads }}</p>
+                                    <td style="vertical-align: middle;">
+                                        <p style="margin: 0;">{{ magazine.total_threads }}</p>
                                     </td>
-                                    <td>
-                                        <p>{{ magazine.total_comments }}</p>
+                                     <td style="vertical-align: middle;">
+                                        <p style="margin: 0;">{{ magazine.total_comments }}</p>
                                     </td>
-                                    <td>
-                                        <p>{{ magazine.total_publicacions }}</p>
+                                     <td style="vertical-align: middle;">
+                                        <p style="margin: 0;">{{ magazine.total_publicacions }}</p>
                                     </td>
                                     <td>
                                         <aside class="magazine__subscribe" data-controller="subs">
@@ -71,8 +70,9 @@
                                                 <span>{{ magazine.n_suscriptions }}</span>
                                             </div>
                                             <form action="
+
                                                     {% if magazine.id in user_subscriptions %}{% url 'unsubscribe' magazine.id %}
-                                                    {% else %}{% url 'subscribe' magazine.id %}{% endif %}"
+                                                        {% else %}{% url 'subscribe' magazine.id %}{% endif %}"
                                                   name="magazine_subscribe" method="post">
                                                 <button type="submit" class="btn btn__secondary action"
                                                         data-action="subs#send">

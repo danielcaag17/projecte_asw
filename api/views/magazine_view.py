@@ -9,10 +9,12 @@ from django.contrib.auth.decorators import login_required
 
 def all_magazines(request, ordre=None):
     magazines = Magazine.objects.all()
-    user_email = request.user.email
-    user = User.objects.get(email=user_email)
-    user_subscriptions = Subscription.objects.filter(user=user).values_list('magazine_id', flat=True)
-    print(user_subscriptions)
+    if request.user.is_authenticated:
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
+        user_subscriptions = Subscription.objects.filter(user=user).values_list('magazine_id', flat=True)
+    else:
+        user_subscriptions = []
     if ordre == 'threads':
         magazines = sorted(magazines, key=lambda x: x.total_threads, reverse=True)
     elif ordre == 'elements':
