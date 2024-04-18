@@ -22,7 +22,7 @@
 </head>
 
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
-{% include 'base.html' with actiu="magazine"%}
+{% include 'base.html' with actiu="magazine" %}
 <div id="middle" class="page-magazines page-settings">
     <div class="kbin-container">
         <main id="main" data-controller="lightbox timeago" class="view-compact">
@@ -43,7 +43,7 @@
                                                                   href="{% url 'all_magazines_elements' %}">Publicacions</a>
                                 </th>
                                 <th style="text-align: center"><a rel="nofollow noopener noreferrer"
-                                                                  href="{% url 'all_magazines_suscriptions' %}">Suscripcions</a>
+                                                                  href="{% url 'all_magazines_suscriptions' %}">Subscriptions</a>
                                 </th>
                             </tr>
                             </thead>
@@ -70,20 +70,29 @@
                                                 <i class="fa-solid fa-users"></i>
                                                 <span>{{ magazine.n_suscriptions }}</span>
                                             </div>
-                                            <form action="/m/RedditMigration/subscribe" name="magazine_subscribe"
-                                                  method="post">
+                                            <form action="
+                                                    {% if magazine.id in user_subscriptions %}{% url 'unsubscribe' magazine.id %}
+                                                    {% else %}{% url 'subscribe' magazine.id %}{% endif %}"
+                                                  name="magazine_subscribe" method="post">
                                                 <button type="submit" class="btn btn__secondary action"
                                                         data-action="subs#send">
-                                                    <i class="fa-sharp fa-solid fa-folder-plus"></i><span>Subscribe</span>
+                                                    {% if magazine.id in user_subscriptions %}
+                                                        <i class="fa-sharp fa-solid fa-folder-minus"></i>
+                                                        <span>Unsubscribe</span>
+                                                    {% else %}
+                                                        <i class="fa-sharp fa-solid fa-folder-plus"></i>
+                                                        <span>Subscribe</span>
+                                                    {% endif %}
                                                 </button>
                                             </form>
+                                        </aside>
                                     </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                </div> 
+                </div>
             </div>
         </main>
     </div>

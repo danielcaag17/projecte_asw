@@ -17,28 +17,27 @@ class Endpoint1View(APIView):
         data = {"message": "Hello World"}
         return JsonResponse(data)
 
+
 @login_required(redirect_field_name='login')
 @csrf_exempt
 def boost_publicacio(request, thread_id):
-
     publicacio = Publicacio.objects.get(pk=thread_id)
     user = User.objects.get(email=request.user.email)
 
     if request.method == 'POST':
 
-            #Mirem si l'usuari ja ha fet boost vol dir que l'hem de treure
-            if Boost.objects.filter(user=user, publicacio=publicacio).exists():
-                boost = Boost.objects.get(user=user, publicacio=publicacio)
-                publicacio.num_boosts -= 1
-                publicacio.save()
-                boost.delete()
+        # Mirem si l'usuari ja ha fet boost vol dir que l'hem de treure
+        if Boost.objects.filter(user=user, publicacio=publicacio).exists():
+            boost = Boost.objects.get(user=user, publicacio=publicacio)
+            publicacio.num_boosts -= 1
+            publicacio.save()
+            boost.delete()
 
-            else: #Usuari encara no ha fet boost
-                nou_boost = Boost(user=user, publicacio=publicacio)
-                publicacio.num_boosts += 1
-                publicacio.save()
-                nou_boost.save()
-
+        else:  # Usuari encara no ha fet boost
+            nou_boost = Boost(user=user, publicacio=publicacio)
+            publicacio.num_boosts += 1
+            publicacio.save()
+            nou_boost.save()
 
     return redirect('main')
 
@@ -50,11 +49,12 @@ def editar_thread(request, thread_id):
         thread.title = request.POST.get('title')
         thread.body = request.POST.get('body')
         thread.save()
-        return veure_thread(request, thread_id,'top',True)
+        return veure_thread(request, thread_id, 'top', True)
     else:
         template = loader.get_template('edit_publicacio.html')
-        return HttpResponse(template.render({'thread':thread,'titol':thread.title,'body':thread.body,
-                                             'magazine':thread.magazine.name}, request))
+        return HttpResponse(template.render({'thread': thread, 'titol': thread.title, 'body': thread.body,
+                                             'magazine': thread.magazine.name}, request))
+
 
 @csrf_exempt
 def editar_link(request, thread_id):
@@ -64,11 +64,11 @@ def editar_link(request, thread_id):
         link.title = request.POST.get('title')
         link.body = request.POST.get('body')
         link.save()
-        return veure_thread(request, thread_id,'top',True)
+        return veure_thread(request, thread_id, 'top', True)
     else:
         template = loader.get_template('edit_publicacio.html')
-        return HttpResponse(template.render({'thread':link,'titol':link.title,'body':link.body,'url':link.url,
-                                             'magazine':link.magazine.name}, request))
+        return HttpResponse(template.render({'thread': link, 'titol': link.title, 'body': link.body, 'url': link.url,
+                                             'magazine': link.magazine.name}, request))
 
 
 @csrf_exempt
@@ -77,11 +77,10 @@ def eliminar_publicacio(request, thread_id):
     if request.method == "POST":
         thread.delete()
     template = loader.get_template('home.html')
-    return main_list(request,eliminat=True)
+    return main_list(request, eliminat=True)
 
 
-def main_list(request, ordre=None, filter=None,eliminat=None):
-
+def main_list(request, ordre=None, filter=None, eliminat=None):
     links = Link.objects.all()
     threads = Thread.objects.all()
     user = request.GET.get('user')
@@ -109,12 +108,17 @@ def main_list(request, ordre=None, filter=None,eliminat=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat}
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter, 'eliminat': eliminat}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
+
 def all_magazines(request, ordre=None):
     magazines = Magazine.objects.all()
+    user_email = request.user.email
+    user = User.objects.get(email=user_email)
+    user_subscriptions = Subscription.objects.filter(user=user).values_list('magazine_id', flat=True)
+    print(user_subscriptions)
     if ordre == 'threads':
         magazines = sorted(magazines, key=lambda x: x.total_threads, reverse=True)
     elif ordre == 'elements':
@@ -123,10 +127,10 @@ def all_magazines(request, ordre=None):
         magazines = sorted(magazines, key=lambda x: x.total_comments(), reverse=True)
     elif ordre == 'suscriptions':
         magazines = sorted(magazines, key=lambda x: x.n_suscriptions, reverse=True)
-    context = {'magazines': magazines}
-
+    context = {'magazines': magazines, 'user_subscriptions': user_subscriptions}
     template = loader.get_template("all_magazines.html")
     return HttpResponse(template.render(context, request))
+
 
 @login_required(redirect_field_name='login')
 def new_link(request):
@@ -135,7 +139,7 @@ def new_link(request):
     template = loader.get_template('new_link.html')
     return HttpResponse(template.render(context, request))
 
-  
+
 @login_required(redirect_field_name='login')
 @csrf_exempt
 def new_magazine(request):
@@ -164,7 +168,36 @@ def new_magazine(request):
         return redirect('main')
     else:
         template = loader.get_template("new_magazine.html")
-        return HttpResponse(template.render({},request))
+        return HttpResponse(template.render({}, request))
+
+
+@login_required(redirect_field_name='login')
+@csrf_exempt
+def add_subscription(request, magazine_id):
+    if request.method == 'POST':
+        user = User.objects.get(email=request.user.email)
+        magazine = Magazine.objects.get(pk=magazine_id)
+        sub = Subscription.objects.create(user=user, magazine=magazine)
+        sub.save()
+        magazine.n_suscriptions += 1
+        magazine.save()
+        return redirect('all_magazines')
+    else:
+        return redirect('main')
+
+
+@login_required(redirect_field_name='login')
+@csrf_exempt
+def remove_subscription(request, magazine_id):
+    if request.method == 'POST':
+        user = User.objects.get(email=request.user.email)
+        magazine = Magazine.objects.get(pk=magazine_id)
+        Subscription.objects.filter(user=user, magazine=magazine).delete()
+        magazine.n_suscriptions -= 1
+        magazine.save()
+        return redirect('all_magazines')
+    else:
+        return redirect('main')
 
 
 @login_required(redirect_field_name='login')
@@ -239,7 +272,7 @@ def boost_thread(request, thread_id):
         return redirect('main')
 
 
-def veure_thread(request, thread_id, order,edited=False):
+def veure_thread(request, thread_id, order, edited=False):
     thread = Publicacio.objects.get(pk=thread_id)
 
     if order == 'newest':
@@ -249,7 +282,7 @@ def veure_thread(request, thread_id, order,edited=False):
     else:
         comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('-num_likes')
     replies = Reply.objects.filter(comment_root__in=comments_root)
-    context = {'thread': thread, 'comments_root': comments_root, 'replies': replies,'editat':edited,'single':True}
+    context = {'thread': thread, 'comments_root': comments_root, 'replies': replies, 'editat': edited, 'single': True}
     request.session['order'] = order
     return render(request, 'veure_thread.html', context)
 
@@ -265,7 +298,7 @@ def veure_magazine(request, magazine_id, ordre=None, filter=None):
         tot = links
     elif filter == 'threads':
         tot = threads
-    else :
+    else:
         tot = list(links) + list(threads)
 
     if ordre == 'top':
