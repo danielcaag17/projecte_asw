@@ -4,261 +4,114 @@
 <head>
     <style>
         .turbo-progress-bar {
-          position: fixed;
-          display: block;
-          top: 0;
-          left: 0;
-          height: 3px;
-          background: #0076ff;
-          z-index: 2147483647;
-          transition:
-            width 300ms ease-out,
+            position: fixed;
+            display: block;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #0076ff;
+            z-index: 2147483647;
+            transition: width 300ms ease-out,
             opacity 150ms 150ms ease-in;
-          transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
         }
     </style>
     <!-- TODO: revisar -->
-    <title>Perfil - {{ user.username }} - kbin.social</title>
+    <title>Perfil - {{ usuari.username }} - kbin.social</title>
     <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
-    <header id="header" class="header">
-        <div class="kbin-container">
-            <nav class="head-nav">
-                <div class="brand">
-                    <div>
-                    <!-- TODO: posar les tres linies que donen més opcions -->
-                    </div>
-                    <a href="/">
-                        <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
-                        <!--
-                        <img id="logo" src="/kbin_logo.svg" alt="Home page" title="Home page">
-                        -->
-                    </a>
-                </div>
-                <!-- Menu superior -->
-                <menu class="head-nav__menu">
-                    <li></li>
-                    <li><a href="/all" class="">
-                        <span style="vertical-align: inherit;">Threads</span>
-                    </a></li>
-                    <li><a href="/microblog" class="">
-                        <span style="vertical-align: inherit;">Microblog</span>
-                    </a></li>
-                    <li><a href="/*" class=""> All Content </a></li>
-                    <li><a href="/people" class="">
-                            <span style="vertical-align: inherit;">People</span>
-                    </a></li>
-                    <li><a href="/magazines" class="">
-                        <span style="vertical-align: inherit;">Magazines</span>
-                    </a></li>
-                    <li><a href="/magazines/collections" class="">Collections</a></li>
+{% include 'base.html' %}
+<div id="middle" class="page-settings page-settings-profile">
+    <div class="kbin-container">
+        <main id="main" data-controller="lightbox timeago" class="">
+            <aside class="options options--top" id="options">
+                <div></div>
+                <menu class="options__main">
+                    <li>
+                        <a href="/settings/profile" class="active"> profile </a>
+                    </li>
                 </menu>
-            </nav>
-            <!-- Menu superior a la dreta -->
-            <menu>
-                <!-- Lupa -->
-                <li><a href="/search" class="icon" aria-label="Search" title="Search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span style="vertical-align: inherit;">Search</span>
-                </a></li>
-                <!-- '+' -->
-                <li class="dropdown">
-                    <a href="/new" class="icon" aria-label="Add" title="Add">
-                        <i class="fa-solid fa-plus"></i>
-                        <span style="vertical-align: inherit;">Add</span>
-                    </a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/new" class="">
-                            <span style="vertical-align: inherit;">Add a new link</span>
-                        </a></li>
-                        <li><a href="/new/article" class="">
-                            <span style="vertical-align: inherit;">Add a new thread</span>
-                        </a></li>
-                        <li> <a href="/new/photo" class="">
-                            <span style="vertical-align: inherit;">Add a new photo</span>
-                        </a></li>
-                        <li><a class="" href="/microblog">
-                            <span style="vertical-align: inherit;">Add a new post</span>
-                        </a></li>
-                        <li><a class="" href="/newMagazine">
-                            <span style="vertical-align: inherit;">Create a new magazine</span>
-                        </a></li>
-                    </ul>
-                </li>
-                <!-- Choose a channel  -->
-                <li class="dropdown">
-                    <a href="/sub" class="icon" aria-label="Choose a channel" title="Choose a channel">
-                        <i class="fa-solid fa-list"></i>
-                        <span style="vertical-align: inherit;">Choose a channel</span>
-                    </a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/sub" class="">
-                            <span style="vertical-align: inherit;">Subscribed</span>
-                        </a></li>
-                        <li><a href="/mod" class="">
-                            <span style="vertical-align: inherit;">Moderate</span>
-                        </a></li>
-                        <li><a href="/fav" class="">
-                            <span style="vertical-align: inherit;">Favorites</span>
-                        </a></li>
-                        <li><a href="/all" class="">
-                            <span style="vertical-align: inherit;">All</span>
-                        </a></li>
-                    </ul>
-                </li>
-                <!-- Login
-                    TODO: mirar com és amb login active i no -->
-                <li class="dropdown">
-                    <!-- TODO: de posar username -->
-                    <a class=" login active" href="/u/usuari_predeterminat">
-                        <!-- TODO: de posar username -->
-                        <span class="user-name">usuari_predeterminat</span>
-                    </a>
-                    <ul class="dropdown__menu">
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat" class="active">
-                            <span style="vertical-align: inherit;">Profile</span>
-                        </a></li>
-                        <li><a href="/settings/general" class="">
-                            <span style="vertical-align: inherit;">Setting</span>
-                        </a></li>
-                        <li><a href="/profile/messages" class="">
-                            <span style="vertical-align: inherit;">Messages</span>
-                        </a></li>
-                        <li><a href="/settings/notifications" class="">
-                            <span style="vertical-align: inherit;">Notifications</span>
-                        </a></li>
-                        <!-- TODO: mirar logout -->
-                        <li><a href="/logout?_csrf_token=aaab5b318b90f6913e9a893f9756755.3kdlM8jiza_lwTyNWO81AwaotGeaf8EOhnKbcqRJ0uY.qA4ue4ysuNmWhVPBa7tGeWvt2CvFNopazibEEMJ-qoSnDS1Y-IOqnraWdQ">
-                            <span style="vertical-align: inherit;">Sign off</span>
-                        </a></li>
-                    </ul>
-                </li>
-            </menu>
-        </div>
-    </header>
-    <div id="middle" class="page-settings page-settings-profile">
-        <div class="kbin-container">
-            <main id="main" data-controller="lightbox timeago" class="">
-                <aside class="options options--top" id="options">
-                    <div></div>
-                    <menu class="options__main">
-                        <li>
-                            <a href="/settings/general" class=""> general </a>
-                        </li>
-                        <li>
-                            <a href="/settings/profile" class="active"> profile </a>
-                        </li>
-                        <li>
-                            <a href="/settings/email" class=""> email </a>
-                        </li>
-                        <li>
-                            <a href="/settings/password" class=""> password &amp; 2fa </a>
-                        </li>
-                        <li>
-                            <a href="/settings/blocked/magazines" class=""> blocked
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/settings/subscriptions/magazines" class=""> subscriptions </a>
-                        </li>
-                        <li>
-                            <a href="/settings/collections" class=""> collections </a>
-                        </li>
-                        <li>
-                            <a href="/settings/reports" class=""> reports </a>
-                        </li>
-                        <li>
-                            <a href="/settings/stats" class=""> stats </a>
-                        </li>
-                    </menu>
-                </aside>
-                {% include 'section_user.html' %}
-                <div id="content" class="section">
-                    <div class="container">
-                        <h1 hidden>Profile</h1>
-                        <form name="user_basic" method="post" enctype="multipart/form-data">
-                            <markdown-toolbar for="user_basic_about" class="markdown meta"
-                                              data-controller="markdown-toolbar">
-                                <md-bold title="Bold" aria-label="Bold">
-                                    <i class="fa-solid fa-bold"></i>
-                                </md-bold>
-                                <md-italic title="Italics" aria-label="Italics">
-                                    <i class="fa-solid fa-italic"></i>
-                                </md-italic>
-                                <md-strikethrough title="Strikethrough" aria-label="Strikethrough">
-                                    <i class="fa-solid fa-strikethrough"></i>
-                                </md-strikethrough>
-                                <md-header title="Header" aria-label="Header">
-                                    <i class="fa-solid fa-heading"></i>
-                                </md-header>
-                                <md-quote title="Appointment" aria-label="Appointment">
-                                    <i class="fa-solid fa-quote-left"></i>
-                                </md-quote>
-                                <md-code title="Code" aria-label="Code">
-                                    <i class="fa-solid fa-code"></i>
-                                </md-code>
-                                <md-link title="Link" aria-label="Link">
-                                    <i class="fa-solid fa-link"></i>
-                                </md-link>
-                                <md-image title="Image" aria-label="Image">
-                                    <i class="fa-solid fa-image"></i>
-                                </md-image>
-                                <md-unordered-list title="Unordered list" aria-label="Unordered list">
-                                    <i class="fa-solid fa-list"></i>
-                                </md-unordered-list>
-                                <md-ordered-list title="Sorted list" aria-label="Sorted list">
-                                    <i class="fa-solid fa-list-ol"></i>
-                                </md-ordered-list>
-                                <md-mention title="Mention" aria-label="Mention">
-                                    <i class="fa-solid fa-at"></i>
-                                </md-mention>
-                                <md-kbin title="Spoiler" aria-label="Spoiler"
-                                         data-action="click->markdown-toolbar#addSpoiler">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                </md-kbin>
-                            </markdown-toolbar>
-                            <div><textarea id="user_basic_about" name="user_basic[about]" placeholder="About"
-                                           data-controller="input-length rich-textarea autogrow"
-                                           data-entry-link-create-target="user_about"
-                                           data-action="input-length#updateDisplay"
-                                           data-input-length-max-value="512"></textarea>
-                                <div id="user_basic_about_max_length" class="length-indicator"><span style="vertical-align: inherit;">0/512</span>></div>
+            </aside>
+            {% include 'section_user.html' %}
+            <div id="content" class="section">
+                <div class="container">
+                    <h1 hidden>Profile</h1>
+                    <form name="edit-user" method="post" enctype="multipart/form-data">
+                        <markdown-toolbar for="user_basic_about" class="markdown meta"
+                                          data-controller="markdown-toolbar">
+                            <md-bold title="Bold" aria-label="Bold">
+                                <i class="fa-solid fa-bold"></i>
+                            </md-bold>
+                            <md-italic title="Italics" aria-label="Italics">
+                                <i class="fa-solid fa-italic"></i>
+                            </md-italic>
+                            <md-strikethrough title="Strikethrough" aria-label="Strikethrough">
+                                <i class="fa-solid fa-strikethrough"></i>
+                            </md-strikethrough>
+                            <md-header title="Header" aria-label="Header">
+                                <i class="fa-solid fa-heading"></i>
+                            </md-header>
+                            <md-quote title="Appointment" aria-label="Appointment">
+                                <i class="fa-solid fa-quote-left"></i>
+                            </md-quote>
+                            <md-code title="Code" aria-label="Code">
+                                <i class="fa-solid fa-code"></i>
+                            </md-code>
+                            <md-link title="Link" aria-label="Link">
+                                <i class="fa-solid fa-link"></i>
+                            </md-link>
+                            <md-image title="Image" aria-label="Image">
+                                <i class="fa-solid fa-image"></i>
+                            </md-image>
+                            <md-unordered-list title="Unordered list" aria-label="Unordered list">
+                                <i class="fa-solid fa-list"></i>
+                            </md-unordered-list>
+                            <md-ordered-list title="Sorted list" aria-label="Sorted list">
+                                <i class="fa-solid fa-list-ol"></i>
+                            </md-ordered-list>
+                            <md-mention title="Mention" aria-label="Mention">
+                                <i class="fa-solid fa-at"></i>
+                            </md-mention>
+                            <md-kbin title="Spoiler" aria-label="Spoiler"
+                                     data-action="click->markdown-toolbar#addSpoiler">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </md-kbin>
+                        </markdown-toolbar>
+                        <div><textarea id="user_basic_about" name="description" placeholder="About"
+                                       data-controller="input-length rich-textarea autogrow"
+                                       data-entry-link-create-target="user_about"
+                                       data-action="input-length#updateDisplay"
+                                       data-input-length-max-value="512"></textarea>
+                        </div>
+                        <div>
+                            <label for="user_basic_username">Username</label>
+                            <div id="user_basic_username" name="username"
+                                 style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; border: 1px solid #ccc; padding: 2px 8px;">
+                                {{ usuari.username }}
                             </div>
-                            <div><label for="user_basic_username">User name</label><input type="text"
-                                                                                                   id="user_basic_username"
-                                                                                                   name="user_basic[username]"
-                                                                                                   data-controller="input-length autogrow"
-                                                                                                   data-entry-link-create-target="user_about"
-                                                                                                   data-action="input-length#updateDisplay"
-                                                                                                   data-input-length-max-value="30"
-                                                                                                   value="usuari_predeterminat">
-                                                                                                    <!-- TODO: revisar -->
-                                <div id="user_basic_username_max_length" class="length-indicator"><span style="vertical-align: inherit;">0/30</span>></div>
+                        </div>
+                        <!-- TODO: veure perque surt Seleccione archivo -->
+                        <div><label for="user_basic_avatar">Avatar</label><input type="file" id="user_basic_avatar"
+                                                                                 name="avatar"></div>
+                        <div><label for="user_basic_cover">Front page</label><input type="file" id="user_basic_cover"
+                                                                                    name="cover"></div>
+                        <div class="row actions">
+                            <div>
+                                <button type="submit" id="user_basic_submit" name="user_basic[submit]"
+                                        class="btn btn__primary">Keep
+                                </button>
                             </div>
-                            <div><label for="user_basic_avatar">Avatar</label><input type="file" id="user_basic_avatar"
-                                                                                     name="user_basic[avatar]"></div>
-                                                                                    <!-- TODO: revisar -->
-                            <div><label for="user_basic_cover">Front page</label><input type="file" id="user_basic_cover"
-                                                                                     name="user_basic[cover]"></div>
-                                                                                    <!-- TODO: revisar -->
-                            <div class="row actions">
-                                <div>
-                                    <button type="submit" id="user_basic_submit" name="user_basic[submit]"
-                                            class="btn btn__primary">Keep
-                                    </button>
-                                </div>
-                            </div>
-                            <input type="hidden" id="user_basic__token" name="user_basic[_token]"
-                                   value="e5c400b009a20577ac4f70c68b2b.-xT-wwdOBcVGBx1haI3Wxuczaut0oslfVSzO49xE_jw.glvOrEZ3bb0tSCsYHOiQoKpCCNwu15gzAFWdu70UjgTKQpKobitO8XFvRA">
-                        </form>
-                    </div>
+                        </div>
+                        <input type="hidden" id="user_basic__token" name="user_basic[_token]"
+                               value="e5c400b009a20577ac4f70c68b2b.-xT-wwdOBcVGBx1haI3Wxuczaut0oslfVSzO49xE_jw.glvOrEZ3bb0tSCsYHOiQoKpCCNwu15gzAFWdu70UjgTKQpKobitO8XFvRA">
+                    </form>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
+</div>
 </body>
 </html>
