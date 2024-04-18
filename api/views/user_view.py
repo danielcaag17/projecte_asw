@@ -4,13 +4,14 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from ..models import User
+from ..models import *
 
 
 def view_user(request, username):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
-    context = {'user': obj}
+    thread = Publicacio.objects.filter(author=username)
+    context = {'user': obj, 'threads': thread}
     # numero amics, numero threads + threads_id, numero comments + comments_id + parents, boost
     # count = Friends.objects.filter(user=username).count()
     return HttpResponse(template.render(context, request))
