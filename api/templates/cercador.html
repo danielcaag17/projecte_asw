@@ -31,7 +31,7 @@
                 <div class="container">
                     <form method="post" action="/cercador">
                         <div class="flex" style="align-items: center">
-                            <input value="{{ request.GET.keyword }}"name="keyword" type="text" class="form-control" placeholder="Type search term"
+                            <input value="{% if request.GET.keyword %}{{ request.GET.keyword }}{% else %}{{ request.POST.keyword }}{% endif %}"name="keyword" type="text" class="form-control" placeholder="Type search term"
                                    autofocus="">
                             <button class="btn btn__primary" type="submit" aria-label="Search">
                                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -44,9 +44,9 @@
                 <aside class="options options--top" id="options">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a class="{% if active_option == 'top' %}active{% endif %}" href="/cercador/top/{{ active_filter }}?keyword={{ request.GET.keyword }}">Top</a></li>
-                        <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="/cercador/newest/{{ active_filter }}?keyword={{ request.GET.keyword }}">Newest</a></li>
-                        <li><a class="{% if active_option == 'commented' %}active{% endif %}" href="/cercador/commented/{{ active_filter }}?keyword={{ request.GET.keyword }}">Commented</a></li>
+                        <li><a class="{% if active_option == 'top' %}active{% endif %}" href="/cercador/top/{{ active_filter }}?keyword={% if request.GET.keyword %}{{ request.GET.keyword }}{% else %}{{ request.POST.keyword }}{% endif %}">Top</a></li>
+                        <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="/cercador/newest/{{ active_filter }}?keyword={% if request.GET.keyword %}{{ request.GET.keyword }}{% else %}{{ request.POST.keyword }}{% endif %}">Newest</a></li>
+                        <li><a class="{% if active_option == 'commented' %}active{% endif %}" href="/cercador/commented/{{ active_filter }}?keyword={% if request.GET.keyword %}{{ request.GET.keyword }}{% else %}{{ request.POST.keyword }}{% endif %}">Commented</a></li>
                     </menu>
                     <menu class="options__filters">
                         <li class="dropdown">
