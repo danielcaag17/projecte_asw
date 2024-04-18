@@ -12,7 +12,7 @@
             <a href="{% url 'veure_thread' thread_id=thread.id order='top'%}">{{ thread.title }}</a></time>
             {% if comment.last_edited %}
                 (edited
-                <time class="timeago">{{ comment.last_edited|timesince }} ago</time> ago)
+                <time class="timeago">{{ comment.last_edited|timesince }}</time> ago)
             {% endif %}
         </header>
         <div class="content" style="">
@@ -53,7 +53,7 @@
                     </li>
                     <li>
                         <a class="stretched-link"
-                           onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                           onclick="return confirm('Are you sure you want to delete the comment?');"
                            href="{% url 'delete_comment' thread_id=comment.thread_id  comment_id=comment.id %}"
                            data-action=" subject#getForm">delete</a>
                     </li>
