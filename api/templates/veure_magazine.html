@@ -28,9 +28,33 @@
     <div class="kbin-container">
         <main id="main" data-controller="lightbox timeago" class="view-compact">
             {% include 'section_magazine.html' %}
-            <!-- Options top -->
+                <aside class="options" id="options">
+                    <div></div>
+                    <menu class="options__main">
+                        <li>
+                            <span style="vertical-align: inherit;">Creat a:</span>
+                            <span>{{ magazine.creation_date }}</span>
+                       </li>
+                        <!-- TODO: de posar username -->
 
-            <!-- Options -->
+                        <li>
+                            <span style="vertical-align: inherit;">Propietari:</span>
+                            <span><a href="/u/{{ magazine.author.username }}" class="">
+                        </a></span></li>
+                        <li>
+                            <span style="vertical-align: inherit;">Subscriptors:</span>
+                            <span>{{ magazine.n_suscriptions }}</span>
+                        </li>
+                        <li>
+                            <span style="vertical-align: inherit;">Threads:</span>
+                            <span>{{ magazine.total_threads }}</span>
+                       </li>
+                        <li>
+                            <span style="vertical-align: inherit;">Links:</span>
+                            <span>{{ magazine.total_links }}</span></li>
+
+                        <li> <span style="vertical-align: inherit;">Comments:</span>
+                          <span>{{ magazine.total_comments }}</span></li></li>
             <aside id="options" class="options options--top">
                 <menu class="options__main no-scroll">
                     <li><a class="{% if active_option == 'top' %}active{% endif %}"

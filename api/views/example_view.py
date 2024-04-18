@@ -84,6 +84,14 @@ def main_list(request, ordre=None, filter=None,eliminat=None):
 
     links = Link.objects.all()
     threads = Thread.objects.all()
+    user = request.GET.get('user')
+    django_username = request.GET.get('django_user')
+    djangoUser = {}
+    if user is not None and django_username is not None:
+        djangoUser = {
+            'user': DjangoUser.objects.get(username=django_username),
+            'username': user,
+        }
 
     if ordre == '': ordre = 'newest'
 
@@ -102,7 +110,6 @@ def main_list(request, ordre=None, filter=None,eliminat=None):
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
     context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat}
-
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
@@ -130,12 +137,7 @@ def new_link(request):
     template = loader.get_template('new_link.html')
     return HttpResponse(template.render(context, request))
 
-
-
-
-
-
-
+  
 @login_required(redirect_field_name='login')
 @csrf_exempt
 def new_magazine(request):
