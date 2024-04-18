@@ -21,29 +21,29 @@ class Publicacio(models.Model):
         diff = temps - self.creation_data
         anys = diff.days // 365
         if anys > 0:
-            return "fa {} anys".format(anys)
+            return "{} years ago".format(anys)
         mesos = diff.days // 30
         if mesos > 0:
-            if mesos == 1: return "fa 1 mes"
-            return "fa {} mesos".format(mesos)
+            if mesos == 1: return "1 month ago"
+            return "{} months ago".format(mesos)
         setmanes = diff.days // 7
         if setmanes > 0:
-            if setmanes == 1: return "fa 1 setmana"
-            return "fa {} setmanes".format(setmanes)
+            if setmanes == 1: return "1 week ago"
+            return "{} weeks ago".format(setmanes)
         dies = diff.days % 7
         if dies > 0:
-            if dies == 1: return "fa 1 dia"
-            return "fa {} dies".format(dies)
+            if dies == 1: return "1 day ago"
+            return "{} days ago".format(dies)
         hores = diff.seconds // 3600
         if hores > 0:
-            if hores == 1: return "fa 1 hora"
-            return "fa {} hores".format(hores)
+            if hores == 1: return "1 hour ago"
+            return "{} hours ago".format(hores)
         minuts = (diff.seconds % 3600) // 60
         if minuts > 0:
-            if minuts == 1: return "fa 1 minut"
-            return "fa {} minuts".format(minuts)
+            if minuts == 1: return "1 minute ago"
+            return "{} minutes ago".format(minuts)
 
-        return "Just ara"
+        return "Now"
 
 
 class Thread(Publicacio):
