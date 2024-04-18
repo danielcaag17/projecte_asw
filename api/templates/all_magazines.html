@@ -59,15 +59,16 @@
             </menu>
         </div>
     </header>
+
 <div class="magazines table-responsive">
     <table>
         <thead>
             <tr>
                 <th style="text-align: center">Nom</th>
-                <th style="text-align: center">Threads</th>
-                <th style="text-align: center">Comentaris</th>
-                <th style="text-align: center">Publicacions</th>
-                <th style="text-align: center">Suscripcions</th>
+                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_thread' %}">Threads</a></th>
+                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_commented' %}">Comentaris</a></th>
+                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_elements' %}">Publicacions</a></th>
+                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_suscriptions' %}">Suscripcions</a></th>
             </tr>
         </thead>
         <tbody>
@@ -75,14 +76,14 @@
 
          <tr>
          <td>
-             <a rel="nofollow noopener noreferrer" href="{% url 'veure_magazine' magazine.id %}">{{ magazine.name }}</a>
+             <a rel="nofollow noopener noreferrer" href="{% url 'veure_magazine_newest' magazine.id 'tot' %}">{{ magazine.name }}</a>
 
          </td>
          <td>
              <p>{{ magazine.n_threads }}</p>
          </td>
              <td>
-             <p>{{ magazine.n_comments }}</p>
+             <p>{{ magazine.total_comments }}</p>
          </td>
          <td>
              <p>{{ magazine.n_elements }}</p>

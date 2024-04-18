@@ -7,7 +7,7 @@
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
                     title="Correu del user"
-                    href="{% url 'view_user' %}">
+                    href="{% url 'view_user' comment.author.username %}">
                 {{ comment.author.username }}</a>,
             <time class="timeago">{{ comment.creation_data|timesince }}</time>
             {% if comment.last_edited %}
@@ -15,12 +15,6 @@
                 <time class="timeago">{{ comment.last_edited|timesince }}</time> ago)
             {% endif %}
         </header>
-        <figure>
-            <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
-               data-mentions-username-param="Correu del user">
-                <div class="no-avatar"></div>
-            </a>
-        </figure>
         <div class="content" style="">
             <p>{{ comment.body }}</p>
         </div>
@@ -53,21 +47,21 @@
                 <li>
                     <a class="stretched-link"
                        onclick="document.getElementById('reply_{{ comment.id }}').style.display = 'block';"
-                       data-action=" subject#getForm">responder</a>
+                       data-action=" subject#getForm">reply</a>
                 </li>
-                <li>
-                    <!-- TODO: check if user is the author of the comment -->
-                    <a class="stretched-link"
-                       onclick="document.getElementById('edit_{{ comment.id }}').style.display = 'block';"
-                       data-action=" subject#getForm">edit</a>
-                </li>
-                <li>
-                    <!-- TODO: check if user is the author of the comment -->
-                    <a class="stretched-link"
-                       onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
-                       href="{% url 'delete_comment' thread_id=thread.id comment_id=comment.id %}"
-                       data-action=" subject#getForm">delete</a>
-                </li>
+                {% if request.user.email == comment.author.email %}
+                    <li>
+                        <a class="stretched-link"
+                           onclick="document.getElementById('edit_{{ comment.id }}').style.display = 'block';"
+                           data-action=" subject#getForm">edit</a>
+                    </li>
+                    <li>
+                        <a class="stretched-link"
+                           onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                           href="{% url 'delete_comment' thread_id=thread.id comment_id=comment.id %}"
+                           data-action=" subject#getForm">delete</a>
+                    </li>
+                {% endif %}
             </menu>
             <h3 hidden="">Añadir un comentario</h3>
             <form id="reply_{{ comment.id }}" name="entry_comment" method="post"
@@ -136,7 +130,7 @@
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
                     title="Correu del user"
-                    href="{% url 'view_user' %}">
+                    href="{% url 'view_user' comment.author.username %}">
                 {{ reply.comment_reply.author.username }}</a>,
             <time class="timeago">{{ reply.comment_reply.creation_data|timesince }}</time>
             {% if reply.comment_reply.last_edited %}
@@ -144,12 +138,6 @@
                 <time class="timeago">{{ reply.comment_reply.last_edited|timesince }}</time> ago)
             {% endif %}
         </header>
-        <figure>
-            <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
-               data-mentions-username-param="Correu del user">
-                <div class="no-avatar"></div>
-            </a>
-        </figure>
         <div class="content" style="">
             <p>{{ reply.comment_reply.body }}</p>
         </div>
@@ -182,21 +170,21 @@
                 <li>
                     <a class="stretched-link"
                        onclick="document.getElementById('reply_{{ reply.comment_reply.id }}').style.display = 'block';"
-                       data-action=" subject#getForm">responder</a>
+                       data-action=" subject#getForm">reply</a>
                 </li>
-                <li>
-                    <!-- TODO: check if user is the author of the comment -->
-                    <a class="stretched-link"
-                       onclick="document.getElementById('edit_{{ reply.comment_reply.id }}').style.display = 'block';"
-                       data-action=" subject#getForm">edit</a>
-                </li>
-                <li>
-                    <!-- TODO: check if user is the author of the comment -->
-                    <a class="stretched-link"
-                       onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
-                       href="{% url 'delete_comment' thread_id=thread.id comment_id=reply.comment_reply.id %}"
-                       data-action=" subject#getForm">delete</a>
-                </li>
+                {% if request.user.email == reply.comment_reply.author.email %}
+                    <li>
+                        <a class="stretched-link"
+                           onclick="document.getElementById('edit_{{ reply.comment_reply.id }}').style.display = 'block';"
+                           data-action=" subject#getForm">edit</a>
+                    </li>
+                    <li>
+                        <a class="stretched-link"
+                           onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');"
+                           href="{% url 'delete_comment' thread_id=thread.id comment_id=reply.comment_reply.id %}"
+                           data-action=" subject#getForm">delete</a>
+                    </li>
+                {% endif %}
             </menu>
             <h3 hidden="">Añadir un comentario</h3>
             <form id="reply_{{ reply.comment_reply.id }}" name="entry_comment" method="post"

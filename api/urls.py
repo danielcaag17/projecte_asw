@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path,include
+from django.urls import path,include
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -13,8 +14,11 @@ url_threads = [
     path('new', views.new_link, name='new_link'),
     path('new/thread', views.new_thread, name='new_thread'),
     path('create_link_thread', views.create_link_thread, name = 'create_link'),
+    path('boost/<int:thread_id>/',views.boost_publicacio,name='boost_thread'),
+    path('editar/thread/<int:thread_id>/', views.editar_thread, name='edit_thread'),
+    path('editar/link/<int:thread_id>/', views.editar_link, name='editar_link'),
+    path('eliminar/<int:thread_id>/', views.eliminar_publicacio, name='eliminar_publicacio'),
 
-    #TODO: CANVIAR VIEW D'AQUESTES DUES URLS. FER EN UNA SOLA QUE SIGUI "votar(<int:thread_id> JA PASSO ATRIBUT INDICANT SI ES POSITIU O NEGATIU
     path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),
     path('cercador', views.view_cercador, {'ordre': 'newest', 'filter': 'tot'}, name='cercador'),
@@ -38,7 +42,7 @@ url_users = [
     path('settings/general', views.settings, name='settings'),
     path('settings/profile', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),
-    path('logout', views.logout_view, name='logout')
+    path('logout', views.logout_view, name='logout'),
 ]
 
 url_comments = [
@@ -52,7 +56,20 @@ url_comments = [
 
 url_magazines = [
     path('magazine/<int:magazine_id>/',views.veure_magazine, name='veure_magazine'),
+
+    path('magazine/<int:magazine_id>/newest/<str:filter>/', views.veure_magazine, {'ordre': 'newest'}, name='veure_magazine_newest'),
+    path('magazine/<int:magazine_id>/top/<str:filter>/', views.veure_magazine, {'ordre': 'top'}, name='veure_magazine_top'),
+    path('magazine/<int:magazine_id>/comments/<str:filter>/', views.veure_magazine, {'ordre': 'comment'}, name='veure_magazine_comments'),
+
+
+
+
     path('magazines', views.all_magazines, name='all_magazines'),
+    path('magazines/threads', views.all_magazines, {'ordre': 'threads'}, name='all_magazines_thread'),
+    path('magazines/elements', views.all_magazines, {'ordre': 'elements'}, name='all_magazines_elements'),
+    path('magazines/commented', views.all_magazines, {'ordre': 'commented'}, name='all_magazines_commented'),
+    path('magazines/suscriptions', views.all_magazines, {'ordre': 'suscriptions'}, name='all_magazines_suscriptions'),
+
     path('newMagazine', views.new_magazine, name='new_magazine'),
 ]
 
