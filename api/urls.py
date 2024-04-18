@@ -44,14 +44,14 @@ url_users = [
     path('u/<str:username>/newest/<str:filter>/', views.view_user,{ 'select':'threads','ordre': 'newest'}, name='user_newest_filter'),
     path('u/<str:username>/com/<str:filter>/', views.view_user, { 'select':'threads','ordre': 'commented'}, name='user_commented_filter'),
 
-    path('u/<str:username>/com', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
-    path('u/<str:username>/com/top', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'top'}, name='user_top'),
-    path('u/<str:username>/com/newest', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'},  name='user_newest'),
-    path('u/<str:username>/com/oldest', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'commented'}, name='user_commented'),
+    path('u/<str:username>/commented', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
+    path('u/<str:username>/commented/top', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'top'}, name='user_top'),
+    path('u/<str:username>/commented/newest', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'},  name='user_newest'),
+    path('u/<str:username>/commented/oldest', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'commented'}, name='user_commented'),
 
-    path('u/<str:username>/com/top/<str:filter>/', views.view_user,{ 'select':'com','ordre': 'top'}, name='user_top_filter'),
-    path('u/<str:username>/com/newest/<str:filter>/', views.view_user,{ 'select':'com','ordre': 'newest'}, name='user_newest_filter'),
-    path('u/<str:username>/com/oldest/<str:filter>/', views.view_user, { 'select':'com','ordre': 'commented'}, name='user_commented_filter'),
+    path('u/<str:username>/commented/top/<str:filter>/', views.view_user,{ 'select':'com','ordre': 'top'}, name='user_top_filter'),
+    path('u/<str:username>/commented/newest/<str:filter>/', views.view_user,{ 'select':'com','ordre': 'newest'}, name='user_newest_filter'),
+    path('u/<str:username>/commented/oldest/<str:filter>/', views.view_user, { 'select':'com','ordre': 'commented'}, name='user_commented_filter'),
 
     path('u/<str:username>/boosts', views.view_user, {'select':'boost','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
     path('u/<str:username>/boosts/top', views.view_user, {'select':'boost','filter': 'tot', 'ordre': 'top'}, name='user_top'),
