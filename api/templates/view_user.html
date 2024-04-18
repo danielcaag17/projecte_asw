@@ -38,31 +38,14 @@
                         <li><a href="/u/{{ user.username }}" class="active">
                             <span style="vertical-align: inherit;">general view</span>
                         </a></li>
-                        <!-- TODO: de posar username -->
                         <li><a href="/u/{{ user.username }}/threads" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">threads (0)</span>
+                            <span style="vertical-align: inherit;">threads ({{ user.total_threads }})</span>
                         </a></li>
-                        <!-- TODO: de posar username -->
                         <li><a href="/u/{{ user.username }}/comments" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">comments (0)</span>
+                            <span style="vertical-align: inherit;">comments ({{ user.total_comments }})</span>
                         </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/posts" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">posts (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/replies" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">answers (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <!-- TODO: ha d'estar la incio iniciada -->
                         <li><a href="/u/{{ user.username }}/boosts" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">boosts (0)</span>
+                            <span style="vertical-align: inherit;">boosts ({{ user.total_boosts }})</span>
                         </a></li>
                     </menu>
                 </aside>
@@ -70,90 +53,37 @@
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ user.username }}/top" class="">
+                        <li><a href="/u/{{ user.username }}/top"
+                               class="{% if ordre == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}" class="active">
+                        <li><a href="/u/{{ user.username }}"
+                                class="{% if ordre == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/commented" class="">
+                        <li><a href="/u/{{ user.username }}/commented"
+                               class="{% if ordre == 'commented' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 commented
                             </font></font>
                         </a></li>
                     </menu>
                 </aside>
-                <!-- TODO: tenir una plantilla que mostra el contingut -->
                 <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
-                    {% for thread in threads %}
-                        <!-- TODO: ... -->
-                        <article class="entry section subject">
-                            <header>
-                                <h2>
-                                    <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
-                                    {% if thread.url != none %}
-                                        <span class="entry__domain">
-                                        (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
-                                            <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
-                                        </span>
-                                    {% endif %}
-                                </h2>
-                            </header>
-                            <aside class="meta entry__meta">
-                                <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
-
-                                <span> to </span>
-                                <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
-                            </aside>
-                            <aside class="vote">
-                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
-                                    <input type="hidden" name="vote_type" value="positiu">
-                                    <button type="submit" title="Vots positius" aria-label="Vots positius">
-                                        <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
-                                        <span>
-                                                                <i class="fa-solid fa-arrow-up"></i>
-                                                            </span>
-                                    </button>
-                                </form>
-                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
-                                    <input type="hidden" name="vote_type" value="negatiu">
-                                    <button type="submit" title="Vots negatius" aria-label="Vots negatius">
-                                        <span data-subject-target="downvoteCounter">{{ thread.num_dislikes }}</span> <span><i
-                                            class="fa-solid fa-arrow-down"></i></span>
-                                    </button>
-                                </form>
-                            </aside>
-                            <footer>
-                                <menu>
-                                    <li>
-                                        <a class="stretched-link" href="{% url 'veure_thread' thread.id 'top' %}"><span
-                                                data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
-                                    </li>
-                                    <li>
-                                        <form action="{% url 'boost_thread' thread.id %}" name="boost_thread" method="post">
-                                            <input type="hidden" name="next" value="{{ request.path }}">
-                                            <input type="hidden" name = "keyword" value = "{{ request.GET.keyword }}">
-                                            <button class="boost-link stretched-link" type="submit"
-                                                    data-action="subject#favourite">boost
-                                                {% if thread.num_boosts != 0 %}
-                                                    <span class="" data-subject-target="upvoteCounter">({{ thread.num_boosts }})</span>
-                                                {% endif %}
-                                            </button>
-                                        </form>
-                                    </li>
-                                </menu>
-                                <div data-subject-target="container" class="js-container">
-                                </div>
-                            </footer>
-                        </article>
+                    {% for thread in all %}
+                        {% if thread.type == "thread" %}
+                            {% include 'show_threads.html' %}
+                        {% elif thread.type == "comment" %}
+                            {% include 'comments_tree.html' %}
+                        {% elif thread.type == "boost" %}
+                            {% include 'show_boost.html' %}
+                        {% else %}
+                                <p>{{ element.type }}</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </main>

@@ -2,33 +2,75 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.urls import reverse,reverse_lazy
+from django.urls import reverse
+from django.db.models import Value, CharField
 
 from ..models import *
 
 
+def sort(all, ordre):
+    if ordre == 'top':
+        res = sorted(all, key=lambda x: x.num_likes, reverse=True)
+    elif ordre == 'newest':
+        res = sorted(all, key=lambda x: x.creation_data, reverse=True)
+    elif ordre == 'commented':
+        res = sorted(all, key=lambda x: x.num_coments, reverse=True)
+    return res
 
 
-def view_user(request, username):
+def view_user(request, username, ordre=None):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
-    thread = Publicacio.objects.filter(author=username)
-    context = {'user': obj, 'threads': thread}
-    # numero amics, numero threads + threads_id, numero comments + comments_id + parents, boost
-    # count = Friends.objects.filter(user=username).count()
+    threads = Publicacio.objects.filter(author=username).annotate(type=Value('thread', output_field=CharField()))
+    comments = Comment.objects.filter(author=username).annotate(type=Value('comment', output_field=CharField()))
+    links = Link.objects.filter(author=username).annotate(type=Value('link', output_field=CharField()))
+
+    all = list(threads) + list(comments) + list(links)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre}
+    print(all_sorted)
     return HttpResponse(template.render(context, request))
 
 
-def view_top(request, username):
-    pass
+def view_user_threads(request, username, ordre=None):
+    template = loader.get_template('view_user_elements.html')
+    obj = User.objects.get(username=username)
+    threads = Publicacio.objects.filter(author=username)
+
+    all = list(threads)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre, 'type': "threads"}
+    return HttpResponse(template.render(context, request))
 
 
-def view_newest(request, username):
-    pass
+def view_user_comments(request, username, ordre=None):
+    template = loader.get_template('view_user_elements.html')
+    obj = User.objects.get(username=username)
+    comments = Comment.objects.filter(author=username)
+
+    all = list(comments)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre, 'type': "comments"}
+    return HttpResponse(template.render(context, request))
 
 
-def view_commented(request, username):
-    pass
+def view_user_boosts(request, username, ordre=None):
+    template = loader.get_template('view_user_elements.html')
+    obj = User.objects.get(username=username)
+    boosts = Boost.objects.filter(user=username)
+
+    all = list(boosts)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre, 'type': "boosts"}
+    return HttpResponse(template.render(context, request))
 
 
 def get_username(user_email):
