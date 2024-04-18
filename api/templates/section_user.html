@@ -1,19 +1,31 @@
 <div class="section">
     <div class="user-box">
-        <div class="">
+        {% if user.cover and user.avatar %}
+            <div class="with-cover with-avatar">
+        {% elif user.cover %}
+            <div class="with-cover">
+        {% elif user.avatar %}
+            <div class="with-avatar">
+        {% else %}
+            <div class="">
+        {% endif %}
+
+            {% if user.cover %}
+                <img height="220" width="100%" class="cover"
+                        src={{ user.cover.url}} alt="@{{ user.username }}@kbin.social">
+            {% endif%}
             <div class="user-main" id="content">
                 <div>
                     <div class="row">
+                        <figure>
+                            {% if user.avatar %}
+                                <img height="220" width="100%" class="cover"
+                                        src={{ user.avatar.url}} alt="@{{ user.username }}@kbin.social">
+                            {% endif%}
+                        </figure>
                         <h1><span style="vertical-align: inherit;">{{ user.username }}</span></h1>
-                            <small><span style="vertical-align: inherit;">@{{ user.username }}@kbin.social</span></small>
+                        <small><span style="vertical-align: inherit;">@{{ user.username }}@kbin.social</span></small>
                     </div>
-                    <aside class="user__actions" data-controller="subs">
-                        <div class='action'>
-                            <i class="fa-solid fa-users"></i>
-                            <!-- TODO: número d'amics -->
-                            <span><span style="vertical-align: inherit;">0</span></span>
-                        </div>
-                    </aside>
                 </div>
             </div>
         </div>

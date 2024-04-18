@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.urls import reverse,reverse_lazy
 
-from ..models import User
+from ..models import *
 
 
 
@@ -12,10 +12,23 @@ from ..models import User
 def view_user(request, username):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
-    context = {'user': obj}
+    thread = Publicacio.objects.filter(author=username)
+    context = {'user': obj, 'threads': thread}
     # numero amics, numero threads + threads_id, numero comments + comments_id + parents, boost
     # count = Friends.objects.filter(user=username).count()
     return HttpResponse(template.render(context, request))
+
+
+def view_top(request, username):
+    pass
+
+
+def view_newest(request, username):
+    pass
+
+
+def view_commented(request, username):
+    pass
 
 
 def get_username(user_email):

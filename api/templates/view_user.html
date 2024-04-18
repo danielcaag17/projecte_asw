@@ -25,105 +25,8 @@
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
-<!-- TODO: include base.html, pero es perd inici de sessio -->
-    <header id="header" class="header">
-        <div class="kbin-container">
-            <nav class="head-nav">
-                <div class="brand">
-                    <div>
-                    <!-- TODO: posar les tres linies que donen més opcions -->
-                    </div>
-                    <a href="/">
-                        <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
-                        <!--
-                        <img id="logo" src="/kbin_logo.svg" alt="Home page" title="Home page">
-                        -->
-                    </a>
-                </div>
-                <!-- Menu superior -->
-                <menu class="head-nav__menu">
-                    <li></li>
-                    <li><a href="/all" class="">
-                        <span style="vertical-align: inherit;">Threads</span>
-                    </a></li>
-                    <li><a href="/microblog" class="">
-                        <span style="vertical-align: inherit;">Microblog</span>
-                    </a></li>
-                    <li><a href="/*" class=""> All Content </a></li>
-                    <li><a href="/people" class="">
-                            <span style="vertical-align: inherit;">People</span>
-                    </a></li>
-                    <li><a href="/magazines" class="">
-                        <span style="vertical-align: inherit;">Magazines</span>
-                    </a></li>
-                    <li><a href="/magazines/collections" class="">Collections</a></li>
-                </menu>
-            </nav>
-            <!-- Menu superior a la dreta -->
-            <menu>
-                <!-- Lupa -->
-                <li><a href="/search" class="icon" aria-label="Search" title="Search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span style="vertical-align: inherit;">Search</span>
-                </a></li>
-                <!-- '+' -->
-                <li class="dropdown">
-                    <a href="/new" class="icon" aria-label="Add" title="Add">
-                        <i class="fa-solid fa-plus"></i>
-                        <span style="vertical-align: inherit;">Add</span>
-                    </a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/new" class="">
-                            <span style="vertical-align: inherit;">Add a new link</span>
-                        </a></li>
-                        <li><a href="/new/article" class="">
-                            <span style="vertical-align: inherit;">Add a new thread</span>
-                        </a></li>
-                        <li> <a href="/new/photo" class="">
-                            <span style="vertical-align: inherit;">Add a new photo</span>
-                        </a></li>
-                        <li><a class="" href="/microblog">
-                            <span style="vertical-align: inherit;">Add a new post</span>
-                        </a></li>
-                        <li><a class="" href="/newMagazine">
-                            <span style="vertical-align: inherit;">Create a new magazine</span>
-                        </a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class=" login active" href="/u/{{ user.username }}">
-                        <span class="user-name">{{ user.username }}</span>
-                    </a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/u/{{ user.username }}" class="active">
-                            <span style="vertical-align: inherit;">Profile</span>
-                        </a></li>
-                        <li>
-                            <form action="/settings/general" method="post" class="">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <button type="submit">Setting</button>
-                            </form>
-                            <!--
-                            <a href="/settings/general" class="">
-                                <span style="vertical-align: inherit;">Setting</span>
-                            </a>
-                            -->
-                        </li>
-                        <li><a href="/profile/messages" class="">
-                            <span style="vertical-align: inherit;">Messages</span>
-                        </a></li>
-                        <li><a href="/settings/notifications" class="">
-                            <span style="vertical-align: inherit;">Notifications</span>
-                        </a></li>
-                        <li><a href="/logout">
-                            <span style="vertical-align: inherit;">Sign off</span>
-                        </a></li>
-                    </ul>
-                </li>
-            </menu>
-        </div>
-    </header>
+<!-- TODO: es perd inici de sessio -->
+    {% include 'base.html' %}
     <div id="middle" class="page-user page-user-overview">
         <div class="kbin-container">
             <main id="main" data-controller="lightbox timeago" class="">
@@ -131,7 +34,7 @@
                 <!-- Options top -->
                 <aside class="options" id="options">
                     <div></div>
-                    <menu class="options__main">
+                    <menu class="options__main" style="align-items: center; justify-content: center;">
                         <li><a href="/u/{{ user.username }}" class="active">
                             <span style="vertical-align: inherit;">general view</span>
                         </a></li>
@@ -141,167 +44,117 @@
                             <span style="vertical-align: inherit;">threads (0)</span>
                         </a></li>
                         <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/comments" class="">
+                        <li><a href="/u/{{ user.username }}/comments" class="">
                             <!-- TODO: posar variable -->
                             <span style="vertical-align: inherit;">comments (0)</span>
                         </a></li>
                         <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/posts" class="">
+                        <li><a href="/u/{{ user.username }}/posts" class="">
                             <!-- TODO: posar variable -->
                             <span style="vertical-align: inherit;">posts (0)</span>
                         </a></li>
                         <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/replies" class="">
+                        <li><a href="/u/{{ user.username }}/replies" class="">
                             <!-- TODO: posar variable -->
                             <span style="vertical-align: inherit;">answers (0)</span>
                         </a></li>
                         <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/boosts" class="">
+                        <!-- TODO: ha d'estar la incio iniciada -->
+                        <li><a href="/u/{{ user.username }}/boosts" class="">
                             <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">reposts (0)</span>
+                            <span style="vertical-align: inherit;">boosts (0)</span>
                         </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/following" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">following (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/followers" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">followers (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/subscriptions" class="opacity-50">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">subscriptions (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/usuari_predeterminat/reputation/threads" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">reputation (0)</span>
-                        </a></li>
-                    </menu>
-                    <!-- Scroll -->
-                    <!-- TODO: falta que funcioni -->
-                    <menu class="scroll">
-                        <li class="scroll-left">
-                            <i class="fa-solid fa-circle-left"></i>
-                        </li><li class="scroll-right">
-                            <i class="fa-solid fa-circle-right"></i>
-                        </li>
                     </menu>
                 </aside>
                 <!-- Options -->
-                <aside class="options options--top" id="options">
+                <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <!-- TODO: vincular user -->
-                        <li><a href="/u/usuari_predeterminat/top" class="">
+                        <li><a href="/u/{{ user.username }}/top" class="">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                outstanding
+                                top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/usuari_predeterminat/hot" class="">
+                        <li><a href="/u/{{ user.username }}" class="active">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                popular
+                                newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/usuari_predeterminat" class="active">
-                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                more recent
-                            </font></font>
-                        </a></li>
-                        <li><a href="/u/usuari_predeterminat/active" class="">
-                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                            asset
-                            </font></font>
-                        </a></li>
-                        <li><a href="/u/usuari_predeterminat/commented" class="">
+                        <li><a href="/u/{{ user.username }}/commented" class="">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 commented
                             </font></font>
                         </a></li>
                     </menu>
-                    <menu class="options__layout">
-                        <li class="dropdown">
-                            <button aria-label="Change view" title="Change view">
-                                <i class="fa-solid fa-table-list"></i>
-                                <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                    Change view
-                                </font></font></button>
-                            <ul class="dropdown__menu">
-                                <li>
-                                    <a class="active" href="/settings/theme/kbin_entries_compact/false">
-                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                            classic view
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a class="" href="/settings/theme/kbin_entries_compact/true">
-                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                            compact view
-                                    </font></font></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </menu>
-                    <menu class="options__filters">
-                        <li class="dropdown">
-                            <button aria-label="Sort by chronological order" title="Sort by chronological order">
-                                <i class="fa-solid fa-clock"></i>
-                                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        Sort by chronological order
-                                    </font></font></button>
-                            <ul class="dropdown__menu">
-                                <!-- TODO: falta vincular user -->
-                                <li>
-                                    <a href="/u/usuari_predeterminat" class="active"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        ∞
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/3h" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        3h
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/6h" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        6h
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/12h" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        12h
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1d" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 day
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1w" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 week
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1m" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 month
-                                    </font></font></a>
-                                </li>
-                                <li>
-                                    <a href="/u/usuari_predeterminat/newest/1y" class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                        1 year
-                                    </font></font></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </menu>
                 </aside>
+                <!-- TODO: tenir una plantilla que mostra el contingut -->
                 <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
-                    <aside class="section section--muted">
-                        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Empty</font></font></p>
-                    </aside>
+                    {% for thread in threads %}
+                        <!-- TODO: ... -->
+                        <article class="entry section subject">
+                            <header>
+                                <h2>
+                                    <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
+                                    {% if thread.url != none %}
+                                        <span class="entry__domain">
+                                        (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
+                                            <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
+                                        </span>
+                                    {% endif %}
+                                </h2>
+                            </header>
+                            <aside class="meta entry__meta">
+                                <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
+
+                                <span> to </span>
+                                <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
+                            </aside>
+                            <aside class="vote">
+                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
+                                    <input type="hidden" name="vote_type" value="positiu">
+                                    <button type="submit" title="Vots positius" aria-label="Vots positius">
+                                        <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
+                                        <span>
+                                                                <i class="fa-solid fa-arrow-up"></i>
+                                                            </span>
+                                    </button>
+                                </form>
+                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
+                                    <input type="hidden" name="vote_type" value="negatiu">
+                                    <button type="submit" title="Vots negatius" aria-label="Vots negatius">
+                                        <span data-subject-target="downvoteCounter">{{ thread.num_dislikes }}</span> <span><i
+                                            class="fa-solid fa-arrow-down"></i></span>
+                                    </button>
+                                </form>
+                            </aside>
+                            <footer>
+                                <menu>
+                                    <li>
+                                        <a class="stretched-link" href="{% url 'veure_thread' thread.id 'top' %}"><span
+                                                data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
+                                    </li>
+                                    <li>
+                                        <form action="{% url 'boost_thread' thread.id %}" name="boost_thread" method="post">
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <input type="hidden" name = "keyword" value = "{{ request.GET.keyword }}">
+                                            <button class="boost-link stretched-link" type="submit"
+                                                    data-action="subject#favourite">boost
+                                                {% if thread.num_boosts != 0 %}
+                                                    <span class="" data-subject-target="upvoteCounter">({{ thread.num_boosts }})</span>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </menu>
+                                <div data-subject-target="container" class="js-container">
+                                </div>
+                            </footer>
+                        </article>
+                    {% endfor %}
                 </div>
             </main>
         </div>
