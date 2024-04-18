@@ -63,7 +63,7 @@ def view_user_comments(request, username, ordre=None):
 def view_user_boosts(request, username, ordre=None):
     template = loader.get_template('view_user_elements.html')
     obj = User.objects.get(username=username)
-    boosts = Boosts.objects.filter(author=username)
+    boosts = Boost.objects.filter(user=username)
 
     all = list(boosts)
     if ordre == '':
