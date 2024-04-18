@@ -50,16 +50,6 @@ url_users = [
     path('u/<str:username>/comments/newest', views.view_user_comments, {'ordre': 'newest'}, name='view_user_comments'),
     path('u/<str:username>/comments/commented', views.view_user_comments, {'ordre': 'commented'}, name='view_user_comments'),
 
-    path('u/<str:username>/posts', views.view_user_posts, {'ordre': 'newest'}, name='view_user_posts'),
-    path('u/<str:username>/posts/top', views.view_user_posts, {'ordre': 'top'}, name='view_user_posts'),
-    path('u/<str:username>/posts/newest', views.view_user_posts, {'ordre': 'newest'}, name='view_user_posts'),
-    path('u/<str:username>/posts/commented', views.view_user_posts, {'ordre': 'commented'}, name='view_user_posts'),
-
-    path('u/<str:username>/answers', views.view_user_answers, {'ordre': 'newest'}, name='view_user_answers'),
-    path('u/<str:username>/answers/top', views.view_user_answers, {'ordre': 'top'}, name='view_user_answers'),
-    path('u/<str:username>/answers/newest', views.view_user_answers, {'ordre': 'newest'}, name='view_user_answers'),
-    path('u/<str:username>/answers/commented', views.view_user_answers, {'ordre': 'commented'}, name='view_user_answers'),
-
     path('u/<str:username>/boosts', views.view_user_boosts, {'ordre': 'newest'}, name='view_user_boosts'),
     path('u/<str:username>/boosts/top', views.view_user_boosts, {'ordre': 'top'}, name='view_user_boosts'),
     path('u/<str:username>/boosts/newest', views.view_user_boosts, {'ordre': 'newest'}, name='view_user_boosts'),

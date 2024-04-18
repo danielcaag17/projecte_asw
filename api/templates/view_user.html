@@ -41,28 +41,18 @@
                         <!-- TODO: de posar username -->
                         <li><a href="/u/{{ user.username }}/threads" class="">
                             <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">threads (0)</span>
+                            <span style="vertical-align: inherit;">threads ({{ user.total_threads }})</span>
                         </a></li>
                         <!-- TODO: de posar username -->
                         <li><a href="/u/{{ user.username }}/comments" class="">
                             <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">comments (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/posts" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">posts (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/replies" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">answers (0)</span>
+                            <span style="vertical-align: inherit;">comments ({{ user.total_comments }})</span>
                         </a></li>
                         <!-- TODO: de posar username -->
                         <!-- TODO: ha d'estar la incio iniciada -->
                         <li><a href="/u/{{ user.username }}/boosts" class="">
                             <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">boosts (0)</span>
+                            <span style="vertical-align: inherit;">boosts ({{ user.total_boosts }})</span>
                         </a></li>
                     </menu>
                 </aside>
@@ -90,18 +80,16 @@
                         </a></li>
                     </menu>
                 </aside>
-                <!-- TODO: tenir una plantilla que mostra el contingut -->
                 <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
                     {% for thread in all %}
                         {% if thread.type == "thread" %}
                             {% include 'show_threads.html' %}
                         {% elif thread.type == "comment" %}
-                            {% include 'show_threads.html' %}
-                        {% elif thread.type == "link" %}
-                            {% include 'show_threads.html' %}
+                            {% include 'comments_tree.html' %}
+                        {% elif thread.type == "boost" %}
+                            {% include 'show_boost.html' %}
                         {% else %}
                                 <p>{{ element.type }}</p>
-                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>

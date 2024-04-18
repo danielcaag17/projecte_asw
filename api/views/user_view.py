@@ -35,7 +35,7 @@ def view_user(request, username, ordre=None):
 
 
 def view_user_threads(request, username, ordre=None):
-    template = loader.get_template('view_user.html')    # TODO: Definir template
+    template = loader.get_template('view_user_elements.html')
     obj = User.objects.get(username=username)
     threads = Publicacio.objects.filter(author=username)
 
@@ -43,12 +43,12 @@ def view_user_threads(request, username, ordre=None):
     if ordre == '':
         ordre = 'newest'
     all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted} # Passar type para despues en la template saber que tipo es e ir a otro html en funcion del tipo
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre, 'type': "threads"}
     return HttpResponse(template.render(context, request))
 
 
 def view_user_comments(request, username, ordre=None):
-    template = loader.get_template('view_user.html')  # TODO: Definir template
+    template = loader.get_template('view_user_elements.html')
     obj = User.objects.get(username=username)
     comments = Comment.objects.filter(author=username)
 
@@ -56,38 +56,12 @@ def view_user_comments(request, username, ordre=None):
     if ordre == '':
         ordre = 'newest'
     all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted}
-    return HttpResponse(template.render(context, request))
-
-
-def view_user_posts(request, username, ordre=None):
-    template = loader.get_template('view_user.html')  # TODO: Definir template
-    obj = User.objects.get(username=username)
-    posts = Posts.objects.filter(author=username)
-
-    all = list(posts)
-    if ordre == '':
-        ordre = 'newest'
-    all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted}
-    return HttpResponse(template.render(context, request))
-
-
-def view_user_answers(request, username, ordre=None):
-    template = loader.get_template('view_user.html')  # TODO: Definir template
-    obj = User.objects.get(username=username)
-    answers = Answers.objects.filter(author=username)
-
-    all = list(answers)
-    if ordre == '':
-        ordre = 'newest'
-    all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted}
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre, 'type': "comments"}
     return HttpResponse(template.render(context, request))
 
 
 def view_user_boosts(request, username, ordre=None):
-    template = loader.get_template('view_user.html')  # TODO: Definir template
+    template = loader.get_template('view_user_elements.html')
     obj = User.objects.get(username=username)
     boosts = Boosts.objects.filter(author=username)
 
@@ -95,7 +69,7 @@ def view_user_boosts(request, username, ordre=None):
     if ordre == '':
         ordre = 'newest'
     all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted}
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre, 'type': "boosts"}
     return HttpResponse(template.render(context, request))
 
 
