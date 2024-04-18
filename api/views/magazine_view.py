@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect
@@ -34,26 +35,30 @@ def new_magazine(request):
     if request.method == 'POST':
 
         name = request.POST.get('name')
+        if Magazine.objects.filter(name=name).exists():
+            is_used = True
+            context = {'is_used': is_used}
+            return render(request, 'new_magazine.html', context)
+        else:
+            author_email = request.user.email
+            author = User.objects.get(email=author_email)
+            creation_date = timezone.now().isoformat()
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            rules = request.POST.get('rules')
+            nsfw = request.POST.get('isAdult')
 
-        author_email = request.user.email
-        author = User.objects.get(email=author_email)
-        creation_date = timezone.now().isoformat()
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        rules = request.POST.get('rules')
-        nsfw = request.POST.get('isAdult')
+            magazine = Magazine.objects.create(
+                name=name,
+                author=author,
+                creation_date=creation_date,
+                title=title,
+                description=description,
+                rules=rules,
+                nsfw=nsfw
+            )
 
-        magazine = Magazine.objects.create(
-            name=name,
-            author=author,
-            creation_date=creation_date,
-            title=title,
-            description=description,
-            rules=rules,
-            nsfw=nsfw
-        )
-
-        return redirect('main')
+            return redirect('main')
     else:
         template = loader.get_template("new_magazine.html")
         return HttpResponse(template.render({}, request))

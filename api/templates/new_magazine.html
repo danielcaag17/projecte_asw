@@ -32,6 +32,13 @@
                 <div class="container">
                     <form name="magazine" method="post" action="{% url 'new_magazine' %}">
                         <div>
+                            {% if is_used %}
+                                <div>
+                                    <ul>
+                                        <li>This value has already been used.</li>
+                                    </ul>
+                                </div>
+                            {% endif %}
                             <label for="magazine_name" class="required">Name</label>
                             <input type="text"
                                    id="magazine_name"
@@ -51,7 +58,7 @@
 
                         <div>
                             <textarea id="magazine_description" name="description" placeholder="Description"
-                                       style="overflow: hidden; height: 70px;"></textarea>
+                                      style="overflow: hidden; height: 70px;"></textarea>
                         </div>
                         <div><textarea id="magazine_rules" name="rules" placeholder="Rules"
                                        style="overflow: hidden; height: 70px;"></textarea>

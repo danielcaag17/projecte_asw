@@ -1,11 +1,10 @@
 <div class="section">
     <div class="user-box">
-        <p>{{ user.avatar }}</p>
-        {% if user.cover  and user.avatar %}
+        {% if usuari.cover and usuari.avatar %}
             <div class="with-cover with-avatar">
-        {% elif user.cover != '' %}
+        {% elif usuari.cover != '' %}
             <div class="with-cover">
-        {% elif user.avatar %}
+        {% elif usuari.avatar %}
             <div class="with-avatar">
         {% else %}
             <div class="">
