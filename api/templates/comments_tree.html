@@ -9,10 +9,10 @@
                     title={{ comment.author.email }}
                     href="{% url 'view_user' comment.author.username %}">
                 {{ comment.author.username }}</a>,
-            <time class="timeago">{{ comment.creation_data|timesince }}</time>
+            <time class="timeago">{{ comment.creation_data|timesince }} ago</time>
             {% if comment.last_edited %}
                 (edited
-                <time class="timeago">{{ comment.last_edited|timesince }}</time> ago)
+                <time class="timeago">{{ comment.last_edited|timesince }} ago</time> ago)
             {% endif %}
         </header>
         <div class="content" style="">

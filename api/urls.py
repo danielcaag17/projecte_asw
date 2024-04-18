@@ -35,25 +35,32 @@ url_threads = [
 ]
 
 url_users = [
-    path('u/<str:username>', views.view_user, {'ordre': 'newest'}, name='view_user'),
-    path('u/<str:username>/top', views.view_user, {'ordre': 'top'}, name='view_top'),
-    path('u/<str:username>/newest', views.view_user, {'ordre': 'newest'}, name='view_newest'),
-    path('u/<str:username>/commented', views.view_user, {'ordre': 'commented'}, name='view_commented'),
+    path('u/<str:username>', views.view_user, {'select':'threads','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
+    path('u/<str:username>/top', views.view_user, {'select':'threads','filter': 'tot', 'ordre': 'top'}, name='user_top'),
+    path('u/<str:username>/newest', views.view_user, {'select':'threads','filter': 'tot', 'ordre': 'newest'},  name='user_newest'),
+    path('u/<str:username>/commented', views.view_user, {'select':'threads','filter': 'tot', 'ordre': 'commented'}, name='user_commented'),
 
-    path('u/<str:username>/threads', views.view_user_threads, {'ordre': 'newest'}, name='view_user_threads'),
-    path('u/<str:username>/threads/top', views.view_user_threads, {'ordre': 'top'}, name='view_user_threads'),
-    path('u/<str:username>/threads/newest', views.view_user_threads, {'ordre': 'newest'}, name='view_user_threads'),
-    path('u/<str:username>/threads/commented', views.view_user_threads, {'ordre': 'commented'}, name='view_user_threads'),
+    path('u/<str:username>/top/<str:filter>/', views.view_user,{'select':'threads', 'ordre': 'top'}, name='user_top_filter'),
+    path('u/<str:username>/newest/<str:filter>/', views.view_user,{ 'select':'threads','ordre': 'newest'}, name='user_newest_filter'),
+    path('u/<str:username>/commented/<str:filter>/', views.view_user, { 'select':'threads','ordre': 'commented'}, name='user_commented_filter'),
 
-    path('u/<str:username>/comments', views.view_user_comments, {'ordre': 'newest'}, name='view_user_comments'),
-    path('u/<str:username>/comments/top', views.view_user_comments, {'ordre': 'top'}, name='view_user_comments'),
-    path('u/<str:username>/comments/newest', views.view_user_comments, {'ordre': 'newest'}, name='view_user_comments'),
-    path('u/<str:username>/comments/commented', views.view_user_comments, {'ordre': 'commented'}, name='view_user_comments'),
+    path('u/<str:username>/com', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
+    path('u/<str:username>/com/top', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'top'}, name='user_top'),
+    path('u/<str:username>/com/newest', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'},  name='user_newest'),
+    path('u/<str:username>/com/oldest', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'commented'}, name='user_commented'),
 
-    path('u/<str:username>/boosts', views.view_user_boosts, {'ordre': 'newest'}, name='view_user_boosts'),
-    path('u/<str:username>/boosts/top', views.view_user_boosts, {'ordre': 'top'}, name='view_user_boosts'),
-    path('u/<str:username>/boosts/newest', views.view_user_boosts, {'ordre': 'newest'}, name='view_user_boosts'),
-    path('u/<str:username>/boosts/commented', views.view_user_boosts, {'ordre': 'commented'}, name='view_user_boosts'),
+    path('u/<str:username>/com/top/<str:filter>/', views.view_user,{ 'select':'com','ordre': 'top'}, name='user_top_filter'),
+    path('u/<str:username>/com/newest/<str:filter>/', views.view_user,{ 'select':'com','ordre': 'newest'}, name='user_newest_filter'),
+    path('u/<str:username>/com/oldest/<str:filter>/', views.view_user, { 'select':'com','ordre': 'commented'}, name='user_commented_filter'),
+
+    path('u/<str:username>/boosts', views.view_user, {'select':'boost','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
+    path('u/<str:username>/boosts/top', views.view_user, {'select':'boost','filter': 'tot', 'ordre': 'top'}, name='user_top'),
+    path('u/<str:username>/boosts/newest', views.view_user, {'select':'boost','filter': 'tot', 'ordre': 'newest'},  name='user_newest'),
+    path('u/<str:username>/boosts/oldest', views.view_user, {'select':'boost','filter': 'tot', 'ordre': 'commented'}, name='user_commented'),
+
+    path('u/<str:username>/boosts/top/<str:filter>/', views.view_user,{'select':'boost', 'ordre': 'top'}, name='user_top_filter'),
+    path('u/<str:username>/boosts/newest/<str:filter>/', views.view_user,{'select':'boost', 'ordre': 'newest'}, name='user_newest_filter'),
+    path('u/<str:username>/boosts/com/<str:filter>/', views.view_user, { 'select':'boost','ordre': 'commented'}, name='user_commented_filter'),
 
     path('settings/profile/<str:username>', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),
