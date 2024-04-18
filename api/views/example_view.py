@@ -108,6 +108,22 @@ def main_list(request, ordre=None, filter=None,eliminat=None):
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
+def all_magazines(request, ordre=None):
+    magazines = Magazine.objects.all()
+    if ordre == 'threads':
+        magazines = sorted(magazines, key=lambda x: x.n_threads, reverse=True)
+    elif ordre == 'elements':
+        magazines = sorted(magazines, key=lambda x: x.n_elements, reverse=True)
+    elif ordre == 'commented':
+        magazines = sorted(magazines, key=lambda x: x.n_comments, reverse=True)
+    elif ordre == 'suscriptions':
+        magazines = sorted(magazines, key=lambda x: x.n_suscriptions, reverse=True)
+
+
+    context = {'magazines': magazines}
+
+    template = loader.get_template("all_magazines.html")
+    return HttpResponse(template.render(context, request))
 
 @login_required(redirect_field_name='login')
 def new_link(request):
@@ -119,12 +135,7 @@ def new_link(request):
 
 
 
-def all_magazines(request):
-    magazines = Magazine.objects.all()
-    context = {'magazines': magazines}
 
-    template = loader.get_template("all_magazines.html")
-    return HttpResponse(template.render(context, request))
 
 
 @login_required(redirect_field_name='login')
@@ -178,6 +189,9 @@ def create_link_thread(request):
         user = User.objects.get(email=author_email)
         if body == '':
             body = None
+
+        author_email = request.user.email
+        user = User.objects.get(email=author_email)
 
         # Creem una nova instància del model Thread o Link amb les dades proporcionades
         if url == None:
@@ -242,10 +256,27 @@ def veure_thread(request, thread_id, order,edited=False):
     return render(request, 'veure_thread.html', context)
 
 
-def veure_magazine(request, magazine_id):
-    magazine = Magazine.objects.get(pk=magazine_id)
+def veure_magazine(request, magazine_id, ordre=None, filter=None):
 
-    context = {'magazine': magazine}
+    magazine = Magazine.objects.get(pk=magazine_id)
+    links = Link.objects.filter(magazine_id=magazine_id)
+    threads = Thread.objects.filter(magazine_id=magazine_id)
+
+    if filter == 'links':
+        tot = links
+    elif filter == 'threads':
+        tot = threads
+    else :
+        tot = list(links) + list(threads)
+
+    if ordre == 'top':
+        tot = sorted(tot, key=lambda x: x.num_likes, reverse=True)
+    elif ordre == 'newest':
+        tot = sorted(tot, key=lambda x: x.creation_data, reverse=True)
+    elif ordre == 'commented':
+        tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
+
+    context = {'magazine': magazine, 'threads': tot, 'active_filter': filter}
     return render(request, 'veure_magazine.html', context)
 
 

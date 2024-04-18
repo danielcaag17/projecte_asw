@@ -14,7 +14,7 @@
   transform: translate3d(0, 0, 0);
 }
 </style>
-    <title>Magazines</title>
+    <title>Magazine</title>
     <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
@@ -60,39 +60,95 @@
         </div>
     </header>
 
-     <aside class="options" id="options">
+     <div id="middle" class="page-user page-user-overview">
+        <div class="kbin-container">
+            <main id="main" data-controller="lightbox timeago" class="">
+                {% include 'section_magazine.html' %}
+                <!-- Options top -->
+                <aside class="options" id="options">
                     <div></div>
                     <menu class="options__main">
                         <li>
-                           Creat fa:
-                            <time> {{ magazine.creation_date }}</time>
-                        </li>
+                            <span style="vertical-align: inherit;">Creat a:</span>
+                            <span>{{ magazine.creation_date }}</span>
+                       </li>
+                        <!-- TODO: de posar username -->
+
                         <li>
-                            Hola:
-                               <a href="/u/usuari_predeterminat" class="">{{ magazine.author.username }}</a>
-                        </li>
+                            <span style="vertical-align: inherit;">Propietari:</span>
+                            <span><a href="/u/{{ magazine.author.username }}" class="">
+                        </a></span></li>
+
+
+
                         <li>
-                            Suscriptors:
+                            <span style="vertical-align: inherit;">Subscriptors:</span>
                             <span>{{ magazine.n_suscriptions }}</span>
-                        </li>
+                      </li>
                         <li>
-                            Threads:
+                            <span style="vertical-align: inherit;">Threads:</span>
                             <span>{{ magazine.n_threads }}</span>
-                        </li>
+                       </li>
                         <li>
-                            Links:
-                            <span>{{ magazine.n_links}}</span>
-                        </li>
+                            <span style="vertical-align: inherit;">Links:</span>
+                            <span>{{ magazine.n_links }}</span></li>
 
-                         <li>
-                            Comentaris:
-                            <span>{{ magazine.total_comments }}</span>
-                        </li>
-
+                        <li> <span style="vertical-align: inherit;">Comments:</span>
+                            <span>{{ magazine.n_comments }}</span></li></li>
 
                     </menu>
-
+                    <!-- Scroll -->
+                    <!-- TODO: falta que funcioni -->
+                    <menu class="scroll">
+                        <li class="scroll-left">
+                            <i class="fa-solid fa-circle-left"></i>
+                        </li><li class="scroll-right">
+                            <i class="fa-solid fa-circle-right"></i>
+                        </li>
+                    </menu>
                 </aside>
+                <!-- Options -->
+<aside id="options" class="options options--top">
+                <menu class="options__main no-scroll">
+                    <li><a class="{% if active_option == 'top' %}active{% endif %}" href="{% url 'veure_magazine_top' magazine.id active_filter %}">Top</a></li>
+                    <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="{% url 'veure_magazine_newest' magazine.id active_filter %}">Newest</a></li>
+                    <li><a class="{% if active_option == 'commented' %}active{% endif %}"
+                           href="{% url 'veure_magazine_comments' magazine.id active_filter %}">Commented</a></li>
+                </menu>
+                <menu class="options__filters">
+                    <li class="dropdown">
+                        <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i class="fa-solid fa-filter"></i>
+                            Filtrar per tipus
+                        </button>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="{% url 'veure_magazine_newest' magazine.id 'tot' %}" class="{% if active_filter == 'tot' %}active{% endif %}">
+                                    Tot
+                                </a>
+                            </li>
+                            <li>
+                            <a href="{% url 'veure_magazine_newest' magazine.id 'links' %}" class="{% if active_filter == 'links' %}active{% endif %}">
+                            <!--     <a href="{{ request.path }}/Links "class="{% if active_filter == 'links' %}active{% endif %}"> -->
+                                    Links
+                                </a>
+                            </li>
+                            <li>
+                                 <a href="{% url 'veure_magazine_newest' magazine.id 'threads' %}" class="{% if active_filter == 'threads' %}active{% endif %}">
+                                    Threads
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </menu>
+            </aside>
+                <div id="content">
+                {% for thread in threads %}
+                    {% include 'show_threads.html' %}
+                {% endfor %}
+            </div>
+            </main>
+        </div>
+    </div>
 
 
 </body>

@@ -53,7 +53,20 @@ url_comments = [
 
 url_magazines = [
     path('magazine/<int:magazine_id>/',views.veure_magazine, name='veure_magazine'),
+
+    path('magazine/<int:magazine_id>/newest/<str:filter>/', views.veure_magazine, {'ordre': 'newest'}, name='veure_magazine_newest'),
+    path('magazine/<int:magazine_id>/top/<str:filter>/', views.veure_magazine, {'ordre': 'top'}, name='veure_magazine_top'),
+    path('magazine/<int:magazine_id>/comments/<str:filter>/', views.veure_magazine, {'ordre': 'comment'}, name='veure_magazine_comments'),
+
+
+
+
     path('magazines', views.all_magazines, name='all_magazines'),
+    path('magazines/threads', views.all_magazines, {'ordre': 'threads'}, name='all_magazines_thread'),
+    path('magazines/elements', views.all_magazines, {'ordre': 'elements'}, name='all_magazines_elements'),
+    path('magazines/commented', views.all_magazines, {'ordre': 'commented'}, name='all_magazines_commented'),
+    path('magazines/suscriptions', views.all_magazines, {'ordre': 'suscriptions'}, name='all_magazines_suscriptions'),
+
     path('newMagazine', views.new_magazine, name='new_magazine'),
 ]
 
