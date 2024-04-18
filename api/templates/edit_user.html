@@ -40,51 +40,11 @@
                 <div class="container">
                     <h1 hidden>Profile</h1>
                     <form name="edit-user" method="post" enctype="multipart/form-data">
-                        <markdown-toolbar for="user_basic_about" class="markdown meta"
-                                          data-controller="markdown-toolbar">
-                            <md-bold title="Bold" aria-label="Bold">
-                                <i class="fa-solid fa-bold"></i>
-                            </md-bold>
-                            <md-italic title="Italics" aria-label="Italics">
-                                <i class="fa-solid fa-italic"></i>
-                            </md-italic>
-                            <md-strikethrough title="Strikethrough" aria-label="Strikethrough">
-                                <i class="fa-solid fa-strikethrough"></i>
-                            </md-strikethrough>
-                            <md-header title="Header" aria-label="Header">
-                                <i class="fa-solid fa-heading"></i>
-                            </md-header>
-                            <md-quote title="Appointment" aria-label="Appointment">
-                                <i class="fa-solid fa-quote-left"></i>
-                            </md-quote>
-                            <md-code title="Code" aria-label="Code">
-                                <i class="fa-solid fa-code"></i>
-                            </md-code>
-                            <md-link title="Link" aria-label="Link">
-                                <i class="fa-solid fa-link"></i>
-                            </md-link>
-                            <md-image title="Image" aria-label="Image">
-                                <i class="fa-solid fa-image"></i>
-                            </md-image>
-                            <md-unordered-list title="Unordered list" aria-label="Unordered list">
-                                <i class="fa-solid fa-list"></i>
-                            </md-unordered-list>
-                            <md-ordered-list title="Sorted list" aria-label="Sorted list">
-                                <i class="fa-solid fa-list-ol"></i>
-                            </md-ordered-list>
-                            <md-mention title="Mention" aria-label="Mention">
-                                <i class="fa-solid fa-at"></i>
-                            </md-mention>
-                            <md-kbin title="Spoiler" aria-label="Spoiler"
-                                     data-action="click->markdown-toolbar#addSpoiler">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </md-kbin>
-                        </markdown-toolbar>
                         <div><textarea id="user_basic_about" name="description" placeholder="About"
                                        data-controller="input-length rich-textarea autogrow"
                                        data-entry-link-create-target="user_about"
                                        data-action="input-length#updateDisplay"
-                                       data-input-length-max-value="512"></textarea>
+                                       data-input-length-max-value="512">{{ usuari.description }}</textarea>
                         </div>
                         <div>
                             <label for="user_basic_username">Username</label>
