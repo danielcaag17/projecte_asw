@@ -120,16 +120,14 @@ def all_magazines(request, ordre=None):
     user_subscriptions = Subscription.objects.filter(user=user).values_list('magazine_id', flat=True)
     print(user_subscriptions)
     if ordre == 'threads':
-        magazines = sorted(magazines, key=lambda x: x.n_threads, reverse=True)
+        magazines = sorted(magazines, key=lambda x: x.total_threads, reverse=True)
     elif ordre == 'elements':
-        magazines = sorted(magazines, key=lambda x: x.n_elements, reverse=True)
+        magazines = sorted(magazines, key=lambda x: x.total_publicacions(), reverse=True)
     elif ordre == 'commented':
-        magazines = sorted(magazines, key=lambda x: x.n_comments, reverse=True)
+        magazines = sorted(magazines, key=lambda x: x.total_comments(), reverse=True)
     elif ordre == 'suscriptions':
         magazines = sorted(magazines, key=lambda x: x.n_suscriptions, reverse=True)
-
     context = {'magazines': magazines, 'user_subscriptions': user_subscriptions}
-
     template = loader.get_template("all_magazines.html")
     return HttpResponse(template.render(context, request))
 
@@ -290,6 +288,8 @@ def veure_thread(request, thread_id, order, edited=False):
 
 
 def veure_magazine(request, magazine_id, ordre=None, filter=None):
+    if ordre == None:
+        ordre = 'newest'
     magazine = Magazine.objects.get(pk=magazine_id)
     links = Link.objects.filter(magazine_id=magazine_id)
     threads = Thread.objects.filter(magazine_id=magazine_id)
@@ -305,10 +305,10 @@ def veure_magazine(request, magazine_id, ordre=None, filter=None):
         tot = sorted(tot, key=lambda x: x.num_likes, reverse=True)
     elif ordre == 'newest':
         tot = sorted(tot, key=lambda x: x.creation_data, reverse=True)
-    elif ordre == 'commented':
+    elif ordre == 'comment':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'magazine': magazine, 'threads': tot, 'active_filter': filter}
+    context = {'magazine': magazine, 'threads': tot, 'active_filter': filter,'ordre':ordre}
     return render(request, 'veure_magazine.html', context)
 
 
