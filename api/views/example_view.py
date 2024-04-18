@@ -32,7 +32,17 @@ def editar_thread(request, thread_id):
         return HttpResponse(template.render({'thread':thread,'titol':thread.title,'body':thread.body,
                                              'magazine':thread.magazine.name}, request))
 
-def main_list(request, ordre=None, filter=None):
+@csrf_exempt
+def eliminar_publicacio(request, thread_id):
+    thread = Publicacio.objects.get(pk=thread_id)
+    if request.method == "POST":
+        thread.delete()
+    template = loader.get_template('home.html')
+    return main_list(request,eliminat=True)
+
+
+def main_list(request, ordre=None, filter=None,eliminat=None):
+
     links = Link.objects.all()
     threads = Thread.objects.all()
 
@@ -52,7 +62,7 @@ def main_list(request, ordre=None, filter=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter}
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat}
 
 
 
