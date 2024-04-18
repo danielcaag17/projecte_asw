@@ -7,6 +7,9 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
 
 class Endpoint1View(APIView):
     def get(self, request):
@@ -14,19 +17,73 @@ class Endpoint1View(APIView):
         data = {"message": "Hello World"}
         return JsonResponse(data)
 
+@login_required(redirect_field_name='login')
+@csrf_exempt
+def boost_publicacio(request, thread_id):
 
-def main_list(request, ordre=None, filter=None):
+    publicacio = Publicacio.objects.get(pk=thread_id)
+    user = User.objects.get(email=request.user.email)
+
+    if request.method == 'POST':
+
+            #Mirem si l'usuari ja ha fet boost vol dir que l'hem de treure
+            if Boost.objects.filter(user=user, publicacio=publicacio).exists():
+                boost = Boost.objects.get(user=user, publicacio=publicacio)
+                publicacio.num_boosts -= 1
+                publicacio.save()
+                boost.delete()
+
+            else: #Usuari encara no ha fet boost
+                nou_boost = Boost(user=user, publicacio=publicacio)
+                publicacio.num_boosts += 1
+                publicacio.save()
+                nou_boost.save()
+
+
+    return redirect('main')
+
+
+@csrf_exempt
+def editar_thread(request, thread_id):
+    thread = Thread.objects.get(pk=thread_id)
+    if request.method == "POST":
+        thread.title = request.POST.get('title')
+        thread.body = request.POST.get('body')
+        thread.save()
+        return veure_thread(request, thread_id,'top',True)
+    else:
+        template = loader.get_template('edit_publicacio.html')
+        return HttpResponse(template.render({'thread':thread,'titol':thread.title,'body':thread.body,
+                                             'magazine':thread.magazine.name}, request))
+
+@csrf_exempt
+def editar_link(request, thread_id):
+    link = Link.objects.get(pk=thread_id)
+    if request.method == "POST":
+        print("Es un post")
+        link.title = request.POST.get('title')
+        link.body = request.POST.get('body')
+        link.save()
+        return veure_thread(request, thread_id,'top',True)
+    else:
+        template = loader.get_template('edit_publicacio.html')
+        return HttpResponse(template.render({'thread':link,'titol':link.title,'body':link.body,'url':link.url,
+                                             'magazine':link.magazine.name}, request))
+
+
+@csrf_exempt
+def eliminar_publicacio(request, thread_id):
+    thread = Publicacio.objects.get(pk=thread_id)
+    if request.method == "POST":
+        thread.delete()
+    template = loader.get_template('home.html')
+    return main_list(request,eliminat=True)
+
+
+def main_list(request, ordre=None, filter=None,eliminat=None):
+
     links = Link.objects.all()
     threads = Thread.objects.all()
-    user = request.GET.get('user')
-    django_username = request.GET.get('django_user')
-    djangoUser = {}
-    if user is not None and django_username is not None:
-        djangoUser = {
-            'user': DjangoUser.objects.get(username=django_username),
-            'username': user,
-        }
-        print(djangoUser)
 
     if ordre == '': ordre = 'newest'
 
@@ -44,8 +101,10 @@ def main_list(request, ordre=None, filter=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter, 'user': djangoUser}
-    print(context)
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat}
+
+
+
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
@@ -66,16 +125,20 @@ def all_magazines(request, ordre=None):
     template = loader.get_template("all_magazines.html")
     return HttpResponse(template.render(context, request))
 
+@login_required(redirect_field_name='login')
 def new_link(request):
     magazines = Magazine.objects.all()
     context = {'magazines': magazines}
     template = loader.get_template('new_link.html')
-    return HttpResponse(template.render(context,request))
+    return HttpResponse(template.render(context, request))
 
 
 
 
 
+
+
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def new_magazine(request):
     if request.method == 'POST':
@@ -103,14 +166,15 @@ def new_magazine(request):
         return redirect('main')
     else:
         template = loader.get_template("new_magazine.html")
-        return HttpResponse(template.render())
+        return HttpResponse(template.render({},request))
 
 
+@login_required(redirect_field_name='login')
 def new_thread(request):
     magazines = Magazine.objects.all()
     context = {'magazines': magazines}
     template = loader.get_template('new_thread.html')
-    return HttpResponse(template.render(context,request))
+    return HttpResponse(template.render(context, request))
 
 
 @csrf_exempt  # todo: PREGUNTAR PK NO SURT BE SENSE AIXO!
@@ -121,9 +185,11 @@ def create_link_thread(request):
         url = request.POST.get('url')
         magazine = Magazine.objects.get(id=request.POST.get('magazine'))
         created_at = timezone.now().isoformat()
-
+        author_email = request.user.email
+        user = User.objects.get(email=author_email)
         if body == '':
             body = None
+
         author_email = request.user.email
         user = User.objects.get(email=author_email)
 
@@ -160,6 +226,8 @@ def create_link_thread(request):
         # Si la petició no és POST, simplement mostrem el formulari
         return redirect('/new')
 
+
+@login_required(redirect_field_name='login')
 @csrf_exempt
 def boost_thread(request, thread_id):
     if request.method == 'POST':
@@ -173,7 +241,7 @@ def boost_thread(request, thread_id):
         return redirect('main')
 
 
-def veure_thread(request, thread_id, order):
+def veure_thread(request, thread_id, order,edited=False):
     thread = Publicacio.objects.get(pk=thread_id)
 
     if order == 'newest':
@@ -183,7 +251,7 @@ def veure_thread(request, thread_id, order):
     else:
         comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('-num_likes')
     replies = Reply.objects.filter(comment_root__in=comments_root)
-    context = {'thread': thread, 'comments_root': comments_root, 'replies': replies}
+    context = {'thread': thread, 'comments_root': comments_root, 'replies': replies,'editat':edited,'single':True}
     request.session['order'] = order
     return render(request, 'veure_thread.html', context)
 

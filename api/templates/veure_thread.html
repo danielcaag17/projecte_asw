@@ -27,6 +27,15 @@
         <main id="main" data-controller="lightbox timeago" class="">
             <div id="content">
                 {% include 'show_threads.html' %}
+                {% if editat %}
+                    <div class="alert alert__success" role="alert">
+                        {% if thread.url == '' %}
+                            The thread has been successfully edited.
+                        {% else %}
+                            The link has been successfully edited.
+                        {% endif %}
+                    </div>
+                {% endif %}
                 <aside class="options" id="options">
                     <div></div>
                     <menu class="options__main">

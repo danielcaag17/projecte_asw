@@ -70,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'api.middleware.AddUserToContextMiddleware'
 ]
 
 ROOT_URLCONF = 'projecte_asw.urls'
@@ -85,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'api.context_processors.usuari_context_processor',
             ],
         },
     },
@@ -160,11 +162,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-def google_login():
-    from allauth.socialaccount.templatetags.socialaccount import provider_login_url
-    return provider_login_url('google')
+#&redirect_uri=login
 
-
+SOCIALACCOUNT_LOGIN_ON_GET = True
+LOGIN_URL = '/accounts/google/login'
 LOGIN_REDIRECT_URL = '/login'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
