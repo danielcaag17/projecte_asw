@@ -6,3 +6,4 @@ from .votes import *
 from .magazine import Magazine
 from .vote_comment import Vote_comment
 from .boost import *
+from .subscription import Subscription
