@@ -139,7 +139,7 @@ def edit_user(request, username):
         obj.save()
         template = loader.get_template('edit_user.html')
         context = {'usuari': obj}
-        return HttpResponse(template.render(context))
+        return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template('edit_user.html')
         obj = User.objects.get(username=username)
