@@ -26,7 +26,6 @@ def main_list(request, ordre=None, filter=None):
             'user': DjangoUser.objects.get(username=django_username),
             'username': user,
         }
-        print(djangoUser)
 
     if ordre == '': ordre = 'newest'
 
@@ -45,7 +44,6 @@ def main_list(request, ordre=None, filter=None):
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
     context = {'threads': tot, 'active_option': ordre, 'active_filter': filter, 'user': djangoUser}
-    print(context)
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 

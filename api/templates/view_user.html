@@ -62,7 +62,7 @@
                         <!-- TODO: ha d'estar la incio iniciada -->
                         <li><a href="/u/{{ user.username }}/boosts" class="">
                             <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">reposts (0)</span>
+                            <span style="vertical-align: inherit;">boosts (0)</span>
                         </a></li>
                     </menu>
                 </aside>
@@ -89,9 +89,72 @@
                 </aside>
                 <!-- TODO: tenir una plantilla que mostra el contingut -->
                 <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
-                    <aside class="section section--muted">
-                        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Empty</font></font></p>
-                    </aside>
+                    {% for thread in threads %}
+                        <!-- TODO: ... -->
+                        <article class="entry section subject">
+                            <header>
+                                <h2>
+                                    <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
+                                    {% if thread.url != none %}
+                                        <span class="entry__domain">
+                                        (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
+                                            <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
+                                        </span>
+                                    {% endif %}
+                                </h2>
+                            </header>
+                            <aside class="meta entry__meta">
+                                <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
+
+                                <span> to </span>
+                                <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
+                            </aside>
+                            <aside class="vote">
+                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
+                                    <input type="hidden" name="vote_type" value="positiu">
+                                    <button type="submit" title="Vots positius" aria-label="Vots positius">
+                                        <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
+                                        <span>
+                                                                <i class="fa-solid fa-arrow-up"></i>
+                                                            </span>
+                                    </button>
+                                </form>
+                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
+                                    <input type="hidden" name="vote_type" value="negatiu">
+                                    <button type="submit" title="Vots negatius" aria-label="Vots negatius">
+                                        <span data-subject-target="downvoteCounter">{{ thread.num_dislikes }}</span> <span><i
+                                            class="fa-solid fa-arrow-down"></i></span>
+                                    </button>
+                                </form>
+                            </aside>
+                            <footer>
+                                <menu>
+                                    <li>
+                                        <a class="stretched-link" href="{% url 'veure_thread' thread.id 'top' %}"><span
+                                                data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
+                                    </li>
+                                    <li>
+                                        <form action="{% url 'boost_thread' thread.id %}" name="boost_thread" method="post">
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <input type="hidden" name = "keyword" value = "{{ request.GET.keyword }}">
+                                            <button class="boost-link stretched-link" type="submit"
+                                                    data-action="subject#favourite">boost
+                                                {% if thread.num_boosts != 0 %}
+                                                    <span class="" data-subject-target="upvoteCounter">({{ thread.num_boosts }})</span>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </menu>
+                                <div data-subject-target="container" class="js-container">
+                                </div>
+                            </footer>
+                        </article>
+                    {% endfor %}
                 </div>
             </main>
         </div>
