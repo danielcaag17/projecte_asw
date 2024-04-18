@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['bravo13-36a68ba47d34.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
-SITE_ID = 5
+SITE_ID = 6
 
 INSTALLED_APPS = [
     'django.contrib.admin',
