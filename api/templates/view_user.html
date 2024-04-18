@@ -35,17 +35,17 @@
                 <aside class="options" id="options">
                     <div></div>
                     <menu class="options__main" style="align-items: center; justify-content: center;">
-                        <li><a href="/u/{{ user.username }}" class="active">
+                        <li><a href="/u/{{ usuari.username }}" class="active">
                             <span style="vertical-align: inherit;">general view</span>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/threads" class="">
-                            <span style="vertical-align: inherit;">threads ({{ user.total_threads }})</span>
+                        <li><a href="/u/{{ usuari.username }}/threads" class="">
+                            <span style="vertical-align: inherit;">threads ({{ usuari.total_threads }})</span>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/comments" class="">
-                            <span style="vertical-align: inherit;">comments ({{ user.total_comments }})</span>
+                        <li><a href="/u/{{ usuari.username }}/comments" class="">
+                            <span style="vertical-align: inherit;">comments ({{ usuari.total_comments }})</span>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/boosts" class="">
-                            <span style="vertical-align: inherit;">boosts ({{ user.total_boosts }})</span>
+                        <li><a href="/u/{{ usuari.username }}/boosts" class="">
+                            <span style="vertical-align: inherit;">boosts ({{ usuari.total_boosts }})</span>
                         </a></li>
                     </menu>
                 </aside>
@@ -53,19 +53,19 @@
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ user.username }}/top"
+                        <li><a href="/u/{{ usuari.username }}/top"
                                class="{% if ordre == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}"
+                        <li><a href="/u/{{ usuari.username }}"
                                 class="{% if ordre == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/commented"
+                        <li><a href="/u/{{ usuari.username }}/commented"
                                class="{% if ordre == 'commented' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 commented

@@ -55,8 +55,7 @@ url_users = [
     path('u/<str:username>/boosts/newest', views.view_user_boosts, {'ordre': 'newest'}, name='view_user_boosts'),
     path('u/<str:username>/boosts/commented', views.view_user_boosts, {'ordre': 'commented'}, name='view_user_boosts'),
 
-    path('settings/general', views.settings, name='settings'),
-    path('settings/profile', views.edit_user, name='edit_user'),
+    path('settings/profile/<str:username>', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),
     path('logout', views.logout_view, name='logout'),
 ]
