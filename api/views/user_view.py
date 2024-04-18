@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.urls import reverse,reverse_lazy
+from django.urls import reverse
+from django.db.models import Value, CharField
 
 from ..models import *
 
@@ -20,15 +21,15 @@ def sort(all, ordre):
 def view_user(request, username, ordre=None):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
-    threads = Publicacio.objects.filter(author=username)
-    comments = Comment.objects.filter(author=username)
-    links = Link.objects.filter(author=username)
+    threads = Publicacio.objects.filter(author=username).annotate(type=Value('thread', output_field=CharField()))
+    comments = Comment.objects.filter(author=username).annotate(type=Value('comment', output_field=CharField()))
+    links = Link.objects.filter(author=username).annotate(type=Value('link', output_field=CharField()))
 
     all = list(threads) + list(comments) + list(links)
     if ordre == '':
         ordre = 'newest'
     all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted}
+    context = {'user': obj, 'all': all_sorted, 'ordre': ordre}
     print(all_sorted)
     return HttpResponse(template.render(context, request))
 
@@ -42,7 +43,7 @@ def view_user_threads(request, username, ordre=None):
     if ordre == '':
         ordre = 'newest'
     all_sorted = sort(all, ordre)
-    context = {'user': obj, 'all': all_sorted}
+    context = {'user': obj, 'all': all_sorted} # Passar type para despues en la template saber que tipo es e ir a otro html en funcion del tipo
     return HttpResponse(template.render(context, request))
 
 

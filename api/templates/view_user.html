@@ -70,17 +70,20 @@
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ user.username }}/top" class="">
+                        <li><a href="/u/{{ user.username }}/top"
+                               class="{% if ordre == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}" class="active">
+                        <li><a href="/u/{{ user.username }}"
+                                class="{% if ordre == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/commented" class="">
+                        <li><a href="/u/{{ user.username }}/commented"
+                               class="{% if ordre == 'commented' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 commented
                             </font></font>
@@ -89,10 +92,17 @@
                 </aside>
                 <!-- TODO: tenir una plantilla que mostra el contingut -->
                 <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
-                    {% for element in all %}
-                        <!-- TODO: UNA TEMPLATE PER ELEMENT
+                    {% for thread in all %}
+                        {% if thread.type == "thread" %}
                             {% include 'show_threads.html' %}
-                        -->
+                        {% elif thread.type == "comment" %}
+                            {% include 'show_threads.html' %}
+                        {% elif thread.type == "link" %}
+                            {% include 'show_threads.html' %}
+                        {% else %}
+                                <p>{{ element.type }}</p>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </main>
