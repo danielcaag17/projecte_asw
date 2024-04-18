@@ -23,7 +23,7 @@
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
 
 
-{% include 'base.html' %}
+{% include 'base.html' with actiu='threads'%}
 <div id="middle" class="page-entry-front">
     <div class="kbin-container">
         <main id="main" class="" data-controller="lightbox timeago">
@@ -40,7 +40,7 @@
                     <li class="dropdown">
                         <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i
                                 class="fa-solid fa-filter"></i>
-                            Filtrar per tipus
+                            Filter by type
                         </button>
                         <ul class="dropdown__menu">
                             <li>

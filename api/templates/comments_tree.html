@@ -6,7 +6,7 @@
             <a
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
-                    title="Correu del user"
+                    title={{ comment.author.email }}
                     href="{% url 'view_user' comment.author.username %}">
                 {{ comment.author.username }}</a>,
             <time class="timeago">{{ comment.creation_data|timesince }}</time>
@@ -27,8 +27,6 @@
                     <span data-subject-target="favCounter">{{ comment.num_likes }}</span> <span><i
                         class="fa-solid fa-arrow-up"></i></span>
                 </button>
-                <input type="hidden" name="token"
-                       value="60ff0c14f9e35e6a75bec98c99.mT1WbCeXf6UWbT_mYbHuFGRXxUnEwxwzS2fMNELv5s0.30siDUOuDc0nBVqSENKCTA0YlCHptWxRJgyucSioi5_efAYLUPJKziYZeg">
             </form>
             <form method="post" class="vote__down"
                   action="{% url 'dislike_comment' thread_id=thread.id comment_id=comment.id %}">
@@ -37,8 +35,6 @@
                     <span data-subject-target="downvoteCounter">{{ comment.num_dislikes }}</span> <span><i
                         class="fa-solid fa-arrow-down"></i></span>
                 </button>
-                <input type="hidden" name="token"
-                       value="eef764ee7e85233c30bcb.tJSvg20gN3OprsuVmVn9qPxLe-H0hBdA5kJmrUUX0Kc.5sfj61xjZRvj5aH4wDqo4ZV5LYWF9Udwogsk4ixItZX69ebENENEJNrqhg">
             </form>
         </aside>
 
@@ -63,13 +59,13 @@
                     </li>
                 {% endif %}
             </menu>
-            <h3 hidden="">Añadir un comentario</h3>
+            <h3 hidden="">Add a comment</h3>
             <form id="reply_{{ comment.id }}" name="entry_comment" method="post"
                   action="{% url 'add_reply' thread_id=thread.id comment_id=comment.id %}"
                   class="comment-add" enctype="multipart/form-data" style="display: none">
                 {% csrf_token %}
-                <div><label for="entry_comment_6616cdb65f3850.74137319_body"></label><textarea
-                        id="entry_comment_6616cdb65f3850.74137319_body"
+                <div><label for="entry_comment_{{ comment.id }}_body"></label><textarea
+                        id="entry_comment_{{ comment.id }}_body"
                         name="entry_comment[body]"
                         data-controller="input-length rich-textarea autogrow"
                         data-action="input-length#updateDisplay"
@@ -81,9 +77,9 @@
                         <li class="dropdown">
                             <div>
                                 <button type="submit"
-                                        id="entry_comment_6616cdb65f3850.74137319_submit"
+                                        id="entry_comment_{{ comment.id }}_submit"
                                         name="entry_comment[submit]" class="btn btn__primary"
-                                        data-action="subject#sendForm">Añadir un comentario
+                                        data-action="subject#sendForm">Add a comment
                                 </button>
                             </div>
                         </li>
@@ -94,8 +90,8 @@
                   action="{% url 'edit_comment' thread_id=thread.id comment_id=comment.id %}"
                   class="comment-add" enctype="multipart/form-data" style="display: none">
                 {% csrf_token %}
-                <div><label for="entry_comment_6616cdb65f3850.74137319_body"></label><textarea
-                        id="entry_comment_6616cdb65f3850.74137319_body"
+                <div><label for="entry_comment_{{ comment.id }}_body"></label><textarea
+                        id="entry_comment_{{ comment.id }}_body"
                         name="entry_comment[body]"
                         data-controller="input-length rich-textarea autogrow"
                         data-action="input-length#updateDisplay"
@@ -107,7 +103,7 @@
                         <li class="dropdown">
                             <div>
                                 <button type="submit"
-                                        id="entry_comment_6616cdb65f3850.74137319_submit"
+                                        id="entry_comment_{{ comment.id }}_submit"
                                         name="entry_comment[submit]" class="btn btn__primary"
                                         data-action="subject#sendForm">Update comment
                                 </button>
@@ -129,7 +125,7 @@
             <a
                     data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out"
                     class="user-inline"
-                    title="Correu del user"
+                    title={{ reply.comment_reply.author.email }}
                     href="{% url 'view_user' comment.author.username %}">
                 {{ reply.comment_reply.author.username }}</a>,
             <time class="timeago">{{ reply.comment_reply.creation_data|timesince }}</time>
@@ -150,8 +146,6 @@
                     <span data-subject-target="favCounter">{{ reply.comment_reply.num_likes }}</span> <span><i
                         class="fa-solid fa-arrow-up"></i></span>
                 </button>
-                <input type="hidden" name="token"
-                       value="60ff0c14f9e35e6a75bec98c99.mT1WbCeXf6UWbT_mYbHuFGRXxUnEwxwzS2fMNELv5s0.30siDUOuDc0nBVqSENKCTA0YlCHptWxRJgyucSioi5_efAYLUPJKziYZeg">
             </form>
             <form method="post" class="vote__down"
                   action="{% url 'dislike_comment' thread.id reply.comment_reply.id %}">
@@ -160,8 +154,6 @@
                     <span data-subject-target="downvoteCounter">{{ reply.comment_reply.num_dislikes }}</span> <span><i
                         class="fa-solid fa-arrow-down"></i></span>
                 </button>
-                <input type="hidden" name="token"
-                       value="eef764ee7e85233c30bcb.tJSvg20gN3OprsuVmVn9qPxLe-H0hBdA5kJmrUUX0Kc.5sfj61xjZRvj5aH4wDqo4ZV5LYWF9Udwogsk4ixItZX69ebENENEJNrqhg">
             </form>
         </aside>
 
@@ -186,14 +178,14 @@
                     </li>
                 {% endif %}
             </menu>
-            <h3 hidden="">Añadir un comentario</h3>
+            <h3 hidden="">Add a comment</h3>
             <form id="reply_{{ reply.comment_reply.id }}" name="entry_comment" method="post"
                   action="{% url 'add_reply' thread_id=thread.id comment_id=reply.comment_reply.id %}"
                   class="comment-add" enctype="multipart/form-data" style="display: none">
                 {% csrf_token %}
                 <div><label
-                        for="entry_comment_6616cdb65f3850.74137319_body"></label><textarea
-                        id="entry_comment_6616cdb65f3850.74137319_body"
+                        for="entry_comment_{{ reply.comment_reply.id }}_body"></label><textarea
+                        id="entry_comment_{{ reply.comment_reply.id }}_body"
                         name="entry_comment[body]"
                         data-controller="input-length rich-textarea autogrow"
                         data-action="input-length#updateDisplay"
@@ -205,10 +197,10 @@
                         <li class="dropdown">
                             <div>
                                 <button type="submit"
-                                        id="entry_comment_6616cdb65f3850.74137319_submit"
+                                        id="entry_comment_{{ reply.comment_reply.id }}_submit"
                                         name="entry_comment[submit]"
                                         class="btn btn__primary"
-                                        data-action="subject#sendForm">Añadir un comentario
+                                        data-action="subject#sendForm">Add a comment
                                 </button>
                             </div>
                         </li>
@@ -219,8 +211,8 @@
                   action="{% url 'edit_comment' thread_id=thread.id comment_id=reply.comment_reply.id %}"
                   class="comment-add" enctype="multipart/form-data" style="display: none">
                 {% csrf_token %}
-                <div><label for="entry_comment_6616cdb65f3850.74137319_body"></label><textarea
-                        id="entry_comment_6616cdb65f3850.74137319_body"
+                <div><label for="entry_comment_{{ reply.comment_reply.id }}_body"></label><textarea
+                        id="entry_comment_{{ reply.comment_reply.id }}_body"
                         name="entry_comment[body]"
                         data-controller="input-length rich-textarea autogrow"
                         data-action="input-length#updateDisplay"
@@ -232,7 +224,7 @@
                         <li class="dropdown">
                             <div>
                                 <button type="submit"
-                                        id="entry_comment_6616cdb65f3850.74137319_submit"
+                                        id="entry_comment_{{ reply.comment_reply.id }}_submit"
                                         name="entry_comment[submit]" class="btn btn__primary"
                                         data-action="subject#sendForm">Update comment
                                 </button>

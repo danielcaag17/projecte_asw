@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.db import models
 from .user import User
 from django.utils import timezone
@@ -25,3 +26,15 @@ class Magazine(models.Model):
 
     def total_comments(self):
         return sum(publicacio.num_coments for publicacio in self.publicacio_set.all())
+
+    def total_publicacions(self):
+        return self.publicacio_set.all().count()
+    @property
+    def total_threads(self):
+        Thread = apps.get_model('api', 'Thread')
+        return Thread.objects.filter(magazine=self).count()
+
+    @property
+    def total_links(self):
+        Link = apps.get_model('api', 'Link')
+        return Link.objects.filter(magazine=self).count()

@@ -27,134 +27,34 @@
 
     <div class="kbin-container">
         <main id="main" data-controller="lightbox timeago" class="">
-            <aside class="options options--top options-activity">
-                <div class="options__title">
-                    <h2>Add new</h2>
-                </div>
-                <menu class="options__main">
-                    <li><a href="/new" class="">link</a></li>
-                    <li><a href="/new/thread" class="active">thread</a></li>
-                    <li><a href="/new/photo" class="">photo</a></li>
-                    <li><a href="/microblog">post</a></li>
-                    <li><a href="/newMagazine" class="">magazine</a></li>
-                </menu>
-            </aside>
-
+            {% include 'barra_new.html' with actiu="magazine" %}
             <div id="content" class="section">
                 <div class="container">
                     <form name="magazine" method="post" action="{% url 'new_magazine' %}">
-                        <div><label for="magazine_name" class="required">Nombre</label><input type="text"
-                                                                                              id="magazine_name"
-                                                                                              name="name"
-                                                                                              required="required"
-                                                                                              placeholder="/m/"
-                                                                                              data-controller="input-length"
-                                                                                              data-action="input-length#updateDisplay"
-                                                                                              data-input-length-max-value="25">
-                            <div id="magazine_name_max_length" class="length-indicator">0/25</div>
+                        <div>
+                            <label for="magazine_name" class="required">Name</label>
+                            <input type="text"
+                                   id="magazine_name"
+                                   name="name"
+                                   required="required"
+
+                            >
                         </div>
-                        <div><label for="magazine_title" class="required">Título</label><input type="text"
-                                                                                               id="magazine_title"
-                                                                                               name="title"
-                                                                                               required="required"
-                                                                                               data-controller="input-length autogrow"
-                                                                                               data-action="input-length#updateDisplay"
-                                                                                               data-input-length-max-value="50"
-                                                                                               style="overflow: hidden; height: 51px;">
-                            <div id="magazine_title_max_length" class="length-indicator">0/50</div>
+                        <div>
+                            <label for="magazine_title" class="required">Title</label>
+                            <input type="text"
+                                   id="magazine_title"
+                                   name="title"
+                                   required="required"
+                                   style="overflow: hidden; height: 51px;">
                         </div>
-                        <markdown-toolbar for="magazine_description" class="markdown meta"
-                                          data-controller="markdown-toolbar"
-                                          role="toolbar" tabindex="0">
-                            <md-bold title="Negrita" aria-label="Negrita">
-                                <i class="fa-solid fa-bold"></i>
-                            </md-bold>
-                            <md-italic title="Cursiva" aria-label="Cursiva">
-                                <i class="fa-solid fa-italic"></i>
-                            </md-italic>
-                            <md-strikethrough title="Tachado" aria-label="Tachado">
-                                <i class="fa-solid fa-strikethrough"></i>
-                            </md-strikethrough>
-                            <md-header title="Encabezado" aria-label="Encabezado">
-                                <i class="fa-solid fa-heading"></i>
-                            </md-header>
-                            <md-quote title="Cita" aria-label="Cita">
-                                <i class="fa-solid fa-quote-left"></i>
-                            </md-quote>
-                            <md-code title="Código" aria-label="Código">
-                                <i class="fa-solid fa-code"></i>
-                            </md-code>
-                            <md-link title="Enlace" aria-label="Enlace">
-                                <i class="fa-solid fa-link"></i>
-                            </md-link>
-                            <md-image title="Imagen" aria-label="Imagen">
-                                <i class="fa-solid fa-image"></i>
-                            </md-image>
-                            <md-unordered-list title="Lista sin ordenar" aria-label="Lista sin ordenar">
-                                <i class="fa-solid fa-list"></i>
-                            </md-unordered-list>
-                            <md-ordered-list title="Lista ordenada" aria-label="Lista ordenada">
-                                <i class="fa-solid fa-list-ol"></i>
-                            </md-ordered-list>
-                            <md-mention title="Mención" aria-label="Mención">
-                                <i class="fa-solid fa-at"></i>
-                            </md-mention>
-                            <md-kbin title="Spoiler" aria-label="Spoiler"
-                                     data-action="click->markdown-toolbar#addSpoiler">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </md-kbin>
-                        </markdown-toolbar>
-                        <div><textarea id="magazine_description" name="description" placeholder="Descripción"
-                                       data-controller="input-length rich-textarea autogrow"
-                                       data-action="input-length#updateDisplay" data-input-length-max-value="10000"
+
+                        <div>
+                            <textarea id="magazine_description" name="description" placeholder="Description"
                                        style="overflow: hidden; height: 70px;"></textarea>
-                            <div id="magazine_description_max_length" class="length-indicator">0/10000</div>
                         </div>
-                        <markdown-toolbar for="magazine_rules" class="markdown meta" data-controller="markdown-toolbar"
-                                          role="toolbar" tabindex="0">
-                            <md-bold title="Negrita" aria-label="Negrita">
-                                <i class="fa-solid fa-bold"></i>
-                            </md-bold>
-                            <md-italic title="Cursiva" aria-label="Cursiva">
-                                <i class="fa-solid fa-italic"></i>
-                            </md-italic>
-                            <md-strikethrough title="Tachado" aria-label="Tachado">
-                                <i class="fa-solid fa-strikethrough"></i>
-                            </md-strikethrough>
-                            <md-header title="Encabezado" aria-label="Encabezado">
-                                <i class="fa-solid fa-heading"></i>
-                            </md-header>
-                            <md-quote title="Cita" aria-label="Cita">
-                                <i class="fa-solid fa-quote-left"></i>
-                            </md-quote>
-                            <md-code title="Código" aria-label="Código">
-                                <i class="fa-solid fa-code"></i>
-                            </md-code>
-                            <md-link title="Enlace" aria-label="Enlace">
-                                <i class="fa-solid fa-link"></i>
-                            </md-link>
-                            <md-image title="Imagen" aria-label="Imagen">
-                                <i class="fa-solid fa-image"></i>
-                            </md-image>
-                            <md-unordered-list title="Lista sin ordenar" aria-label="Lista sin ordenar">
-                                <i class="fa-solid fa-list"></i>
-                            </md-unordered-list>
-                            <md-ordered-list title="Lista ordenada" aria-label="Lista ordenada">
-                                <i class="fa-solid fa-list-ol"></i>
-                            </md-ordered-list>
-                            <md-mention title="Mención" aria-label="Mención">
-                                <i class="fa-solid fa-at"></i>
-                            </md-mention>
-                            <md-kbin title="Spoiler" aria-label="Spoiler"
-                                     data-action="click->markdown-toolbar#addSpoiler">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </md-kbin>
-                        </markdown-toolbar>
-                        <div><textarea id="magazine_rules" name="rules" placeholder="Reglas"
-                                       data-controller="input-length rich-textarea autogrow"
-                                       data-action="input-length#updateDisplay" data-input-length-max-value="10000"
+                        <div><textarea id="magazine_rules" name="rules" placeholder="Rules"
                                        style="overflow: hidden; height: 70px;"></textarea>
-                            <div id="magazine_rules_max_length" class="length-indicator">0/10000</div>
                         </div>
                         <div class="checkbox"><label for="magazine_isAdult">18+ / NSFW</label><input type="checkbox"
                                                                                                      id="magazine_isAdult"
@@ -164,13 +64,10 @@
                             <div class="float-end">
                                 <button type="submit" id="magazine_submit" name="magazine[submit]"
                                         class="btn btn__primary">
-                                    Crear
-                                    una nueva revista
+                                    Create new magazine
                                 </button>
                             </div>
                         </div>
-                        <input type="hidden" id="magazine__token" name="magazine[_token]"
-                               value="962fe.RDjFB2D4kz9Mztc9fUmIGeT6fGvzzhyxrVOBsjFMjTI.cg2CdBWT12V--p9OBB7AULOgFwW_90nD4hrO_F4I5mZ0WqhPJZr3cgit4w">
                     </form>
                 </div>
             </div>

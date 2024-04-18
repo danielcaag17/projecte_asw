@@ -87,6 +87,9 @@ url_magazines = [
     path('magazines/suscriptions', views.all_magazines, {'ordre': 'suscriptions'}, name='all_magazines_suscriptions'),
 
     path('newMagazine', views.new_magazine, name='new_magazine'),
+
+    path('magazine/<int:magazine_id>/subscribe', views.add_subscription, name='subscribe'),
+    path('magazine/<int:magazine_id>/unsubscribe', views.remove_subscription, name='unsubscribe'),
 ]
 
 urlpatterns = ([
