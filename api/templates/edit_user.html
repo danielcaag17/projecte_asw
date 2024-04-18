@@ -16,8 +16,7 @@
             transform: translate3d(0, 0, 0);
         }
     </style>
-    <!-- TODO: revisar -->
-    <title>Perfil - {{ usuari.username }} - kbin.social</title>
+    <title>Profile - {{ usuari.username }} - kbin.social</title>
     <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
@@ -53,7 +52,6 @@
                                 {{ usuari.username }}
                             </div>
                         </div>
-                        <!-- TODO: veure perque surt Seleccione archivo -->
                         <div><label for="user_basic_avatar">Avatar</label><input type="file" id="user_basic_avatar"
                                                                                  name="avatar"></div>
                         <div><label for="user_basic_cover">Front page</label><input type="file" id="user_basic_cover"
@@ -65,8 +63,6 @@
                                 </button>
                             </div>
                         </div>
-                        <input type="hidden" id="user_basic__token" name="user_basic[_token]"
-                               value="e5c400b009a20577ac4f70c68b2b.-xT-wwdOBcVGBx1haI3Wxuczaut0oslfVSzO49xE_jw.glvOrEZ3bb0tSCsYHOiQoKpCCNwu15gzAFWdu70UjgTKQpKobitO8XFvRA">
                     </form>
                 </div>
             </div>

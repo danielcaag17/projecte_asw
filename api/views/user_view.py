@@ -148,14 +148,6 @@ def edit_user(request, username):
 
 
 @csrf_exempt
-def settings(request):
-    template = loader.get_template('user_settings.html')
-    # obj = User.objects.get(username=username)
-    # context = {'user': obj}
-    return HttpResponse(template.render())
-
-
-@csrf_exempt
 def logout_view(request):
     logout(request)
     return redirect("/")
