@@ -14,7 +14,7 @@ class Publicacio(models.Model):
     creation_data = models.DateTimeField(default=timezone.now)
     num_coments = models.PositiveIntegerField(default=0)
     num_boosts = models.PositiveIntegerField(default=0)
-    magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE)
+    magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE, default=None)
 
     def temps_desde_creacio(self):
         temps = timezone.now()
