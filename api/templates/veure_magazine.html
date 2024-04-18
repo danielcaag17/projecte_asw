@@ -1,139 +1,69 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ca" style="font-size: 100%"><head><style type="text/css">.turbo-progress-bar {
-  position: fixed;
-  display: block;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: #0076ff;
-  z-index: 2147483647;
-  transition:
-    width 300ms ease-out,
-    opacity 150ms 150ms ease-in;
-  transform: translate3d(0, 0, 0);
-}
-</style>
+<html lang="ca" style="font-size: 100%">
+<head>
+    <style type="text/css">.turbo-progress-bar {
+        position: fixed;
+        display: block;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: #0076ff;
+        z-index: 2147483647;
+        transition: width 300ms ease-out,
+        opacity 150ms 150ms ease-in;
+        transform: translate3d(0, 0, 0);
+    }
+    </style>
     <title>Magazine</title>
-    <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
+    <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 
 <body>
-  <header id="header" class="header">
-        <div class="kbin-container">
-            <nav class="head-nav">
-                <div class="brand">
-                    <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
-                </div>
-                <menu class="head-nav__menu">
-                    <li></li>
-                    <li><a href="/" class="active">Threads</a></li>
-                    <li><a href="/microblog" class="">Microblog</a></li>
-                    <li><a href="/*" class="">All Content</a></li>
-                    <li><a href="/people" class="">People</a></li>
-                    <li><a href="/magazines" class="">Magazines</a></li>
-                    <li><a href="/magazines/collections" class="">Collections</a></li>
-                </menu>
-            </nav>
-            <menu>
-                <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i class="fa-solid fa-plus"></i> Add</a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/new" class="">Add new link</a></li>
-                            <li><a href="/new/article" class="">Add new thread</a></li>
-                            <li><a href="/new/photo" class="">Add new photo</a></li>
-                            <li><a class="" href="/microblog">Add new post</a></li>
-                            <li><a class="" href="/newMagazine">Create new magazine</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
-                        <li><a href="/settings/general" class="">Settings</a></li>
-                        <li><a href="/profile/messages" class="">Messages</a></li>
-                        <li><a href="/settings/notifications" class="">Notifications</a></li>
-                        <li><a href="/logout">Log out</a></li>
-                    </ul>
-                </li>
-            </menu>
-        </div>
-    </header>
+{% include 'base.html' %}
 
-     <div id="middle" class="page-user page-user-overview">
-        <div class="kbin-container">
-            <main id="main" data-controller="lightbox timeago" class="">
-                {% include 'section_magazine.html' %}
-                <!-- Options top -->
-                <aside class="options" id="options">
-                    <div></div>
-                    <menu class="options__main">
-                        <li>
-                            <span style="vertical-align: inherit;">Creat a:</span>
-                            <span>{{ magazine.creation_date }}</span>
-                       </li>
-                        <!-- TODO: de posar username -->
+<div id="middle" class="page-user page-user-overview">
+    <div class="kbin-container">
+        <main id="main" data-controller="lightbox timeago" class="view-compact">
+            {% include 'section_magazine.html' %}
+            <!-- Options top -->
 
-                        <li>
-                            <span style="vertical-align: inherit;">Propietari:</span>
-                            <span><a href="/u/{{ magazine.author.username }}" class="">
-                        </a></span></li>
-
-
-
-                        <li>
-                            <span style="vertical-align: inherit;">Subscriptors:</span>
-                            <span>{{ magazine.n_suscriptions }}</span>
-                      </li>
-                        <li>
-                            <span style="vertical-align: inherit;">Threads:</span>
-                            <span>{{ magazine.n_threads }}</span>
-                       </li>
-                        <li>
-                            <span style="vertical-align: inherit;">Links:</span>
-                            <span>{{ magazine.n_links }}</span></li>
-
-                        <li> <span style="vertical-align: inherit;">Comments:</span>
-                            <span>{{ magazine.n_comments }}</span></li></li>
-
-                    </menu>
-                    <!-- Scroll -->
-                    <!-- TODO: falta que funcioni -->
-                    <menu class="scroll">
-                        <li class="scroll-left">
-                            <i class="fa-solid fa-circle-left"></i>
-                        </li><li class="scroll-right">
-                            <i class="fa-solid fa-circle-right"></i>
-                        </li>
-                    </menu>
-                </aside>
-                <!-- Options -->
-<aside id="options" class="options options--top">
+            <!-- Options -->
+            <aside id="options" class="options options--top">
                 <menu class="options__main no-scroll">
-                    <li><a class="{% if active_option == 'top' %}active{% endif %}" href="{% url 'veure_magazine_top' magazine.id active_filter %}">Top</a></li>
-                    <li><a class="{% if active_option == 'newest' %}active{% endif %}" href="{% url 'veure_magazine_newest' magazine.id active_filter %}">Newest</a></li>
+                    <li><a class="{% if active_option == 'top' %}active{% endif %}"
+                           href="{% url 'veure_magazine_top' magazine.id active_filter %}">Top</a></li>
+                    <li><a class="{% if active_option == 'newest' %}active{% endif %}"
+                           href="{% url 'veure_magazine_newest' magazine.id active_filter %}">Newest</a></li>
                     <li><a class="{% if active_option == 'commented' %}active{% endif %}"
                            href="{% url 'veure_magazine_comments' magazine.id active_filter %}">Commented</a></li>
                 </menu>
                 <menu class="options__filters">
                     <li class="dropdown">
-                        <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i class="fa-solid fa-filter"></i>
+                        <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i
+                                class="fa-solid fa-filter"></i>
                             Filtrar per tipus
                         </button>
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="{% url 'veure_magazine_newest' magazine.id 'tot' %}" class="{% if active_filter == 'tot' %}active{% endif %}">
+                                <a href="{% url 'veure_magazine_newest' magazine.id 'tot' %}"
+                                   class="{% if active_filter == 'tot' %}active{% endif %}">
                                     Tot
                                 </a>
                             </li>
                             <li>
-                            <a href="{% url 'veure_magazine_newest' magazine.id 'links' %}" class="{% if active_filter == 'links' %}active{% endif %}">
-                            <!--     <a href="{{ request.path }}/Links "class="{% if active_filter == 'links' %}active{% endif %}"> -->
+                                <a href="{% url 'veure_magazine_newest' magazine.id 'links' %}"
+                                   class="{% if active_filter == 'links' %}active{% endif %}">
+                                    <!--     <a href="{{ request.path }}/Links "class="{% if active_filter == 'links' %}
+                                        active{% endif %}"> -->
                                     Links
                                 </a>
                             </li>
                             <li>
-                                 <a href="{% url 'veure_magazine_newest' magazine.id 'threads' %}" class="{% if active_filter == 'threads' %}active{% endif %}">
+                                <a href="{% url 'veure_magazine_newest' magazine.id 'threads' %}"
+                                   class="{% if active_filter == 'threads' %}active{% endif %}">
                                     Threads
                                 </a>
                             </li>
@@ -141,14 +71,20 @@
                     </li>
                 </menu>
             </aside>
-                <div id="content">
-                {% for thread in threads %}
-                    {% include 'show_threads.html' %}
-                {% endfor %}
+            <div id="content">
+                {% if threads|length == 0 %}
+                    <aside class="section section--muted">
+                        <p>Empty</p>
+                    </aside>
+                {% else %}
+                    {% for thread in threads %}
+                        {% include 'show_threads.html' %}
+                    {% endfor %}
+                {% endif %}
             </div>
-            </main>
-        </div>
+        </main>
     </div>
+</div>
 
 
 </body>

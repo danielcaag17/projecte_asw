@@ -103,8 +103,6 @@ def main_list(request, ordre=None, filter=None,eliminat=None):
 
     context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat}
 
-
-
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 

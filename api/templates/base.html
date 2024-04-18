@@ -7,13 +7,8 @@
             </div>
             <menu class="head-nav__menu">
                 <li></li>
-                <li><a href="/" class="active">Threads</a></li>
-                <li><a href="/photos" class="">Photos</a></li>
-                <li><a href="/microblog" class="">Microblog</a></li>
-                <li><a href="/*" class="">All Content</a></li>
-                <li><a href="/people" class="">People</a></li>
-                <li><a href="/magazines" class="">Magazines</a></li>
-                <li><a href="/magazines/collections" class="">Collections</a></li>
+                <li><a href="/" class="{% if actiu == 'threads' %}active{% endif %}">Threads</a></li>
+                <li><a href="/magazines" class="{% if actiu == 'magazine' %}active{% endif %}">Magazines</a></li>
             </menu>
         </nav>
 
@@ -29,8 +24,6 @@
                 <ul class="dropdown__menu">
                     <li><a href="/new" class="">Add new link</a></li>
                     <li><a href="/new/thread" class="">Add new thread</a></li>
-                    <li><a href="/new/photo" class="">Add new photo</a></li>
-                    <li><a class="" href="/microblog">Add new post</a></li>
                     <li><a class="" href="/newMagazine">Create new magazine</a></li>
                 </ul>
             </li>
