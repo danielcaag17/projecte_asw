@@ -22,6 +22,7 @@ url_threads = [
     path('votar/<int:thread_id>/', views.votar_publicacio, name='votar_thread'),
     path('boost/<int:thread_id>/',views.boost_thread,name='boost_thread'),
     path('cercador', views.view_cercador, {'ordre': 'newest', 'filter': 'tot'}, name='cercador'),
+
     path('cercador/newest/<str:filter>/', views.view_cercador, {'ordre': 'newest'},
          name='cercador_newest'),
     path('cercador/newest/', views.view_cercador, {'filter': 'tot', 'ordre': 'newest'},
