@@ -6,158 +6,140 @@
         i el valor predeterminat de type és text/css -->
     <style>
         .turbo-progress-bar {
-          position: fixed;
-          display: block;
-          top: 0;
-          left: 0;
-          height: 3px;
-          background: #0076ff;
-          z-index: 2147483647;
-          transition:
-            width 300ms ease-out,
+            position: fixed;
+            display: block;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #0076ff;
+            z-index: 2147483647;
+            transition: width 300ms ease-out,
             opacity 150ms 150ms ease-in;
-          transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
         }
     </style>
-    <title>Profile - {{ user.username }} - kbin.social</title>
+    <title>Profile - {{ usuari.username }} - kbin.social</title>
     <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 <body class="theme--light" data-controller="kbin notifications" data-turbo="false">
 <!-- TODO: es perd inici de sessio -->
-    {% include 'base.html' %}
-    <div id="middle" class="page-user page-user-overview">
-        <div class="kbin-container">
-            <main id="main" data-controller="lightbox timeago" class="">
-                {% include 'section_user.html' %}
-                <!-- Options top -->
-                <aside class="options" id="options">
-                    <div></div>
-                    <menu class="options__main" style="align-items: center; justify-content: center;">
-                        <li><a href="/u/{{ user.username }}" class="active">
-                            <span style="vertical-align: inherit;">general view</span>
+{% include 'base.html' %}
+<div id="middle" class="page-user page-user-overview">
+    <div class="kbin-container">
+        <main id="main" data-controller="lightbox timeago" class="">
+            {% include 'section_user.html' %}
+            <!-- Options top -->
+            <aside class="options" id="options">
+                <div></div>
+                <menu class="options__main" style="align-items: center; justify-content: center;">
+                    <li><a href="/u/{{ usuari.username }}" class="{% if selected == "threads" %}active{% endif %}">
+                        <span style="vertical-align: inherit;">threads ({{ n_threads }})</span>
+                    </a></li>
+                    <li><a href="/u/{{ usuari.username }}/com" class="{% if selected == "com" %}active{% endif %}">
+                        <span style="vertical-align: inherit;">comments ({{ n_com }})</span>
+                    </a></li>
+                    {% if user.is_authenticated and user.email == usuari.email %}
+                        <li><a href="/u/{{ usuari.username }}/boosts"
+                               class="{% if selected == "boost" %}active{% endif %}">
+                            <span style="vertical-align: inherit;">boosts ({{ n_boosts }})</span>
                         </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/threads" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">threads (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/comments" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">comments (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/posts" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">posts (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <li><a href="/u/{{ user.username }}/replies" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">answers (0)</span>
-                        </a></li>
-                        <!-- TODO: de posar username -->
-                        <!-- TODO: ha d'estar la incio iniciada -->
-                        <li><a href="/u/{{ user.username }}/boosts" class="">
-                            <!-- TODO: posar variable -->
-                            <span style="vertical-align: inherit;">boosts (0)</span>
-                        </a></li>
-                    </menu>
-                </aside>
+                    {% endif %}
+                </menu>
+            </aside>
+            {% if selected != "com" %}
                 <!-- Options -->
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ user.username }}/top" class="">
+                        <li><a href="/u/{{ usuari.username }}/{%if selected != "threads"%}boosts/{% endif %}top/{{ active_filter }}"
+                               class="{% if active_option == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}" class="active">
+                        <li><a href="/u/{{ usuari.username }}/{%if selected != "threads"%}boosts/{% endif %}newest/{{ active_filter }}"
+                               class="{% if active_option == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ user.username }}/commented" class="">
+                        <li><a href="/u/{{ usuari.username }}/{%if selected != "threads"%}boosts/{% endif %}com/{{ active_filter }}"
+                               class="{% if active_option == 'commented' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 commented
                             </font></font>
                         </a></li>
                     </menu>
+                    <menu class="options__filters">
+                        <li class="dropdown">
+                            <button aria-label="Filtrar per tipus" title="Filtrar per tipus"><i
+                                    class="fa-solid fa-filter"></i>
+                                Filter by type
+                            </button>
+                            <ul class="dropdown__menu">
+                                <li>
+                                    <a href="/u/{{ usuari.username }}/{{ active_option }}/tot" class="{% if active_filter == "tot" %}active{% endif %}">
+                                        Tot
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/u/{{ usuari.username }}/{{ active_option }}/links" class="{% if active_filter == "links" %}active{% endif %}">
+                                        <!--     <a href="//Links "class=""> -->
+                                        Links
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/u/{{ usuari.username }}/{{ active_option }}/threads" class="{% if active_filter == "threads" %}active{% endif %}">
+                                        Threads
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </menu>
                 </aside>
-                <!-- TODO: tenir una plantilla que mostra el contingut -->
-                <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
-                    {% for thread in threads %}
-                        <!-- TODO: ... -->
-                        <article class="entry section subject">
-                            <header>
-                                <h2>
-                                    <a rel="nofollow noopener noreferrer" href="{% url 'veure_thread' thread.id 'top' %}">{{ thread.title }}</a>
-                                    {% if thread.url != none %}
-                                        <span class="entry__domain">
-                                        (<a href="https://{{ thread.url }}" target="_blank">{{ thread.url }} </a>)
-                                            <!--TODO: AL CREAR EL LINK MIRAR QUE EL FORMAT SIGUI CORRECTE D'ALGUNA MANERA -->
-                                        </span>
-                                    {% endif %}
-                                </h2>
-                            </header>
-                            <aside class="meta entry__meta">
-                                <a class="user-inline" href="/u/{{ thread.author_id }}">{{ thread.author_id }}</a>
 
-                                <span> to </span>
-                                <a href="/magazine/{{ thread.magazine.id }}" class="magazine-inline" title="{{thread.magazine.name}}">{{ thread.magazine.name }}</a>
-                            </aside>
-                            <aside class="vote">
-                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method = "post" class = "vote__up">
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
-                                    <input type="hidden" name="vote_type" value="positiu">
-                                    <button type="submit" title="Vots positius" aria-label="Vots positius">
-                                        <span data-subject-target="favCounter">{{ thread.num_likes }}</span>
-                                        <span>
-                                                                <i class="fa-solid fa-arrow-up"></i>
-                                                            </span>
-                                    </button>
-                                </form>
-                                <form action="{% url 'votar_thread' thread.id  %}" name="votar_thread" method="post" class="vote__down">
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="hidden" name="keyword" value="{{ request.GET.keyword }}">
-                                    <input type="hidden" name="vote_type" value="negatiu">
-                                    <button type="submit" title="Vots negatius" aria-label="Vots negatius">
-                                        <span data-subject-target="downvoteCounter">{{ thread.num_dislikes }}</span> <span><i
-                                            class="fa-solid fa-arrow-down"></i></span>
-                                    </button>
-                                </form>
-                            </aside>
-                            <footer>
-                                <menu>
-                                    <li>
-                                        <a class="stretched-link" href="{% url 'veure_thread' thread.id 'top' %}"><span
-                                                data-subject-target="commentsCounter">{{ thread.num_coments }}</span> comments </a>
-                                    </li>
-                                    <li>
-                                        <form action="{% url 'boost_thread' thread.id %}" name="boost_thread" method="post">
-                                            <input type="hidden" name="next" value="{{ request.path }}">
-                                            <input type="hidden" name = "keyword" value = "{{ request.GET.keyword }}">
-                                            <button class="boost-link stretched-link" type="submit"
-                                                    data-action="subject#favourite">boost
-                                                {% if thread.num_boosts != 0 %}
-                                                    <span class="" data-subject-target="upvoteCounter">({{ thread.num_boosts }})</span>
-                                                {% endif %}
-                                            </button>
-                                        </form>
-                                    </li>
-                                </menu>
-                                <div data-subject-target="container" class="js-container">
-                                </div>
-                            </footer>
-                        </article>
+            {% else %}
+                <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
+                    <div></div>
+                    <menu class="options__main no-scroll">
+                        <li><a href="/u/{{ usuari.username }}/com/top/{{ active_filter }}"
+                               class="{% if active_option == 'top' %}active{% endif %}">
+                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                top
+                            </font></font>
+                        </a></li>
+                        <li><a href="/u/{{ usuari.username }}/com/newest/{{ active_filter }}"
+                               class="{% if active_option == 'newest' %}active{% endif %}">
+                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                newest
+                            </font></font>
+                        </a></li>
+                        <li><a href="/u/{{ usuari.username }}/com/oldest/{{ active_filter }}"
+                               class="{% if active_option == 'oldest' %}active{% endif %}">
+                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                oldest
+                            </font></font>
+                        </a></li>
+                    </menu>
+                </aside>
+            {% endif %}
+
+
+            <div id="content" class="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
+                {% if selected != "com" %}
+                    {% for thread in threads %}
+                        {% include 'show_threads.html' %}
                     {% endfor %}
-                </div>
-            </main>
-        </div>
+                {% else %}
+                    {% for comment,thread in pare %}
+                        {% include 'un_coment.html' %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </main>
     </div>
+</div>
 </body>
 </html>
