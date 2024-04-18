@@ -109,7 +109,7 @@ def main_list(request, ordre=None, filter=None,eliminat=None):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
 
-    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat, 'user': djangoUser}
+    context = {'threads': tot, 'active_option': ordre, 'active_filter': filter,'eliminat':eliminat}
     template = loader.get_template('home.html')
     return HttpResponse(template.render(context, request))
 
@@ -137,12 +137,7 @@ def new_link(request):
     template = loader.get_template('new_link.html')
     return HttpResponse(template.render(context, request))
 
-
-
-
-
-
-
+  
 @login_required(redirect_field_name='login')
 @csrf_exempt
 def new_magazine(request):

@@ -1,104 +1,92 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ca" style="font-size: 100%"><head><style type="text/css">.turbo-progress-bar {
-  position: fixed;
-  display: block;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: #0076ff;
-  z-index: 2147483647;
-  transition:
-    width 300ms ease-out,
-    opacity 150ms 150ms ease-in;
-  transform: translate3d(0, 0, 0);
-}
-</style>
+<html lang="ca" style="font-size: 100%">
+<head>
+    <style type="text/css">.turbo-progress-bar {
+        position: fixed;
+        display: block;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: #0076ff;
+        z-index: 2147483647;
+        transition: width 300ms ease-out,
+        opacity 150ms 150ms ease-in;
+        transform: translate3d(0, 0, 0);
+    }
+    </style>
     <title>Magazines</title>
-    <link rel = "icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
+    <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
 </head>
 
-<body>
-  <header id="header" class="header">
-        <div class="kbin-container">
-            <nav class="head-nav">
-                <div class="brand">
-                    <a href="/"><img id="logo" src="{% static '/svg/kbin_logo.svg' %}" alt="Homepage" title="Homepage"></a>
-                </div>
-                <menu class="head-nav__menu">
-                    <li></li>
-                    <li><a href="/" class="active">Threads</a></li>
-                    <li><a href="/microblog" class="">Microblog</a></li>
-                    <li><a href="/*" class="">All Content</a></li>
-                    <li><a href="/people" class="">People</a></li>
-                    <li><a href="/magazines" class="">Magazines</a></li>
-                    <li><a href="/magazines/collections" class="">Collections</a></li>
-                </menu>
-            </nav>
-            <menu>
-                <li class="dropdown"><a href="/new" class="icon" aria-label="Add" title="Add"><i class="fa-solid fa-plus"></i> Add</a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/new" class="">Add new link</a></li>
-                            <li><a href="/new/article" class="">Add new thread</a></li>
-                            <li><a href="/new/photo" class="">Add new photo</a></li>
-                            <li><a class="" href="/microblog">Add new post</a></li>
-                            <li><a class="" href="/newMagazine">Create new magazine</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a class=" login" href="/u/usuari_predeterminat"><span class="user-name">usuari_predeterminat</span></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/u/usuari_predeterminat" class="">Profile</a></li>
-                        <li><a href="/settings/general" class="">Settings</a></li>
-                        <li><a href="/profile/messages" class="">Messages</a></li>
-                        <li><a href="/settings/notifications" class="">Notifications</a></li>
-                        <li><a href="/logout">Log out</a></li>
-                    </ul>
-                </li>
-            </menu>
-        </div>
-    </header>
+<body class="theme--light" data-controller="kbin notifications" data-turbo="false">
+{% include 'base.html' with actiu="magazine"%}
+<div id="middle" class="page-magazines page-settings">
+    <div class="kbin-container">
+        <main id="main" data-controller="lightbox timeago" class="view-compact">
+            <div id="content">
+                <div class="section">
+                    <div class="magazines table-responsive">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th style="text-align: center">Nom</th>
+                                <th style="text-align: center"><a rel="nofollow noopener noreferrer"
+                                                                  href="{% url 'all_magazines_thread' %}">Threads</a>
+                                </th>
+                                <th style="text-align: center"><a rel="nofollow noopener noreferrer"
+                                                                  href="{% url 'all_magazines_commented' %}">Comentaris</a>
+                                </th>
+                                <th style="text-align: center"><a rel="nofollow noopener noreferrer"
+                                                                  href="{% url 'all_magazines_elements' %}">Publicacions</a>
+                                </th>
+                                <th style="text-align: center"><a rel="nofollow noopener noreferrer"
+                                                                  href="{% url 'all_magazines_suscriptions' %}">Suscripcions</a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for magazine in magazines %}
+                                <tr>
+                                    <td>
+                                        <a class="magazine-inline stretched-link"
+                                           href="{% url 'veure_magazine_newest' magazine.id 'tot' %}">{{ magazine.name }}</a>
 
-<div class="magazines table-responsive">
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align: center">Nom</th>
-                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_thread' %}">Threads</a></th>
-                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_commented' %}">Comentaris</a></th>
-                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_elements' %}">Publicacions</a></th>
-                <th style="text-align: center"><a rel="nofollow noopener noreferrer" href="{% url 'all_magazines_suscriptions' %}">Suscripcions</a></th>
-            </tr>
-        </thead>
-        <tbody>
-         {% for magazine in magazines %}
-
-         <tr>
-         <td>
-             <a rel="nofollow noopener noreferrer" href="{% url 'veure_magazine_newest' magazine.id 'tot' %}">{{ magazine.name }}</a>
-
-         </td>
-         <td>
-             <p>{{ magazine.total_threads }}</p>
-         </td>
-             <td>
-             <p>{{ magazine.total_comments }}</p>
-         </td>
-         <td>
-             <p>{{ magazine.total_publicacions }}</p>
-         </td>
-         <td>
-             <p>{{ magazine.n_suscriptions }}</p>
-         </td>
-         </tr>
-
-
-          {% endfor %}
-
-        </tbody>
-    </table>
+                                    </td>
+                                    <td>
+                                        <p>{{ magazine.total_threads }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ magazine.total_comments }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ magazine.total_publicacions }}</p>
+                                    </td>
+                                    <td>
+                                        <aside class="magazine__subscribe" data-controller="subs">
+                                            <div class="action">
+                                                <i class="fa-solid fa-users"></i>
+                                                <span>{{ magazine.n_suscriptions }}</span>
+                                            </div>
+                                            <form action="/m/RedditMigration/subscribe" name="magazine_subscribe"
+                                                  method="post">
+                                                <button type="submit" class="btn btn__secondary action"
+                                                        data-action="subs#send">
+                                                    <i class="fa-sharp fa-solid fa-folder-plus"></i><span>Subscribe</span>
+                                                </button>
+                                            </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+            </div>
+        </main>
+    </div>
 </div>
-
 </body>
 </html>

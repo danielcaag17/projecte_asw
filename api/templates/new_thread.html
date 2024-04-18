@@ -26,18 +26,7 @@
 <div id="middle" class="page-entry-create page-entry-create-link">
     <div class="kbin-container">
         <main id="main" data-controller="lightbox timeago" class="">
-            <aside class="options options--top options-activity">
-                <div class="options__title">
-                    <h2>Add new</h2>
-                </div>
-                <menu class="options__main">
-                    <li><a href="/new" class="">link</a></li>
-                    <li><a href="/new/thread" class="active">thread</a></li>
-                    <li><a href="/new/photo" class="">photo</a></li>
-                    <li><a href="/microblog">post</a></li>
-                    <li><a href="/newMagazine" class="">magazine</a></li>
-                </menu>
-            </aside>
+            {% include 'barra_new.html' with actiu="thread"%}
             <div id="content" class="section">
                 <div class="container" data-controller="entry-link-create">
                     <form action="/create_link_thread" name="entry_link" method="post" class="entry-create"
@@ -58,7 +47,7 @@
                             <select name="magazine" id="magazine_select"
                                     style="width: 100%; border-style: solid; height: 50px"
                                     required="required">
-                                <option value="" selected>Select a Magazine</option>
+                                <option value="" selected disabled hidden>Select a Magazine</option>
                                 {% for magazine in magazines %}
                                     <option value="{{ magazine.id }}">{{ magazine.name }}</option>
                                 {% endfor %}

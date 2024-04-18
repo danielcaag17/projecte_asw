@@ -65,33 +65,31 @@
                     </button>
                 </form>
             </li>
-            <li>
-                {% if thread.author.email == user.email %}
-                    <li>
-                        {% if thread.url == '' %}
-                            <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
-                                <button class="boost-link stretched-link" type="submit"
-                                        data-action="subject#favourite">editar
-                                </button>
-                            </form>
-                        {% else %}
-                            <form action="{% url 'editar_link' thread.id %}" name="editar_link" method="get">
-                                <button class="boost-link stretched-link" type="submit"
-                                        data-action="subject#favourite">editar
-                                </button>
-                            </form>
-                        {% endif %}
-                    </li>
-                    <li>
-                        <form action="{% url 'eliminar_publicacio' thread.id %}" name="eliminar_publicacio"
-                              method="post">
+            {% if thread.author.email == user.email %}
+                <li>
+                    {% if thread.url == None %}
+                        <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
                             <button class="boost-link stretched-link" type="submit"
-                                    data-action="subject#favourite">eliminar
+                                    data-action="subject#favourite">editar
                             </button>
                         </form>
-                    </li>
-                {% endif %}
-            </li>
+                    {% else %}
+                        <form action="{% url 'editar_link' thread.id %}" name="editar_link" method="get">
+                            <button class="boost-link stretched-link" type="submit"
+                                    data-action="subject#favourite">editar
+                            </button>
+                        </form>
+                    {% endif %}
+                </li>
+                <li>
+                    <form action="{% url 'eliminar_publicacio' thread.id %}" name="eliminar_publicacio"
+                          method="post">
+                        <button class="boost-link stretched-link" type="submit"
+                                data-action="subject#favourite">eliminar
+                        </button>
+                    </form>
+                </li>
+            {% endif %}
         </menu>
         <div data-subject-target="container" class="js-container">
         </div>
