@@ -7,4 +7,4 @@ Membres de l'equip bravo13:
 
 Link al Taiga: https://tree.taiga.io/project/danielcanizares-bravo13-asw/timeline
 
-Link a l'aplicació desplegada a Heroku: 
+Link a l'aplicació desplegada a Heroku: https://bravo13-36a68ba47d34.herokuapp.com/
