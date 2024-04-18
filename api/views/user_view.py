@@ -7,28 +7,95 @@ from django.urls import reverse,reverse_lazy
 from ..models import *
 
 
+def sort(all, ordre):
+    if ordre == 'top':
+        res = sorted(all, key=lambda x: x.num_likes, reverse=True)
+    elif ordre == 'newest':
+        res = sorted(all, key=lambda x: x.creation_data, reverse=True)
+    elif ordre == 'commented':
+        res = sorted(all, key=lambda x: x.num_coments, reverse=True)
+    return res
 
 
-def view_user(request, username):
+def view_user(request, username, ordre=None):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
-    thread = Publicacio.objects.filter(author=username)
-    context = {'user': obj, 'threads': thread}
-    # numero amics, numero threads + threads_id, numero comments + comments_id + parents, boost
-    # count = Friends.objects.filter(user=username).count()
+    threads = Publicacio.objects.filter(author=username)
+    comments = Comment.objects.filter(author=username)
+    links = Link.objects.filter(author=username)
+
+    all = list(threads) + list(comments) + list(links)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted}
+    print(all_sorted)
     return HttpResponse(template.render(context, request))
 
 
-def view_top(request, username):
-    pass
+def view_user_threads(request, username, ordre=None):
+    template = loader.get_template('view_user.html')    # TODO: Definir template
+    obj = User.objects.get(username=username)
+    threads = Publicacio.objects.filter(author=username)
+
+    all = list(threads)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted}
+    return HttpResponse(template.render(context, request))
 
 
-def view_newest(request, username):
-    pass
+def view_user_comments(request, username, ordre=None):
+    template = loader.get_template('view_user.html')  # TODO: Definir template
+    obj = User.objects.get(username=username)
+    comments = Comment.objects.filter(author=username)
+
+    all = list(comments)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted}
+    return HttpResponse(template.render(context, request))
 
 
-def view_commented(request, username):
-    pass
+def view_user_posts(request, username, ordre=None):
+    template = loader.get_template('view_user.html')  # TODO: Definir template
+    obj = User.objects.get(username=username)
+    posts = Posts.objects.filter(author=username)
+
+    all = list(posts)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted}
+    return HttpResponse(template.render(context, request))
+
+
+def view_user_answers(request, username, ordre=None):
+    template = loader.get_template('view_user.html')  # TODO: Definir template
+    obj = User.objects.get(username=username)
+    answers = Answers.objects.filter(author=username)
+
+    all = list(answers)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted}
+    return HttpResponse(template.render(context, request))
+
+
+def view_user_boosts(request, username, ordre=None):
+    template = loader.get_template('view_user.html')  # TODO: Definir template
+    obj = User.objects.get(username=username)
+    boosts = Boosts.objects.filter(author=username)
+
+    all = list(boosts)
+    if ordre == '':
+        ordre = 'newest'
+    all_sorted = sort(all, ordre)
+    context = {'user': obj, 'all': all_sorted}
+    return HttpResponse(template.render(context, request))
 
 
 def get_username(user_email):
