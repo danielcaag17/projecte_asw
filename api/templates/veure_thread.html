@@ -29,7 +29,11 @@
                 {% include 'show_threads.html' %}
                 {% if editat %}
                     <div class="alert alert__success" role="alert">
-                        The thread has been successfully edited.
+                        {% if thread.url == '' %}
+                            The thread has been successfully edited.
+                        {% else %}
+                            The link has been successfully edited.
+                        {% endif %}
                     </div>
                 {% endif %}
                 <aside class="options" id="options">

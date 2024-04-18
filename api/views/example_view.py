@@ -27,10 +27,24 @@ def editar_thread(request, thread_id):
         thread.save()
         return veure_thread(request, thread_id,'top',True)
     else:
-        tit = thread.title
-        template = loader.get_template('edit_thread.html')
+        template = loader.get_template('edit_publicacio.html')
         return HttpResponse(template.render({'thread':thread,'titol':thread.title,'body':thread.body,
                                              'magazine':thread.magazine.name}, request))
+
+@csrf_exempt
+def editar_link(request, thread_id):
+    link = Link.objects.get(pk=thread_id)
+    if request.method == "POST":
+        print("Es un post")
+        link.title = request.POST.get('title')
+        link.body = request.POST.get('body')
+        link.save()
+        return veure_thread(request, thread_id,'top',True)
+    else:
+        template = loader.get_template('edit_publicacio.html')
+        return HttpResponse(template.render({'thread':link,'titol':link.title,'body':link.body,'url':link.url,
+                                             'magazine':link.magazine.name}, request))
+
 
 @csrf_exempt
 def eliminar_publicacio(request, thread_id):
