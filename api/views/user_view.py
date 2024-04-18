@@ -29,9 +29,9 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
     boosts = Boost.objects.filter(user_id=username)
 
     nboosts =len(boosts)
-    print(nboosts)
     nthreads = len(list(links_tot)+list(threads_tot))
     ncom = len(comments)
+    print(ncom)
     if select == 'threads':
 
 
@@ -40,7 +40,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
                    'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
     elif select == 'com':
-
         if ordre == 'top':
             comments = sorted(comments, key=lambda x: x.num_likes, reverse=True)
         elif ordre == 'newest':
@@ -48,13 +47,23 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
         else:
             comments = sorted(comments, key=lambda x: x.creation_data, reverse=False)
 
+        print(len(comments))
         thread_ids = [comment.thread_id for comment in comments]
 
-        links = Link.objects.filter(id__in=thread_ids)
-        threads = Thread.objects.filter(id__in=thread_ids)
+        links = []
+        threads = []
 
+        # Itera pels IDs i afegix manualment les instàncies corresponents a les llistes
+        for thread_id in thread_ids:
+            # Afegeix els links corresponents a la llista de links
+            links.extend(Link.objects.filter(id=thread_id))
+            # Afegeix els threads corresponents a la llista de threads
+            threads.extend(Thread.objects.filter(id=thread_id))
+
+        print(len(links))
+        print(len(threads))
         publicacions = sorted(chain(links, threads), key=lambda x: thread_ids.index(x.id))
-
+        print(len(publicacions))
         parella = [(commen, publicacion) for commen, publicacion in
                                           zip(comments, publicacions)]
 

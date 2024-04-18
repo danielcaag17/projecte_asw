@@ -37,7 +37,7 @@
                     <li><a href="/u/{{ usuari.username }}" class="{% if selected == "threads" %}active{% endif %}">
                         <span style="vertical-align: inherit;">threads ({{ n_threads }})</span>
                     </a></li>
-                    <li><a href="/u/{{ usuari.username }}/com" class="{% if selected == "com" %}active{% endif %}">
+                    <li><a href="/u/{{ usuari.username }}/commented" class="{% if selected == "com" %}active{% endif %}">
                         <span style="vertical-align: inherit;">comments ({{ n_com }})</span>
                     </a></li>
                     {% if user.is_authenticated and user.email == usuari.email %}
@@ -104,19 +104,19 @@
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ usuari.username }}/com/top/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari.username }}/commented/top/{{ active_filter }}"
                                class="{% if active_option == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ usuari.username }}/com/newest/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari.username }}/commented/newest/{{ active_filter }}"
                                class="{% if active_option == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ usuari.username }}/com/oldest/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari.username }}/commented/oldest/{{ active_filter }}"
                                class="{% if active_option == 'oldest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 oldest
