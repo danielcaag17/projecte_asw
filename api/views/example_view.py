@@ -17,6 +17,31 @@ class Endpoint1View(APIView):
         data = {"message": "Hello World"}
         return JsonResponse(data)
 
+@login_required(redirect_field_name='login')
+@csrf_exempt
+def boost_publicacio(request, thread_id):
+
+    publicacio = Publicacio.objects.get(pk=thread_id)
+    user = User.objects.get(email=request.user.email)
+
+    if request.method == 'POST':
+
+            #Mirem si l'usuari ja ha fet boost vol dir que l'hem de treure
+            if Boost.objects.filter(user=user, publicacio=publicacio).exists():
+                boost = Boost.objects.get(user=user, publicacio=publicacio)
+                publicacio.num_boosts -= 1
+                publicacio.save()
+                boost.delete()
+
+            else: #Usuari encara no ha fet boost
+                nou_boost = Boost(user=user, publicacio=publicacio)
+                publicacio.num_boosts += 1
+                publicacio.save()
+                nou_boost.save()
+
+
+    return redirect('main')
+
 
 @csrf_exempt
 def editar_thread(request, thread_id):
