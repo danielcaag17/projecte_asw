@@ -12,9 +12,9 @@ class Magazine(models.Model):
     creation_date = models.DateTimeField(default=timezone.now)
 
     # info de creació
-    name = models.CharField(unique=True, max_length=25)
-    title = models.CharField(max_length=50)
-    description = models.TextField(max_length=10000, null=True)
+    name = models.CharField(unique=True, max_length=25000)
+    title = models.CharField(max_length=50000)
+    description = models.TextField(max_length=40000, null=True)
     rules = models.TextField(max_length=10000, null=True)
     nsfw = models.BooleanField(null=True)
 

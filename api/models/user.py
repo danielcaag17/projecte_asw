@@ -5,9 +5,9 @@ from django.db import models
 class User(models.Model):
     # Podem definir el maxim de caracters de username
     username = models.CharField(max_length=32, primary_key=True)
-    description = models.TextField(default="")
-    cover = models.ImageField(default="")
-    avatar = models.ImageField(default="")
+    description = models.TextField(default="", max_length=10000)
+    cover = models.ImageField(default="", max_length=10000)
+    avatar = models.ImageField(default="", max_length=10000)
     email = models.EmailField(unique=True)
 
     @property
