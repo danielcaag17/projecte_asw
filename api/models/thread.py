@@ -9,7 +9,7 @@ class Publicacio(models.Model):
     num_dislikes = models.PositiveIntegerField(default=0)
     # En cas que l'author associat s'elimini, tots el threads seus s'elimines
     author = models.ForeignKey(User, on_delete=models.CASCADE, default='default_user')
-    title = models.TextField(max_length=255, default='')
+    title = models.TextField(max_length=25500, default='')
     body = models.TextField(max_length=35000, null=True)
     creation_data = models.DateTimeField(default=timezone.now)
     num_coments = models.PositiveIntegerField(default=0)
