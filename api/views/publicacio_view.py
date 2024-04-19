@@ -50,9 +50,9 @@ def editar_thread(request, thread_id):
 
 @csrf_exempt
 def editar_link(request, thread_id):
+    print(thread_id)
     link = Link.objects.get(pk=thread_id)
     if request.method == "POST":
-        print("Es un post")
         link.title = request.POST.get('title')
         link.body = request.POST.get('body')
         link.save()
@@ -186,7 +186,10 @@ def boost_thread(request, thread_id):
 
 
 def veure_thread(request, thread_id, order, edited=False):
-    thread = Publicacio.objects.get(pk=thread_id)
+    if Thread.objects.filter(pk=thread_id).exists():
+        thread = Publicacio.objects.get(pk=thread_id)
+    else:
+        thread = Link.objects.get(pk=thread_id)
 
     if order == 'newest':
         comments_root = Comment.objects.filter(thread_id=thread_id, level=1).order_by('-creation_data')

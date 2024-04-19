@@ -67,7 +67,7 @@
             </li>
             {% if thread.author.email == user.email %}
                 <li>
-                    {% if thread.url == None %}
+                    {% if thread.url == None or thread.url == '' %}
                         <form action="{% url 'edit_thread' thread.id %}" name="edit_thread" method="get">
                             <button class="boost-link stretched-link" type="submit"
                                     data-action="subject#favourite">edit

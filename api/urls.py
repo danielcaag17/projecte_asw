@@ -43,7 +43,7 @@ url_users = [
 
     path('u/<str:username>/top/<str:filter>/', views.view_user,{'select':'threads', 'ordre': 'top'}, name='user_top_filter'),
     path('u/<str:username>/newest/<str:filter>/', views.view_user,{ 'select':'threads','ordre': 'newest'}, name='user_newest_filter'),
-    path('u/<str:username>/com/<str:filter>/', views.view_user, { 'select':'threads','ordre': 'commented'}, name='user_commented_filter'),
+    path('u/<str:username>/com/<str:filter>/', views.view_user, { 'select':'threads','ordre': 'com'}, name='user_commented_filter'),
 
     path('u/<str:username>/commented', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'newest'}, name='view_user'),
     path('u/<str:username>/commented/top', views.view_user, {'select':'com','filter': 'tot', 'ordre': 'top'}, name='user_top'),
@@ -61,7 +61,7 @@ url_users = [
 
     path('u/<str:username>/boosts/top/<str:filter>/', views.view_user,{'select':'boost', 'ordre': 'top'}, name='user_top_filter'),
     path('u/<str:username>/boosts/newest/<str:filter>/', views.view_user,{'select':'boost', 'ordre': 'newest'}, name='user_newest_filter'),
-    path('u/<str:username>/boosts/com/<str:filter>/', views.view_user, { 'select':'boost','ordre': 'commented'}, name='user_commented_filter'),
+    path('u/<str:username>/boosts/com/<str:filter>/', views.view_user, { 'select':'boost','ordre': 'com'}, name='user_commented_filter'),
 
     path('settings/profile/<str:username>', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),

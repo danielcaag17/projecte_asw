@@ -52,7 +52,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
 
         links = []
         threads = []
-
         # Itera pels IDs i afegix manualment les instàncies corresponents a les llistes
         for thread_id in thread_ids:
             # Afegeix els links corresponents a la llista de links
@@ -60,8 +59,7 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
             # Afegeix els threads corresponents a la llista de threads
             threads.extend(Thread.objects.filter(id=thread_id))
 
-        print(len(links))
-        print(len(threads))
+
         publicacions = sorted(chain(links, threads), key=lambda x: thread_ids.index(x.id))
         print(len(publicacions))
         parella = [(commen, publicacion) for commen, publicacion in
