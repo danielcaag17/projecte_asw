@@ -40,14 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'api',
+    'kbin',
     'rest_framework',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'storages'
+    'storages',
+    "api.apps.ApiConfig"
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -71,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'api.middleware.AddUserToContextMiddleware'
+    'kbin.middleware.AddUserToContextMiddleware'
 ]
 
 ROOT_URLCONF = 'projecte_asw.urls'
@@ -87,7 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'api.context_processors.usuari_context_processor',
+                'kbin.context_processors.usuari_context_processor',
             ],
         },
     },

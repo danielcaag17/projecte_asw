@@ -31,10 +31,10 @@ class Magazine(models.Model):
         return self.publicacio_set.all().count()
     @property
     def total_threads(self):
-        Thread = apps.get_model('api', 'Thread')
+        Thread = apps.get_model('kbin', 'Thread')
         return Thread.objects.filter(magazine=self).count()
 
     @property
     def total_links(self):
-        Link = apps.get_model('api', 'Link')
+        Link = apps.get_model('kbin', 'Link')
         return Link.objects.filter(magazine=self).count()
