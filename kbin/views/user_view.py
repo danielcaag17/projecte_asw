@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse,reverse_lazy
 from itertools import chain
 from django.db.models import Value, CharField
 from django.views.decorators.csrf import csrf_exempt
@@ -20,8 +20,7 @@ def sort(all, ordre):
         res = sorted(all, key=lambda x: x.num_coments, reverse=True)
     return res
 
-
-def view_user(request, username, filter=None, ordre=None, select='threads'):
+def view_user(request, username, filter=None,ordre=None,select='threads'):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
     links_tot = Link.objects.filter(author_id=username)
@@ -29,14 +28,15 @@ def view_user(request, username, filter=None, ordre=None, select='threads'):
     comments = Comment.objects.filter(author_id=username)
     boosts = Boost.objects.filter(user_id=username)
 
-    nboosts = len(boosts)
-    nthreads = len(list(links_tot) + list(threads_tot))
+    nboosts =len(boosts)
+    nthreads = len(list(links_tot)+list(threads_tot))
     ncom = len(comments)
     if select == 'threads':
 
-        context = {'usuari': obj, 'threads': ordena(links_tot, threads_tot, ordre, filter),
+
+        context = {'usuari': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
                    'active_option': ordre, 'active_filter': filter, 'selected': select,
-                   'n_threads': nthreads, 'n_com': ncom, 'n_boosts': nboosts}
+                   'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
     elif select == 'com':
         if ordre == 'top':
@@ -45,7 +45,6 @@ def view_user(request, username, filter=None, ordre=None, select='threads'):
             comments = sorted(comments, key=lambda x: x.creation_data, reverse=True)
         else:
             comments = sorted(comments, key=lambda x: x.creation_data, reverse=False)
-
         thread_ids = [comment.thread_id for comment in comments]
 
         links = []
@@ -57,12 +56,14 @@ def view_user(request, username, filter=None, ordre=None, select='threads'):
             # Afegeix els threads corresponents a la llista de threads
             threads.extend(Thread.objects.filter(id=thread_id))
 
+
         publicacions = sorted(chain(links, threads), key=lambda x: thread_ids.index(x.id))
         parella = [(commen, publicacion) for commen, publicacion in
-                   zip(comments, publicacions)]
+                                          zip(comments, publicacions)]
+
 
         context = {'usuari': obj, 'coments': comments, 'active_option': ordre, 'active_filter': filter,
-                   'selected': select, 'pare': parella, 'n_threads': nthreads, 'n_com': ncom, 'n_boosts': nboosts}
+                   'selected': select,'pare':parella,'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
     else:
 
@@ -71,14 +72,13 @@ def view_user(request, username, filter=None, ordre=None, select='threads'):
         links = Link.objects.filter(id__in=publication_ids)
         threads = Thread.objects.filter(id__in=publication_ids)
 
-        context = {'usuari': obj, 'threads': ordena(links, threads, ordre, filter), 'active_option': ordre,
-                   'active_filter': filter, 'selected': select, 'n_threads': nthreads, 'n_com': ncom,
-                   'n_boosts': nboosts}
+        context = {'usuari': obj, 'threads': ordena(links,threads,ordre,filter), 'active_option': ordre,
+                   'active_filter': filter, 'selected': select,'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
     return HttpResponse(template.render(context, request))
 
 
-def ordena(links, threads, ordre, filter):
+def ordena(links,threads,ordre,filter):
     if filter == 'links':
         tot = links
     elif filter == 'threads':
@@ -93,7 +93,7 @@ def ordena(links, threads, ordre, filter):
     elif ordre == 'commented':
         tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
     return tot
-
+  
 
 @csrf_exempt
 def get_username(user_email):
@@ -144,3 +144,5 @@ def edit_user(request, username):
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+

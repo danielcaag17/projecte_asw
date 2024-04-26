@@ -12,15 +12,15 @@ class User(models.Model):
 
     @property
     def total_threads(self):
-        publicacio = apps.get_model('api', 'Publicacio')
+        publicacio = apps.get_model('kbin', 'Publicacio')
         return publicacio.objects.filter(author=self.username).count()
 
     @property
     def total_comments(self):
-        comment = apps.get_model('api', 'Comment')
+        comment = apps.get_model('kbin', 'Comment')
         return comment.objects.filter(author=self.username).count()
 
     @property
     def total_boosts(self):
-        boost = apps.get_model('api', 'Boost')
+        boost = apps.get_model('kbin', 'Boost')
         return boost.objects.filter(user=self.username).count()
