@@ -31,7 +31,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
     nboosts =len(boosts)
     nthreads = len(list(links_tot)+list(threads_tot))
     ncom = len(comments)
-    print(ncom)
     if select == 'threads':
 
 
@@ -46,8 +45,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
             comments = sorted(comments, key=lambda x: x.creation_data, reverse=True)
         else:
             comments = sorted(comments, key=lambda x: x.creation_data, reverse=False)
-
-        print(len(comments))
         thread_ids = [comment.thread_id for comment in comments]
 
         links = []
@@ -61,7 +58,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
 
 
         publicacions = sorted(chain(links, threads), key=lambda x: thread_ids.index(x.id))
-        print(len(publicacions))
         parella = [(commen, publicacion) for commen, publicacion in
                                           zip(comments, publicacions)]
 
@@ -106,7 +102,6 @@ def get_username(user_email):
 
 @csrf_exempt
 def login(request):
-    print("He passat pel login")
     user_email = request.user.email
     djando_username = request.user.username
     user_username = get_username(user_email)

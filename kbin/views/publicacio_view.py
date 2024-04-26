@@ -50,7 +50,6 @@ def editar_thread(request, thread_id):
 
 @csrf_exempt
 def editar_link(request, thread_id):
-    print(thread_id)
     link = Link.objects.get(pk=thread_id)
     if request.method == "POST":
         link.title = request.POST.get('title')
