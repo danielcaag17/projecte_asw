@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import PublicacioTitleListView
+from . import views
 
 urlpatterns = [
-    path('publicacio/titles/', PublicacioTitleListView.as_view(), name='publicacio_titles'),
+    path('<str:filter>/<str:ordre>/', views.Llista_threads_links.as_view(), name='llistar_publicacions'),
 ]

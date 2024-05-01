@@ -1,0 +1,280 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: API Kbin.social
+  description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a XXXX."
+
+servers:
+  - url: 'http://127.0.0.1:8000/'
+
+paths:
+
+#OBTENIR PUBLICACIONS
+  /api/publicacions/top/:
+    get:
+      summary: Obté totes les publicacions ordenades per numero de likes
+      operationId: PublicacionsTop
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/publicacions/newest/:
+    get:
+      summary: Obté totes les publicacions ordenades per data de creació
+      operationId: PublicacionsNewest
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/publicacions/commented/:
+    get:
+      summary: Obté totes les publicacions ordenades per numero de comentaris
+      operationId: PublicacionsCommented
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+
+
+#OBTENIR THREADS
+  /api/threads/top/:
+    get:
+      summary: Obté tote els threads ordenadts per numero de likes
+      operationId: ThreadsTop
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+
+  /api/threads/newest/:
+    get:
+      summary: Obté tots els threads ordenadts per data de creació
+      operationId: ThreadsNewest
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+
+  /api/threads/commented/:
+    get:
+      summary: Obté tots els threads ordenadts per numero de comentaris
+      operationId: ThreadsCommented
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+
+
+#OBTENIR LINKS
+  /api/links/top/:
+    get:
+      summary: Obté tots els links ordenats per numero de likes
+      operationId: LinksTop
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/links/newest/:
+    get:
+      summary: Obté tots els links ordenats per per data de creació
+      operationId: LinksNewest
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/links/commented/:
+    get:
+      summary: Obté tots els links ordenats per per numero de comentaris
+      operationId: LinksCommented
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+
+
+
+
+
+
+components:
+  schemas:
+    Thread:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del thread
+          example: 2
+        num_likes:
+          type: integer
+          description: Nombre de likes del thread
+          example: 10
+        num_dislikes:
+          type: integer
+          description: Nombre de dislikes del thread
+          example: 3
+        author:
+          type: string
+          description: Autor del thread
+          example: "El meu nom"
+        title:
+          type: string
+          description: Titol del thread
+          example: "El titol"
+        body:
+          type: string
+          description: Body del thread
+          example: "El meu Body"
+        creation_data:
+          type: string
+          format: date-time
+          description: Data de creació del thread
+        num_comments:
+          type: integer
+          description: Nombre de comentaris del thread
+          example: 2
+        num_boosts:
+          type: integer
+          description: Nombre de boosts del thread
+          example: 1
+        magazine:
+          type: string
+          description: Magazine del thread
+          example: "La meva magazine"
+    Link:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del link
+          example: 2
+        num_likes:
+          type: integer
+          description: Nombre de likes del link
+          example: 10
+        num_dislikes:
+          type: integer
+          description: Nombre de dislikes del link
+          example: 3
+        author:
+          type: string
+          description: Autor del link
+          example: "El meu nom"
+        title:
+          type: string
+          description: Titol del link
+          example: "El titol"
+        body:
+          type: string
+          description: Body del link
+          example: "El meu Body"
+        creation_data:
+          type: string
+          format: date-time
+          description: Data de creació del link
+        num_comments:
+          type: integer
+          description: Nombre de comentaris del link
+          example: 2
+        num_boosts:
+          type: integer
+          description: Nombre de boosts del link
+          example: 1
+        magazine:
+          type: string
+          description: Magazine del link
+          example: "La meva magazine"
+        url:
+          type: string
+          description: URL del link
+          example: "www.raco.fib.upc.edu"
