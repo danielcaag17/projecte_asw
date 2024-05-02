@@ -5,13 +5,15 @@ info:
   description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a XXXX."
 
 servers:
-  - url: 'http://127.0.0.1:8000/'
+  - url: 'http://127.0.0.1:8000/' #TODO:POSAR LA URL QUAN FEM DEPLOY
 
 paths:
 
-#OBTENIR PUBLICACIONS
+#PUBLICACIONS
   /api/publicacions/top/:
     get:
+      tags:
+      - Publicacions
       summary: Obté totes les publicacions ordenades per numero de likes
       operationId: PublicacionsTop
       responses:
@@ -33,6 +35,8 @@ paths:
 
   /api/publicacions/newest/:
     get:
+      tags:
+      - Publicacions
       summary: Obté totes les publicacions ordenades per data de creació
       operationId: PublicacionsNewest
       responses:
@@ -54,6 +58,8 @@ paths:
 
   /api/publicacions/commented/:
     get:
+      tags:
+      - Publicacions
       summary: Obté totes les publicacions ordenades per numero de comentaris
       operationId: PublicacionsCommented
       responses:
@@ -75,9 +81,11 @@ paths:
 
 
 
-#OBTENIR THREADS
+#THREADS
   /api/threads/top/:
     get:
+      tags:
+      - Threads
       summary: Obté tote els threads ordenadts per numero de likes
       operationId: ThreadsTop
       responses:
@@ -95,6 +103,8 @@ paths:
 
   /api/threads/newest/:
     get:
+      tags:
+      - Threads
       summary: Obté tots els threads ordenadts per data de creació
       operationId: ThreadsNewest
       responses:
@@ -112,6 +122,8 @@ paths:
 
   /api/threads/commented/:
     get:
+      tags:
+      - Threads
       summary: Obté tots els threads ordenadts per numero de comentaris
       operationId: ThreadsCommented
       responses:
@@ -128,9 +140,91 @@ paths:
                       $ref: '#/components/schemas/Thread'
 
 
-#OBTENIR LINKS
+  /api/threads/:
+    get:
+      tags:
+      - Threads
+      summary: Obté tots els threads ordenats per data de creació
+      operationId: AllThreads
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+    post:
+      tags:
+      - Threads
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou thread a la aplicació i retorna la informació del thread creat
+      operationId: AfegirThread
+      requestBody:
+        description: Indicar titol, body i nom del magazine
+        content:
+          application/json:
+            schema:
+              required:
+              - Titol
+              - Body
+              - Nom magazine
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  example: 'Titol del thread'
+                body:
+                  type: string
+                  minLength: 0
+                  maxLength: 280 #TODO: MIRAR BÉ QUIN LIMIT
+                  example: 'Body del thread'
+                magazine:
+                  type: string
+                  example: 'Nom del magazine'
+        required: true
+      responses:
+        201:
+          description: Thread creat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NouThread'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    mensaje: "Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."
+
+
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+      security:
+      - ApiKeyAuth: []
+
+
+
+#LINKS
   /api/links/top/:
     get:
+      tags:
+      - Links
       summary: Obté tots els links ordenats per numero de likes
       operationId: LinksTop
       responses:
@@ -148,7 +242,9 @@ paths:
 
   /api/links/newest/:
     get:
-      summary: Obté tots els links ordenats per per data de creació
+      tags:
+      - Links
+      summary: Obté tots els links ordenats per  data de creació
       operationId: LinksNewest
       responses:
         '200':
@@ -165,6 +261,8 @@ paths:
 
   /api/links/commented/:
     get:
+      tags:
+      - Links
       summary: Obté tots els links ordenats per per numero de comentaris
       operationId: LinksCommented
       responses:
@@ -186,6 +284,11 @@ paths:
 
 
 
+
+
+
+
+
 components:
   schemas:
     Thread:
@@ -198,11 +301,11 @@ components:
         num_likes:
           type: integer
           description: Nombre de likes del thread
-          example: 10
+          example: 0
         num_dislikes:
           type: integer
           description: Nombre de dislikes del thread
-          example: 3
+          example: 0
         author:
           type: string
           description: Autor del thread
@@ -222,14 +325,14 @@ components:
         num_comments:
           type: integer
           description: Nombre de comentaris del thread
-          example: 2
+          example: 0
         num_boosts:
           type: integer
           description: Nombre de boosts del thread
           example: 1
         magazine:
           type: string
-          description: Magazine del thread
+          description: Nom de la magazine del thread
           example: "La meva magazine"
     Link:
       type: object
@@ -272,9 +375,45 @@ components:
           example: 1
         magazine:
           type: string
-          description: Magazine del link
+          description: Nom de la magazine del link
           example: "La meva magazine"
         url:
           type: string
           description: URL del link
           example: "www.raco.fib.upc.edu"
+
+    NouThread:
+      allOf:
+        - $ref: '#/components/schemas/Thread'
+        - type: object
+
+    ErrorResult:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Titol massa curt'
+      required:
+        - message
+
+  examples:
+    error400:
+      value:
+        message: "Error: Contingut massa curt"
+    error401:
+      value:
+        message: "Error: No has indicat cap token"
+    error403:
+      value:
+        message: "Error: El token indicat no és vàlid"
+    error404:
+      value:
+        message: "Error: No hi ha una publicació amb id=3"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+
+

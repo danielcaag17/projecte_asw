@@ -2,6 +2,7 @@ from kbin.models import Publicacio,Thread,Link
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
+import json
 
 class Llista_threads_links(APIView):
     def get(self, request,filter,ordre):
@@ -28,4 +29,41 @@ class Llista_threads_links(APIView):
 
         return Response(tot)
 
+class crear_thread(APIView):
+    def get(self,request):
+        #Obtenim els threads
+        threads = Thread.objects.all()
+        thread_serializer = sorted(Thread_serializer(threads, many=True).data,key=lambda x: x['creation_data'],reverse=True)
+        return Response(thread_serializer)
+
+    def post(self,request):
+        print(request.headers.get('Authorization'))
+        api_key = request.headers.get('Authorization')
+
+        data = request.data
+        required_fields = {"title", "body", "magazine"}
+        if required_fields.issubset(data.keys()):
+            if len(data["title"]) == 0:
+                return Response({"error: Titol buit"}, status=400)
+
+            try: #Comprovem si el magazine indicat existeix
+                magazine = Magazine.objects.get(name=data["magazine"])
+            except:
+                return Response({"Error: No hi ha un magazine amb nom {}".format(data["magazine"])}, status=400)
+
+            try:
+                usuari = User.objects.get(api_key=api_key)
+            except:
+                return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+
+            nou_thread = Thread.objects.create(author=usuari,title=data["title"], body=data["body"], magazine=magazine)
+
+
+            nou_thread = Thread_serializer(nou_thread)
+            return Response(nou_thread.data, status=201)  # 201: Created
+        else:
+            # Si los campos no coinciden, retornamos un error
+            return Response({"Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."},
+                            status=400)  # 400: Bad Request
 
