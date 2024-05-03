@@ -3,20 +3,20 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
 
-class Llista_threads_links(APIView):
+class LlistaThreadLinks(APIView):
     def get(self, request,filter,ordre):
         # Obtenim publicacions segons filtre:
         if filter == 'threads':
             resultats = Thread.objects.all()
-            resultats_serializer = Thread_serializer(resultats,many=True).data
+            resultats_serializer = ThreadSerializer(resultats,many=True).data
         elif filter == 'links':
             resultats = Link.objects.all()
-            resultats_serializer = Link_serializer(resultats,many=True).data
+            resultats_serializer = LinkSerializer(resultats,many=True).data
         elif filter == 'publicacions':
             threads = Thread.objects.all()
             links = Link.objects.all()
-            thread_serializer = Thread_serializer(threads, many=True)
-            link_serializer = Link_serializer(links, many=True)
+            thread_serializer = ThreadSerializer(threads, many=True)
+            link_serializer = LinkSerializer(links, many=True)
             resultats_serializer = thread_serializer.data + link_serializer.data
 
         if ordre == 'newest':
