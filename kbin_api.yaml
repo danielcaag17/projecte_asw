@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   version: 1.0.0
   title: API Kbin.social
-  description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a XXXX."
+  description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a XXXX." #TODO: CANVIAR XXX
 
 servers:
   - url: 'http://127.0.0.1:8000/' #TODO:POSAR LA URL QUAN FEM DEPLOY
@@ -86,7 +86,7 @@ paths:
     get:
       tags:
       - Threads
-      summary: Obté tote els threads ordenadts per numero de likes
+      summary: Obté tote els threads ordenats per numero de likes
       operationId: ThreadsTop
       responses:
         '200':
@@ -105,7 +105,7 @@ paths:
     get:
       tags:
       - Threads
-      summary: Obté tots els threads ordenadts per data de creació
+      summary: Obté tots els threads ordenats per data de creació
       operationId: ThreadsNewest
       responses:
         '200':
@@ -124,7 +124,7 @@ paths:
     get:
       tags:
       - Threads
-      summary: Obté tots els threads ordenadts per numero de comentaris
+      summary: Obté tots els threads ordenats per numero de comentaris
       operationId: ThreadsCommented
       responses:
         '200':
@@ -277,11 +277,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Link'
-
-
-
-
-
 
 
 
