@@ -164,7 +164,7 @@ paths:
       summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou thread a la aplicació i retorna la informació del thread creat
       operationId: AfegirThread
       requestBody:
-        description: Indicar titol, body i nom del magazine
+        description: Indicar titol i nom del magazine. Opcionalment també es pot indicar el body del thread
         content:
           application/json:
             schema:
@@ -278,6 +278,83 @@ paths:
                     items:
                       $ref: '#/components/schemas/Link'
 
+  /api/links/:
+    post:
+      tags:
+      - Links
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou link a la aplicació i retorna la informació del link creat
+      operationId: AfegirLink
+      requestBody:
+        description: Indicar titol,nom del magazine i url del link a crear. Opcionalment també es pot indicar el body del link
+        content:
+          application/json:
+            schema:
+              required:
+              - Titol
+              - Nom magazine
+              - url
+              - body
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  example: 'Titol del thread'
+                url:
+                  type: string
+                  minLength: 0
+                  maxLength: 280 #TODO: MIRAR BÉ QUIN LIMIT
+                  example: 'www.raco.fib.upc.edu'
+                magazine:
+                  type: string
+                  example: 'Nom del magazine'
+                body:
+                  type: string
+                  example: "Body del link"
+        required: true
+      responses:
+        201:
+          description: Thread creat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NouLink'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    mensaje: "Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."
+
+
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+
+
+
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+      security:
+      - ApiKeyAuth: []
+
 
 
 
@@ -387,6 +464,11 @@ components:
         - $ref: '#/components/schemas/Thread'
         - type: object
 
+    NouLink:
+      allOf:
+        - $ref: '#/components/schemas/Link'
+        - type: object
+
     ErrorResult:
       type: object
       properties:
@@ -415,5 +497,3 @@ components:
       type: apiKey
       name: Authorization
       in: header
-
-
