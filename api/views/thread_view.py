@@ -29,15 +29,14 @@ class LlistaThreadLinks(APIView):
 
         return Response(tot)
 
-class crear_thread(APIView):
+class CrearThread(APIView):
     def get(self,request):
         #Obtenim els threads
         threads = Thread.objects.all()
-        thread_serializer = sorted(Thread_serializer(threads, many=True).data,key=lambda x: x['creation_data'],reverse=True)
+        thread_serializer = sorted(ThreadSerializer(threads, many=True).data,key=lambda x: x['creation_data'],reverse=True)
         return Response(thread_serializer)
 
     def post(self,request):
-        print(request.headers.get('Authorization'))
         api_key = request.headers.get('Authorization')
 
         data = request.data
@@ -60,7 +59,7 @@ class crear_thread(APIView):
             nou_thread = Thread.objects.create(author=usuari,title=data["title"], body=data["body"], magazine=magazine)
 
 
-            nou_thread = Thread_serializer(nou_thread)
+            nou_thread = ThreadSerializer(nou_thread)
             return Response(nou_thread.data, status=201)  # 201: Created
         else:
             # Si los campos no coinciden, retornamos un error
