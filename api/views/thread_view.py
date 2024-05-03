@@ -63,7 +63,7 @@ class CrearThread(APIView):
             return Response(nou_thread.data, status=201)  # 201: Created
         else:
             # Si los campos no coinciden, retornamos un error
-            return Response({"Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."},
+            return Response({"Error: Falten atributs. Cal indicar titol i magazine del thread a crear."},
                             status=400)  # 400: Bad Request
 
 
@@ -71,7 +71,7 @@ class CrearLink(APIView):
     def get(self,request): #TODO: CAL?
         #Obtenim els threads
         links = Link.objects.all()
-        link_serializer = sorted(Thread_serializer(links, many=True).data,key=lambda x: x['creation_data'],reverse=True)
+        link_serializer = sorted(ThreadSerializer(links, many=True).data,key=lambda x: x['creation_data'],reverse=True)
         return Response(link_serializer)
 
     def post(self,request):
@@ -104,9 +104,9 @@ class CrearLink(APIView):
                                              magazine=magazine,url=data["url"])
 
 
-            nou_link = Link_serializer(nou_link)
+            nou_link = LinkSerializer(nou_link)
             return Response(nou_link.data, status=201)  # 201: Created
         else:
             # Si los campos no coinciden, retornamos un error
-            return Response({"Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."},
+            return Response({"Error: Falten atributs. Cal indicar titol,magazine i url del link a crear."},
                             status=400)  # 400: Bad Request
