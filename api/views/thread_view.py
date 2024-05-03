@@ -4,20 +4,20 @@ from rest_framework.response import Response
 from ..serializers.serializer_threads import *
 import json
 
-class Llista_threads_links(APIView):
+class LlistaThreadLinks(APIView):
     def get(self, request,filter,ordre):
         # Obtenim publicacions segons filtre:
         if filter == 'threads':
             resultats = Thread.objects.all()
-            resultats_serializer = Thread_serializer(resultats,many=True).data
+            resultats_serializer = ThreadSerializer(resultats,many=True).data
         elif filter == 'links':
             resultats = Link.objects.all()
-            resultats_serializer = Link_serializer(resultats,many=True).data
+            resultats_serializer = LinkSerializer(resultats,many=True).data
         elif filter == 'publicacions':
             threads = Thread.objects.all()
             links = Link.objects.all()
-            thread_serializer = Thread_serializer(threads, many=True)
-            link_serializer = Link_serializer(links, many=True)
+            thread_serializer = ThreadSerializer(threads, many=True)
+            link_serializer = LinkSerializer(links, many=True)
             resultats_serializer = thread_serializer.data + link_serializer.data
 
         if ordre == 'newest':
@@ -29,11 +29,11 @@ class Llista_threads_links(APIView):
 
         return Response(tot)
 
-class crear_thread(APIView):
+class CrearThread(APIView):
     def get(self,request): #TODO: CAL?
         #Obtenim els threads
         threads = Thread.objects.all()
-        thread_serializer = sorted(Thread_serializer(threads, many=True).data,key=lambda x: x['creation_data'],reverse=True)
+        thread_serializer = sorted(ThreadSerializer(threads, many=True).data,key=lambda x: x['creation_data'],reverse=True)
         return Response(thread_serializer)
 
     def post(self,request):
@@ -59,7 +59,7 @@ class crear_thread(APIView):
             body = data.get("body")
 
             nou_thread = Thread.objects.create(author=usuari,title=data["title"], body=body, magazine=magazine)
-            nou_thread = Thread_serializer(nou_thread)
+            nou_thread = ThreadSerializer(nou_thread)
             return Response(nou_thread.data, status=201)  # 201: Created
         else:
             # Si los campos no coinciden, retornamos un error
@@ -67,7 +67,7 @@ class crear_thread(APIView):
                             status=400)  # 400: Bad Request
 
 
-class crear_link(APIView):
+class CrearLink(APIView):
     def get(self,request): #TODO: CAL?
         #Obtenim els threads
         links = Link.objects.all()

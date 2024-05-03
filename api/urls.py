@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('<str:filter>/<str:ordre>/', views.Llista_threads_links.as_view(), name='llistar_publicacions'),
-    path('threads/',views.crear_thread.as_view(), name='crear_thread'),
-    path('links/',views.crear_link.as_view(),name='crear_link'),
+    path('<str:filter>/<str:ordre>/', views.LlistaThreadLinks.as_view(), name='llistar_publicacions'),
+    path('threads/',views.CrearThread.as_view(), name='crear_thread'),
+    path('links/',views.CrearLink.as_view(),name='crear_link'),
 ]
