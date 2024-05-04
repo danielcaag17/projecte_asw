@@ -124,7 +124,7 @@ class LikePublicacion(APIView):
         try:
             publicacio = Publicacio.objects.get(pk=IDPublicacio)
         except:
-            return Response({"Error: la publicació no existeix"}, status=404)
+            return Response({"Error: no hi ha cap publicació amb nom {}".format(IDPublicacio)}, status=404)
 
 
         if Vot.objects.filter(user=usuari, publicacio=publicacio).exists(): #L'usuari ja ha votat
