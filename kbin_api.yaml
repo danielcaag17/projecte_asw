@@ -17,7 +17,7 @@ paths:
       summary: Obté totes les publicacions ordenades per numero de likes
       operationId: PublicacionsTop
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -40,7 +40,7 @@ paths:
       summary: Obté totes les publicacions ordenades per data de creació
       operationId: PublicacionsNewest
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -63,7 +63,7 @@ paths:
       summary: Obté totes les publicacions ordenades per numero de comentaris
       operationId: PublicacionsCommented
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -79,6 +79,67 @@ paths:
                     items:
                       $ref: '#/components/schemas/Link'
 
+  /api/publicacions/{IDPublicacio}/like:
+    post:
+      tags:
+      - Publicacions
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores valora positivament una publicació. Si l'usuari ja havia valorat positivament la publicació, no es fa res. Si l'havia valorat negativament, es canvia el sentit del vot.
+      operationId: likePublicacio
+      parameters:
+      - name: IDPublicacio
+        in: path
+        description: ID de la publicació a valorar positivament
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Publicació no trobada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+
+      security:
+      - ApiKeyAuth: []
+
 
 
 #THREADS
@@ -89,7 +150,7 @@ paths:
       summary: Obté tote els threads ordenadts per numero de likes
       operationId: ThreadsTop
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -108,7 +169,7 @@ paths:
       summary: Obté tots els threads ordenadts per data de creació
       operationId: ThreadsNewest
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -127,7 +188,7 @@ paths:
       summary: Obté tots els threads ordenadts per numero de comentaris
       operationId: ThreadsCommented
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -147,7 +208,7 @@ paths:
       summary: Obté tots els threads ordenats per data de creació
       operationId: AllThreads
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -228,7 +289,7 @@ paths:
       summary: Obté tots els links ordenats per numero de likes
       operationId: LinksTop
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -247,7 +308,7 @@ paths:
       summary: Obté tots els links ordenats per  data de creació
       operationId: LinksNewest
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -266,7 +327,7 @@ paths:
       summary: Obté tots els links ordenats per per numero de comentaris
       operationId: LinksCommented
       responses:
-        '200':
+        200:
           description: Operació correcte.
           content:
             application/json:
@@ -329,8 +390,6 @@ paths:
                 errorExample:
                   value:
                     mensaje: "Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."
-
-
         401:
           description: 'Error: Unauthorized'
           content:
@@ -340,9 +399,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-
-
-
         403:
           description: 'Error: Forbidden'
           content:

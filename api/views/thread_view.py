@@ -1,4 +1,4 @@
-from kbin.models import Publicacio,Thread,Link
+from kbin.models import Publicacio,Thread,Link, Vot
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
@@ -110,3 +110,51 @@ class CrearLink(APIView):
             # Si los campos no coinciden, retornamos un error
             return Response({"Error: Falten atributs. Cal indicar titol,magazine i url del link a crear."},
                             status=400)  # 400: Bad Request
+
+class LikePublicacion(APIView):
+    def post(self,request,IDPublicacio):
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            publicacio = Publicacio.objects.get(pk=IDPublicacio)
+        except:
+            return Response({"Error: la publicació no existeix"}, status=404)
+
+
+        if Vot.objects.filter(user=usuari, publicacio=publicacio).exists(): #L'usuari ja ha votat
+            vot = Vot.objects.get(user=usuari, publicacio=publicacio)
+            if (vot.positiu):  # Si el vot ja era positiu no fem res i retornem la informació del Thread o el Link
+                return self.retorna_info(IDPublicacio)
+
+            else: #Si el vot era negatiu canviem el sentit del vot
+                publicacio.num_dislikes -= 1
+                publicacio.num_likes += 1
+                vot.positiu = True
+                vot.save()
+                return self.retorna_info(IDPublicacio)
+
+        else: #Creem un nou vot
+            nou_vot = Vot(user=usuari, publicacio=publicacio, positiu=True)
+            publicacio.num_likes += 1
+            publicacio.save()
+            nou_vot.save()
+            return self.retorna_info(IDPublicacio)
+
+
+    def retorna_info(self,IDPublicacio):
+        try:
+            thread = Thread.objects.get(pk=IDPublicacio)
+            thread = ThreadSerializer(thread)
+            return Response(thread.data, status=200)
+        except:
+            link = Link.objects.get(pk=IDPublicacio)
+            link = LinkSerializer(link)
+            return Response(link.data, status=200)
+
+
