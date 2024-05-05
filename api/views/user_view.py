@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from ..serializers.user_serializer import *
-from kbin.models.user import User
+from ..serializers.thread_serializer import *
 
 
 class UserView(APIView):
@@ -26,3 +26,21 @@ class UserView(APIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserThreadsView(APIView):
+    def get(self, request, username=None):
+        try:
+            user = User.objects.get(username=username)
+            threads = Thread.objects.filter(author=username)
+
+            user_serializer = UserSerializer(user)
+            thread_serializer = ThreadSerializer(threads, many=True)
+            serializer = {
+                "user": user_serializer.data,
+                "threads": thread_serializer.data
+            }
+            return Response(serializer, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": f"The user '{username}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
