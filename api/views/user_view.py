@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from ..serializers.user_serializer import *
 from ..serializers.thread_serializer import *
+from ..serializers.link_serializer import *
 
 
 class UserView(APIView):
@@ -19,15 +20,36 @@ class UserView(APIView):
             user_serializer = UserSerializer(user)
             serializer = {}
             if element is None or element == 'threads':
-                threads = Thread.objects.filter(author=username)
-                threads_ordenats = ordena(threads, ordre)
-                thread_serializer = ThreadSerializer(threads_ordenats, many=True)
-                # thread_serializer = ThreadSerializer(threads, many=True)
+                tot_ordenat = None
+                if filtre is None or filtre == 'tot':
+                    filtre = 'tot'
+                    threads = Thread.objects.filter(author=username)
+                    thread_serializer = ThreadSerializer(threads, many=True)
+
+                    links = Link.objects.filter(author=username)
+                    link_serializer = LinkSerializer(links, many=True)
+
+                    tot = link_serializer.data + thread_serializer.data
+                    tot_ordenat = ordena(tot, ordre)
+
+                elif filtre == 'threads':
+                    threads = Thread.objects.filter(author=username)
+                    thread_serializer = ThreadSerializer(threads, many=True)
+                    tot_ordenat = ordena(thread_serializer.data, ordre)
+
+                elif filtre == 'links':
+                    links = Link.objects.filter(author=username)
+                    link_serializer = LinkSerializer(links, many=True)
+                    tot_ordenat = ordena(link_serializer.data, ordre)
+
+                else:
+                    pass
+
                 serializer = {
                     "user": user_serializer.data,
-                    "threads": thread_serializer.data
+                    filtre: tot_ordenat
                 }
-                pass
+
             elif element == 'comments':
                 pass
             elif element == 'boosts':
@@ -50,11 +72,11 @@ class UserView(APIView):
 
 def ordena(elements, ordre):
     if ordre is None or ordre == 'newest':
-        elements = sorted(elements, key=lambda x: x.creation_data, reverse=True)
+        elements = sorted(elements, key=lambda x: x['creation_data'], reverse=True)
     if ordre == 'top':
-        elements = sorted(elements, key=lambda x: x.num_likes, reverse=True)
+        elements = sorted(elements, key=lambda x: x['num_likes'], reverse=True)
     elif ordre == 'commented':
-        elements = sorted(elements, key=lambda x: x.num_coments, reverse=True)
+        elements = sorted(elements, key=lambda x: x['num_coments'], reverse=True)
     else:
         # error
         pass
