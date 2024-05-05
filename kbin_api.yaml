@@ -116,6 +116,58 @@ paths:
                   error:
                     type: string
 
+  /u/{username}/boosts/{ordre}/{filtre}/:
+    get:
+      summary: Obtenir la informació d'un user més les publicacions, threads i/o links, depen del filtre que ha fet boost i ordenades segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom de l'user
+        - in: path
+          name: ordre
+          required: false
+          schema:
+            type: string
+            enum: ['newest', 'top', 'commented']
+            default: 'newest'
+          description: Ordre a seguir per a ordenar les publicacions
+        - in: path
+          name: filtre
+          required: false
+          schema:
+            type: string
+            enum: ['tot', 'threads', 'links']
+            default: 'tot'
+          description: Filtre per indicar quin tipus de publicacions s'obtenen
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FiltreNotFoundError'
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
 
 components:
   schemas:

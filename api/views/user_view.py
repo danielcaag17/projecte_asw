@@ -6,7 +6,7 @@ from ..serializers.user_serializer import UserSerializer
 from ..serializers.thread_serializer import ThreadSerializer
 from ..serializers.link_serializer import LinkSerializer
 from ..serializers.comment_serializer import CommentSerializer
-from kbin.models import User, Thread, Link, Comment
+from kbin.models import User, Thread, Link, Comment, Boost
 
 
 class UserView(APIView):
@@ -28,7 +28,7 @@ class UserView(APIView):
                 element = 'threads'
 
             if element == 'threads':
-                tot_ordenat = filtrar(filtre, username, ordre)
+                tot_ordenat = filtrar(filtre, username, ordre, False)
                 result = tot_ordenat
 
             elif element == 'comments':
@@ -43,8 +43,10 @@ class UserView(APIView):
                     return Response({"error": f"Comments cannot be ordered by number of comments"},
                                     status=status.HTTP_400_BAD_REQUEST)
             elif element == 'boosts':
-                # nomes quan es el mateix user
-                pass
+                # TODO: nomes quan es el mateix user
+                tot_ordenat = filtrar(filtre, username, ordre, True)
+                result = tot_ordenat
+
             else:
                 return Response({"error": f"The element '{element}' does not exist"},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -63,18 +65,18 @@ class UserView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-def filtrar(filtre, username, ordre):
+def filtrar(filtre, username, ordre, boost):
     tot_ordenat = None
     if filtre == 'tot':
-        thread_serializer = get_thread_serialized(username)
-        link_serializer = get_link_serialized(username)
+        thread_serializer = get_thread_serialized(username, boost)
+        link_serializer = get_link_serialized(username, boost)
         tot = link_serializer.data + thread_serializer.data
         tot_ordenat = get_ordena(tot, ordre)
     elif filtre == 'threads':
-        thread_serializer = get_thread_serialized(username)
+        thread_serializer = get_thread_serialized(username, boost)
         tot_ordenat = get_ordena(thread_serializer.data, ordre)
     elif filtre == 'links':
-        link_serializer = get_link_serialized(username)
+        link_serializer = get_link_serialized(username, boost)
         tot_ordenat = get_ordena(link_serializer.data, ordre)
     else:
         return Response({"error": f"The filter '{filtre}' does not exist"},
@@ -82,14 +84,24 @@ def filtrar(filtre, username, ordre):
     return tot_ordenat
 
 
-def get_thread_serialized(username):
-    threads = Thread.objects.filter(author=username)
+def get_thread_serialized(username, boost):
+    if boost:
+        boosts = Boost.objects.filter(user=username)
+        publication_ids = boosts.values_list('publicacio_id', flat=True)
+        threads = Thread.objects.filter(id__in=publication_ids)
+    else:
+        threads = Thread.objects.filter(author=username)
     thread_serializer = ThreadSerializer(threads, many=True)
     return thread_serializer
 
 
-def get_link_serialized(username):
-    links = Link.objects.filter(author=username)
+def get_link_serialized(username, boost):
+    if boost:
+        boosts = Boost.objects.filter(user=username)
+        publication_ids = boosts.values_list('publicacio_id', flat=True)
+        links = Link.objects.filter(id__in=publication_ids)
+    else:
+        links = Link.objects.filter(author=username)
     link_serializer = LinkSerializer(links, many=True)
     return link_serializer
 
