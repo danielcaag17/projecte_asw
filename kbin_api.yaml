@@ -23,9 +23,9 @@ paths:
                       items:
                         $ref: '#/components/schemas/User'
 
-  /u/{username}/:
+  /u/{username}/{ordre}/{filtre}/:
     get:
-      summary: Obtenir la informació d'un user més les seves publicacions (threads i links) ordenades per data de creació
+      summary: Obtenir la informació d'un user més les seves publicacions, threads i/o links, depen del filtre i ordenades segons ordre
       parameters:
         - in: path
           name: username
@@ -33,6 +33,22 @@ paths:
           schema:
             type: string
           description: Nom de l'user
+        - in: path
+          name: ordre
+          required: false
+          schema:
+            type: string
+            enum: ['newest', 'top', 'commented']
+            default: 'newest'
+          description: Ordre a seguir per a ordenar les publicacions
+        - in: path
+          name: filtre
+          required: false
+          schema:
+            type: string
+            enum: ['tot', 'threads', 'links']
+            default: 'tot'
+          description: Filtre per indicar quin tipus de publicacions s'obtenen
       responses:
         '200':
           description: Informació de l'usuari obtinguda correctament
@@ -43,19 +59,22 @@ paths:
                 properties:
                   user:
                     $ref: '#/components/schemas/User'
-                  threads:
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Thread'
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
         '404':
-          description: L'user no existeix
+          description: El recurs demanat no s'ha trobat
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                oneOf:
+                  - $ref: '#/components/schemas/FiltreNotFoundError'
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
 
   /u/{username}/comments/{ordre}/:
     get:
@@ -96,6 +115,7 @@ paths:
                 properties:
                   error:
                     type: string
+
 
 components:
   schemas:
@@ -272,3 +292,27 @@ components:
           type: integer
           description: Número de boosts fets per l'user
           example: 48
+
+    FiltreNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: El filtre sol·licitat no ha estat trobat
+
+    OrdreNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: L'ordre sol·licitat no ha estat trobat
+
+    UserNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: El usuario solicitado no fue encontrado
