@@ -1,0 +1,81 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: API Kbin.social
+  description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a XXXX." #TODO: CANVIAR XXX
+
+servers:
+  - url: 'http://127.0.0.1:8000/api'
+paths:
+  /users/:
+    get:
+      summary: Obtenir tots els users
+      responses:
+          '200':
+            description: Users obtinguts correctament
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    description:
+                      type: string
+                    cover:
+                      type: string
+                    avatar:
+                      type: string
+                    email:
+                      type: string
+                    total_threads:
+                      type: integer
+                    total_comments:
+                      type: integer
+                    total_boosts:
+                      type: integer
+
+  /u/{username}/:
+    get:
+      summary: Obtenir info d'un user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  description:
+                    type: string
+                  cover:
+                    type: string
+                  avatar:
+                    type: string
+                  email:
+                    type: string
+                  total_threads:
+                    type: integer
+                  total_comments:
+                    type: integer
+                  total_boosts:
+                    type: integer
+        '404':
+          description: L'user no existeix
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
