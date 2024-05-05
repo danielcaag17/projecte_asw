@@ -18,33 +18,21 @@ paths:
                 schema:
                   type: object
                   properties:
-                    username:
-                      type: string
-                    description:
-                      type: string
-                    cover:
-                      type: string
-                    avatar:
-                      type: string
-                    email:
-                      type: string
-                    total_threads:
-                      type: integer
-                    total_comments:
-                      type: integer
-                    total_boosts:
-                      type: integer
+                    users:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/User'
 
   /u/{username}/:
     get:
-      summary: Obtenir info d'un user
+      summary: Obtenir la informació d'un user més les seves publicacions (threads i links) ordenades per data de creació
       parameters:
         - in: path
           name: username
           required: true
           schema:
             type: string
-          description: Nom d'user
+          description: Nom de l'user
       responses:
         '200':
           description: Informació de l'usuari obtinguda correctament
@@ -53,22 +41,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  username:
-                    type: string
-                  description:
-                    type: string
-                  cover:
-                    type: string
-                  avatar:
-                    type: string
-                  email:
-                    type: string
-                  total_threads:
-                    type: integer
-                  total_comments:
-                    type: integer
-                  total_boosts:
-                    type: integer
+                  user:
+                    $ref: '#/components/schemas/User'
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
         '404':
           description: L'user no existeix
           content:
@@ -79,3 +57,218 @@ paths:
                   error:
                     type: string
 
+  /u/{username}/comments/{ordre}/:
+    get:
+      summary: Obtenir info d'un user més els seus comentaris ordenats segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+        - in: path
+          name: ordre
+          required: false
+          schema:
+            type: string
+          description: Ordre a seguir per a ordenar els comments
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        '404':
+          description: L'user no existeix
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+components:
+  schemas:
+    Boost:
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del comment
+          example: 2
+        body:
+          type: string
+          description: Contigut del comentari
+          example: "Aquest és el body del comentari"
+        creation_data:
+          type: string
+          format: date-time
+          description: Data de la creació del comment
+          example: "2024-03-29T00:00:00Z"
+        last_edited:
+          type: string
+          format: date-time
+          description: Data de l'última edició del comment
+          example: "2024-03-30T00:00:00Z"
+        num_likes:
+          type: integer
+          description: Número de likes del comment
+          example: 2
+        num_dislikes:
+          type: integer
+          description: Número de dislikes del comment
+          example: 4
+        level: # TODO
+          type: integer
+          description: ID del link
+          example: 2
+        author:
+          type: string
+          description: Autor del comment
+          example: "user123"
+        thread:
+          type: integer
+          description: ID del thread
+          example: 2
+
+    Link:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del link
+          example: 2
+        num_likes:
+          type: integer
+          description: Nombre de likes del link
+          example: 10
+        num_dislikes:
+          type: integer
+          description: Nombre de dislikes del link
+          example: 3
+        author:
+          type: string
+          description: Autor del link
+          example: "El meu nom"
+        title:
+          type: string
+          description: Titol del link
+          example: "El titol"
+        body:
+          type: string
+          description: Body del link
+          example: "El meu Body"
+        creation_data:
+          type: string
+          format: date-time
+          description: Data de creació del link
+        num_comments:
+          type: integer
+          description: Nombre de comentaris del link
+          example: 2
+        num_boosts:
+          type: integer
+          description: Nombre de boosts del link
+          example: 1
+        magazine:
+          type: string
+          description: Magazine del link
+          example: "La meva magazine"
+        url:
+          type: string
+          description: URL del link
+          example: "www.raco.fib.upc.edu"
+
+    Magazine:
+
+    Thread:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del thread
+          example: 2
+        num_likes:
+          type: integer
+          description: Nombre de likes del thread
+          example: 10
+        num_dislikes:
+          type: integer
+          description: Nombre de dislikes del thread
+          example: 3
+        author:
+          type: string
+          description: Autor del thread
+          example: "El meu nom"
+        title:
+          type: string
+          description: Titol del thread
+          example: "El titol"
+        body:
+          type: string
+          description: Body del thread
+          example: "El meu Body"
+        creation_data:
+          type: string
+          format: date-time
+          description: Data de creació del thread
+        num_comments:
+          type: integer
+          description: Nombre de comentaris del thread
+          example: 2
+        num_boosts:
+          type: integer
+          description: Nombre de boosts del thread
+          example: 1
+        magazine:
+          type: string
+          description: Magazine del thread
+          example: "La meva magazine"
+
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: ID de l'user
+          example: "user123"
+        description:
+          type: string
+          description: Descripció de l'user
+          example: "Aquesta és la meva descripció"
+        cover:
+          type: string
+          description: URL de la imatge de la cover de l'user
+          example: "https://bravo13-bucket.s3.amazonaws.com/cover"
+        avatar:
+          type: string
+          description: URL de la imatge de l'avatar de l'user
+          example: "https://bravo13-bucket.s3.amazonaws.com/avatar"
+        email:
+          type: string
+          description: Correu electrònic de l'user
+          example: "user123@gmail.com"
+        total_threads:
+          type: integer
+          description: Número de publicacions (threads i links) creats per l'user
+          example: 12
+        total_comments:
+          type: integer
+          description: Número de comments creats per l'user
+          example: 24
+        total_boosts:
+          type: integer
+          description: Número de boosts fets per l'user
+          example: 48

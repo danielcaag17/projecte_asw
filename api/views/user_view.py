@@ -32,13 +32,14 @@ class UserView(APIView):
                 result = tot_ordenat
 
             elif element == 'comments':
+                # TODO: Veure si hi ha filtre
                 comments = Comment.objects.filter(author=username)
                 comment_serializer = CommentSerializer(comments, many=True)
                 if ordre != 'commented':
                     tot_ordenat = get_ordena(comment_serializer.data, ordre)
                     result = tot_ordenat
                 else:
-                    # TODO: Veure si es aixi o no
+                    # TODO: Veure si es aixi o no (si es error o no)
                     return Response({"error": f"Comments cannot be ordered by number of comments"},
                                     status=status.HTTP_400_BAD_REQUEST)
             elif element == 'boosts':
