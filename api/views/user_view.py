@@ -9,6 +9,7 @@ from ..serializers.link_serializer import *
 
 class UserView(APIView):
     def get(self, request, username=None, element=None, ordre=None, filtre=None):
+        print(element, ordre, filtre)
         if username:
             return self.retrieve(request, username, element, ordre, filtre)
         else:
@@ -30,20 +31,30 @@ class UserView(APIView):
                     link_serializer = LinkSerializer(links, many=True)
 
                     tot = link_serializer.data + thread_serializer.data
-                    tot_ordenat = ordena(tot, ordre)
+                    try:
+                        tot_ordenat = ordena(tot, ordre)
+                    except Exception as e:
+                        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
                 elif filtre == 'threads':
                     threads = Thread.objects.filter(author=username)
                     thread_serializer = ThreadSerializer(threads, many=True)
-                    tot_ordenat = ordena(thread_serializer.data, ordre)
+                    try:
+                        tot_ordenat = ordena(thread_serializer.data, ordre)
+                    except Exception as e:
+                        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
                 elif filtre == 'links':
                     links = Link.objects.filter(author=username)
                     link_serializer = LinkSerializer(links, many=True)
-                    tot_ordenat = ordena(link_serializer.data, ordre)
+                    try:
+                        tot_ordenat = ordena(link_serializer.data, ordre)
+                    except Exception as e:
+                        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
                 else:
-                    pass
+                    return Response({"error": f"The filter '{filtre}' does not exist"},
+                                    status=status.HTTP_404_NOT_FOUND)
 
                 serializer = {
                     "user": user_serializer.data,
@@ -53,11 +64,11 @@ class UserView(APIView):
             elif element == 'comments':
                 pass
             elif element == 'boosts':
-                # mateix user
+                # nomes quan es el mateix user
                 pass
             else:
-                # error
-                pass
+                return Response({"error": f"The element '{element}' does not exist"},
+                                status=status.HTTP_404_NOT_FOUND)
 
             return Response(serializer, status=status.HTTP_200_OK)
         except User.DoesNotExist:
@@ -73,11 +84,10 @@ class UserView(APIView):
 def ordena(elements, ordre):
     if ordre is None or ordre == 'newest':
         elements = sorted(elements, key=lambda x: x['creation_data'], reverse=True)
-    if ordre == 'top':
+    elif ordre == 'top':
         elements = sorted(elements, key=lambda x: x['num_likes'], reverse=True)
     elif ordre == 'commented':
         elements = sorted(elements, key=lambda x: x['num_coments'], reverse=True)
     else:
-        # error
-        pass
+        raise Exception(f"The order '{ordre}' does not exist")
     return elements
