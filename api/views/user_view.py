@@ -2,9 +2,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from ..serializers.user_serializer import *
-from ..serializers.thread_serializer import *
-from ..serializers.link_serializer import *
+from ..serializers.user_serializer import UserSerializer
+from ..serializers.thread_serializer import ThreadSerializer
+from ..serializers.link_serializer import LinkSerializer
+from ..serializers.comment_serializer import CommentSerializer
+from kbin.models import User, Thread, Link, Comment
 
 
 class UserView(APIView):
@@ -20,24 +22,34 @@ class UserView(APIView):
             user = User.objects.get(username=username)
             user_serializer = UserSerializer(user)
             result = None
-            if element is None or element == 'threads':
-                if filtre is None:
-                    filtre = 'tot'
+            if filtre is None:
+                filtre = 'tot'
+            if element is None:
+                element = 'threads'
+
+            if element == 'threads':
                 tot_ordenat = filtrar(filtre, username, ordre)
                 result = tot_ordenat
 
             elif element == 'comments':
-                pass
+                comments = Comment.objects.filter(author=username)
+                comment_serializer = CommentSerializer(comments, many=True)
+                if ordre != 'commented':
+                    tot_ordenat = get_ordena(comment_serializer.data, ordre)
+                    result = tot_ordenat
+                else:
+                    # TODO: Veure si es aixi o no
+                    return Response({"error": f"Comments cannot be ordered by number of comments"},
+                                    status=status.HTTP_400_BAD_REQUEST)
             elif element == 'boosts':
                 # nomes quan es el mateix user
                 pass
             else:
                 return Response({"error": f"The element '{element}' does not exist"},
                                 status=status.HTTP_404_NOT_FOUND)
-
             serializer = {
                 "user": user_serializer.data,
-                filtre: result
+                element: result
             }
             return Response(serializer, status=status.HTTP_200_OK)
         except User.DoesNotExist:
