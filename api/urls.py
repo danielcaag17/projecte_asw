@@ -1,6 +1,11 @@
 from django.urls import path
-from .views import PublicacioTitleListView
+from . import views
+
+url_users = [
+    path('u/<str:username>/', views.UserView.as_view(), name='view-user'),
+    path('users/', views.UserView.as_view(), name='users')
+]
 
 urlpatterns = [
-    path('publicacio/titles/', PublicacioTitleListView.as_view(), name='publicacio_titles'),
-]
+
+] + url_users
