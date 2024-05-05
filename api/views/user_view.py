@@ -19,47 +19,12 @@ class UserView(APIView):
         try:
             user = User.objects.get(username=username)
             user_serializer = UserSerializer(user)
-            serializer = {}
+            result = None
             if element is None or element == 'threads':
-                tot_ordenat = None
-                if filtre is None or filtre == 'tot':
+                if filtre is None:
                     filtre = 'tot'
-                    threads = Thread.objects.filter(author=username)
-                    thread_serializer = ThreadSerializer(threads, many=True)
-
-                    links = Link.objects.filter(author=username)
-                    link_serializer = LinkSerializer(links, many=True)
-
-                    tot = link_serializer.data + thread_serializer.data
-                    try:
-                        tot_ordenat = ordena(tot, ordre)
-                    except Exception as e:
-                        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-                elif filtre == 'threads':
-                    threads = Thread.objects.filter(author=username)
-                    thread_serializer = ThreadSerializer(threads, many=True)
-                    try:
-                        tot_ordenat = ordena(thread_serializer.data, ordre)
-                    except Exception as e:
-                        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-                elif filtre == 'links':
-                    links = Link.objects.filter(author=username)
-                    link_serializer = LinkSerializer(links, many=True)
-                    try:
-                        tot_ordenat = ordena(link_serializer.data, ordre)
-                    except Exception as e:
-                        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-                else:
-                    return Response({"error": f"The filter '{filtre}' does not exist"},
-                                    status=status.HTTP_404_NOT_FOUND)
-
-                serializer = {
-                    "user": user_serializer.data,
-                    filtre: tot_ordenat
-                }
+                tot_ordenat = filtrar(filtre, username, ordre)
+                result = tot_ordenat
 
             elif element == 'comments':
                 pass
@@ -70,6 +35,10 @@ class UserView(APIView):
                 return Response({"error": f"The element '{element}' does not exist"},
                                 status=status.HTTP_404_NOT_FOUND)
 
+            serializer = {
+                "user": user_serializer.data,
+                filtre: result
+            }
             return Response(serializer, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": f"The user '{username}' does not exist"},
@@ -79,6 +48,45 @@ class UserView(APIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def filtrar(filtre, username, ordre):
+    tot_ordenat = None
+    if filtre == 'tot':
+        thread_serializer = get_thread_serialized(username)
+        link_serializer = get_link_serialized(username)
+        tot = link_serializer.data + thread_serializer.data
+        tot_ordenat = get_ordena(tot, ordre)
+    elif filtre == 'threads':
+        thread_serializer = get_thread_serialized(username)
+        tot_ordenat = get_ordena(thread_serializer.data, ordre)
+    elif filtre == 'links':
+        link_serializer = get_link_serialized(username)
+        tot_ordenat = get_ordena(link_serializer.data, ordre)
+    else:
+        return Response({"error": f"The filter '{filtre}' does not exist"},
+                        status=status.HTTP_404_NOT_FOUND)
+    return tot_ordenat
+
+
+def get_thread_serialized(username):
+    threads = Thread.objects.filter(author=username)
+    thread_serializer = ThreadSerializer(threads, many=True)
+    return thread_serializer
+
+
+def get_link_serialized(username):
+    links = Link.objects.filter(author=username)
+    link_serializer = LinkSerializer(links, many=True)
+    return link_serializer
+
+
+def get_ordena(elements, ordre):
+    try:
+        tot_ordenat = ordena(elements, ordre)
+        return tot_ordenat
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
 def ordena(elements, ordre):
