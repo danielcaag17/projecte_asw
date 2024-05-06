@@ -3,6 +3,7 @@ from . import views
 
 url_comentaris = [
     path('publicacions/<int:id_thread>/comments/', views.VeureComentarisPublicacio.as_view(), name='veure-comentaris-publicacio'),
+    path('publicacions/<int:id_thread>/create_comment/', views.CrearComentariPublicacio.as_view(), name='crear-comentari-publicacio'),
 ]
 
 
