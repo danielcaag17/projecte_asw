@@ -18,8 +18,9 @@ class UserView(APIView):
 
     def retrieve(self, request, username, element, ordre, filtre):
         try:
+            api_key = request.headers.get('Authorization')
             user = User.objects.get(username=username)
-            user_serializer = UserSerializer(user)
+            user_serializer = UserSerializer(user, context={'api_key': api_key})
             if filtre is None:
                 filtre = 'tot'
             if element is None:
@@ -41,10 +42,12 @@ class UserView(APIView):
                     return Response({"error": f"Comments cannot be ordered by number of comments"},
                                     status=status.HTTP_400_BAD_REQUEST)
             elif element == 'boosts':
-                # TODO: nomes quan es el mateix user
-                tot_ordenat = filtrar(filtre, username, ordre, True)
-                result = tot_ordenat
-
+                if user == User.objects.filter(api_key=api_key):
+                    tot_ordenat = filtrar(filtre, username, ordre, True)
+                    result = tot_ordenat
+                else:
+                    return Response({"error": f"Only the user can get its boosts"},
+                                    status=status.HTTP_401_UNAUTHORIZED)
             else:
                 return Response({"error": f"The element '{element}' does not exist"},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -58,13 +61,13 @@ class UserView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
+        api_key = request.headers.get('Authorization')
         users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
+        serializer = UserSerializer(users, many=True, context={'api_key': api_key})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def filtrar(filtre, username, ordre, boost):
-    tot_ordenat = None
     if filtre == 'tot':
         thread_serializer = get_thread_serialized(username, boost)
         link_serializer = get_link_serialized(username, boost)
