@@ -3,15 +3,19 @@ info:
   version: 1.0.0
   title: API Kbin.social
   description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a XXXX." #TODO: CANVIAR XXX
-
 servers:
-  - url: 'http://127.0.0.1:8000/api'
+  - url: 'http://127.0.0.1:8000/api' #TODO:POSAR LA URL QUAN FEM DEPLOY
 tags:
   - name: Link
     description: Tot sobre Links
     externalDocs:
       description: Find out more
       url: http://swagger.io #TODO: posar URL
+  - name: Publicacio
+    description: Tot sobre Poblicacions
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io #TODO: posar o treure URL
   - name: Thread
     description: Tot sobre Threads
     externalDocs:
@@ -26,7 +30,7 @@ paths:
   /api/publicacions/top/:
     get:
       tags:
-      - Publicacions
+      - Publicacio
       summary: Obté totes les publicacions ordenades per numero de likes
       operationId: PublicacionsTop
       responses:
@@ -49,7 +53,7 @@ paths:
   /api/publicacions/newest/:
     get:
       tags:
-      - Publicacions
+      - Publicacio
       summary: Obté totes les publicacions ordenades per data de creació
       operationId: PublicacionsNewest
       responses:
@@ -72,7 +76,7 @@ paths:
   /api/publicacions/commented/:
     get:
       tags:
-      - Publicacions
+      - Publicacio
       summary: Obté totes les publicacions ordenades per numero de comentaris
       operationId: PublicacionsCommented
       responses:
@@ -96,7 +100,7 @@ paths:
   /api/threads/top/:
     get:
       tags:
-      - Threads
+      - Thread
       summary: Obté tote els threads ordenadts per numero de likes
       operationId: ThreadsTop
       responses:
@@ -115,7 +119,7 @@ paths:
   /api/threads/newest/:
     get:
       tags:
-      - Threads
+      - Thread
       summary: Obté tots els threads ordenadts per data de creació
       operationId: ThreadsNewest
       responses:
@@ -134,7 +138,7 @@ paths:
   /api/threads/commented/:
     get:
       tags:
-      - Threads
+      - Thread
       summary: Obté tots els threads ordenadts per numero de comentaris
       operationId: ThreadsCommented
       responses:
@@ -153,7 +157,7 @@ paths:
   /api/threads/:
     get:
       tags:
-      - Threads
+      - Thread
       summary: Obté tots els threads ordenats per data de creació
       operationId: AllThreads
       responses:
@@ -170,7 +174,7 @@ paths:
                       $ref: '#/components/schemas/Thread'
     post:
       tags:
-      - Threads
+      - Thread
       summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou thread a la aplicació i retorna la informació del thread creat
       operationId: AfegirThread
       requestBody:
@@ -231,7 +235,7 @@ paths:
   /api/links/top/:
     get:
       tags:
-      - Links
+      - Link
       summary: Obté tots els links ordenats per numero de likes
       operationId: LinksTop
       responses:
@@ -250,7 +254,7 @@ paths:
   /api/links/newest/:
     get:
       tags:
-      - Links
+      - Link
       summary: Obté tots els links ordenats per  data de creació
       operationId: LinksNewest
       responses:
@@ -269,7 +273,7 @@ paths:
   /api/links/commented/:
     get:
       tags:
-      - Links
+      - Link
       summary: Obté tots els links ordenats per per numero de comentaris
       operationId: LinksCommented
       responses:
@@ -288,7 +292,7 @@ paths:
   /api/links/:
     post:
       tags:
-      - Links
+      - Link
       summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou link a la aplicació i retorna la informació del link creat
       operationId: AfegirLink
       requestBody:
@@ -336,6 +340,7 @@ paths:
                 errorExample:
                   value:
                     mensaje: "Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."
+
         401:
           description: 'Error: Unauthorized'
           content:
@@ -345,6 +350,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
+
         403:
           description: 'Error: Forbidden'
           content:
@@ -742,6 +748,7 @@ components:
     Boost:
 
     Comment:
+
       type: object
       properties:
         id:
@@ -979,3 +986,4 @@ components:
       type: apiKey
       name: Authorization
       in: header
+
