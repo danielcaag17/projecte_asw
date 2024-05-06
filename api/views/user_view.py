@@ -42,7 +42,10 @@ class UserView(APIView):
                     return Response({"error": f"Comments cannot be ordered by number of comments"},
                                     status=status.HTTP_400_BAD_REQUEST)
             elif element == 'boosts':
-                if user == User.objects.filter(api_key=api_key):
+                if user != User.objects.filter(api_key=api_key).exists():
+                    return Response({"error": f"the token provided does not match the user"},
+                                    status=status.HTTP_400_BAD_REQUEST)
+                elif user == User.objects.filter(api_key=api_key):
                     tot_ordenat = filtrar(filtre, username, ordre, True)
                     result = tot_ordenat
                 else:

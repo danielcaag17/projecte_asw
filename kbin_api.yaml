@@ -6,10 +6,26 @@ info:
 
 servers:
   - url: 'http://127.0.0.1:8000/api'
+tags:
+  - name: Link
+    description: Tot sobre Links
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io #TODO: posar URL
+  - name: Thread
+    description: Tot sobre Threads
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io #TODO: posar o treure URL
+  - name: User
+    description: Tot sobre Users
+
 paths:
   /users/:
     get:
-      summary: Obtenir tots els users
+      tags:
+        - User
+      summary: Obtenir tots els users i si s'ha indicat un token es mostra aquest en l'usuari corresponent
       responses:
           '200':
             description: Users obtinguts correctament
@@ -23,9 +39,47 @@ paths:
                       items:
                         $ref: '#/components/schemas/User'
 
+  /u/{username}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir info d'un user més les publicacions que ha fet, threads i links, ordenats per data de creació
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+
   /u/{username}/{ordre}/:
     get:
-      summary: Obtenir la informació d'un user més les seves publicacions, threads i links, ordenades segons ordre
+      tags:
+        - User
+      summary: Obtenir info d'un user més les publicacions que ha fet, threads i links, ordenats segons ordre
       parameters:
         - in: path
           name: username
@@ -35,11 +89,10 @@ paths:
           description: Nom de l'user
         - in: path
           name: ordre
-          required: false
+          required: true
           schema:
             type: string
             enum: ['newest', 'top', 'commented']
-            default: 'newest'
           description: Ordre a seguir per a ordenar les publicacions
       responses:
         '200':
@@ -69,6 +122,8 @@ paths:
 
   /u/{username}/{ordre}/{filtre}/:
     get:
+      tags:
+        - User
       summary: Obtenir la informació d'un user més les seves publicacions, threads i/o links, depen del filtre i ordenades segons ordre
       parameters:
         - in: path
@@ -83,15 +138,13 @@ paths:
           schema:
             type: string
             enum: ['newest', 'top', 'commented']
-            default: 'newest'
           description: Ordre a seguir per a ordenar les publicacions
         - in: path
           name: filtre
-          required: false
+          required: true
           schema:
             type: string
             enum: ['tot', 'threads', 'links']
-            default: 'tot'
           description: Filtre per indicar quin tipus de publicacions s'obtenen
       responses:
         '200':
@@ -120,9 +173,11 @@ paths:
                   - $ref: '#/components/schemas/OrdreNotFoundError'
                   - $ref: '#/components/schemas/UserNotFoundError'
 
-  /u/{username}/comments/{ordre}/:
+  /u/{username}/boosts/:
     get:
-      summary: Obtenir info d'un user més els seus comentaris ordenats segons ordre
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les publicacions que ha fet boost ordenats per data de creació, s'ha d'indicar el token que coincideix amb l'user. Estan ordenats per data de creació
       parameters:
         - in: path
           name: username
@@ -130,12 +185,54 @@ paths:
           schema:
             type: string
           description: Nom d'user
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '400':
+          description: El token no correspon a aquest User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '401':
+          description: User no està autentificat per a fer aquesta consulta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+
+  /u/{username}/comments/:
+    get:
+      tags:
+        - User
+      summary: Obtenir info d'un user més els seus comentaris ordenats per data de creació
+      parameters:
         - in: path
-          name: ordre
-          required: false
+          name: username
+          required: true
           schema:
             type: string
-          description: Ordre a seguir per a ordenar els comments
+          description: Nom d'user
       responses:
         '200':
           description: Informació de l'usuari obtinguda correctament
@@ -151,18 +248,59 @@ paths:
                     items:
                       $ref: '#/components/schemas/Comment'
         '404':
-          description: L'user no existeix
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+
+  /u/{username}/comments/{ordre}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir info d'un user més els seus comentaris ordenats segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+        - in: path
+          name: ordre
+          required: true
+          schema:
+            type: string
+            enum: [ 'newest', 'top', 'commented' ]
+          description: Ordre a seguir per a ordenar les publicacions
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
 
-  /u/{username}/boosts/{ordre}/{filtre}/:
+  /u/{username}/boosts/{ordre}/:
     get:
-      summary: Obtenir la informació d'un user més les publicacions, threads i/o links, depen del filtre que ha fet boost i ordenades segons ordre
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les publicacions que ha fet boost ordenades segons ordre
       parameters:
         - in: path
           name: username
@@ -172,19 +310,62 @@ paths:
           description: Nom de l'user
         - in: path
           name: ordre
-          required: false
+          required: true
+          schema:
+            type: string
+            enum: [ 'newest', 'top', 'commented' ]
+          description: Ordre a seguir per a ordenar les publicacions
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
+
+  /u/{username}/boosts/{ordre}/{filtre}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les publicacions que ha fet boost. Es mostren els threads i/o links depenent del filtre i ordenades segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom de l'user
+        - in: path
+          name: ordre
+          required: true
           schema:
             type: string
             enum: ['newest', 'top', 'commented']
-            default: 'newest'
           description: Ordre a seguir per a ordenar les publicacions
         - in: path
           name: filtre
-          required: false
+          required: true
           schema:
             type: string
             enum: ['tot', 'threads', 'links']
-            default: 'tot'
           description: Filtre per indicar quin tipus de publicacions s'obtenen
       responses:
         '200':
@@ -364,6 +545,10 @@ components:
           type: string
           description: Descripció de l'user
           example: "Aquesta és la meva descripció"
+        token:
+          type: string
+          description: Token de l'user
+          example: "asd76/32ASH1"
         cover:
           type: string
           description: URL de la imatge de la cover de l'user
