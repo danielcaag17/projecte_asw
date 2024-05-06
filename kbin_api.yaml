@@ -220,6 +220,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
 
   /u/{username}/comments/:
     get:
@@ -340,6 +342,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/OrdreNotFoundError'
                   - $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
 
   /u/{username}/boosts/{ordre}/{filtre}/:
     get:
@@ -393,6 +397,8 @@ paths:
                   - $ref: '#/components/schemas/FiltreNotFoundError'
                   - $ref: '#/components/schemas/OrdreNotFoundError'
                   - $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
 
 components:
   schemas:
@@ -548,7 +554,7 @@ components:
         token:
           type: string
           description: Token de l'user
-          example: "asd76/32ASH1"
+          example: "b6eb16471f535636a4c4897ba6559384e9e80bf7"
         cover:
           type: string
           description: URL de la imatge de la cover de l'user
@@ -597,3 +603,9 @@ components:
           type: string
       example:
         error: El usuario solicitado no fue encontrado
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
