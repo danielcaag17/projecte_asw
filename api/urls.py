@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
 
+url_comentaris = [
+    path('publicacions/<int:id_thread>/comments/', views.VeureComentarisPublicacio.as_view(), name='veure-comentaris-publicacio'),
+]
+
+
 url_users = [
     path('users/', views.UserView.as_view(), name='users'),
 
@@ -21,4 +26,4 @@ url_users = [
 
 urlpatterns = [
 
-] + url_users
+] + url_users + url_comentaris
