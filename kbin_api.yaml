@@ -21,6 +21,343 @@ tags:
     description: Tot sobre Users
 
 paths:
+
+#PUBLICACIONS
+  /api/publicacions/top/:
+    get:
+      tags:
+      - Publicacions
+      summary: Obté totes les publicacions ordenades per numero de likes
+      operationId: PublicacionsTop
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/publicacions/newest/:
+    get:
+      tags:
+      - Publicacions
+      summary: Obté totes les publicacions ordenades per data de creació
+      operationId: PublicacionsNewest
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/publicacions/commented/:
+    get:
+      tags:
+      - Publicacions
+      summary: Obté totes les publicacions ordenades per numero de comentaris
+      operationId: PublicacionsCommented
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+#THREADS
+  /api/threads/top/:
+    get:
+      tags:
+      - Threads
+      summary: Obté tote els threads ordenadts per numero de likes
+      operationId: ThreadsTop
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+
+  /api/threads/newest/:
+    get:
+      tags:
+      - Threads
+      summary: Obté tots els threads ordenadts per data de creació
+      operationId: ThreadsNewest
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+
+  /api/threads/commented/:
+    get:
+      tags:
+      - Threads
+      summary: Obté tots els threads ordenadts per numero de comentaris
+      operationId: ThreadsCommented
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+
+  /api/threads/:
+    get:
+      tags:
+      - Threads
+      summary: Obté tots els threads ordenats per data de creació
+      operationId: AllThreads
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+    post:
+      tags:
+      - Threads
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou thread a la aplicació i retorna la informació del thread creat
+      operationId: AfegirThread
+      requestBody:
+        description: Indicar titol i nom del magazine. Opcionalment també es pot indicar el body del thread
+        content:
+          application/json:
+            schema:
+              required:
+              - Titol
+              - Body
+              - Nom magazine
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  example: 'Titol del thread'
+                body:
+                  type: string
+                  minLength: 0
+                  maxLength: 280 #TODO: MIRAR BÉ QUIN LIMIT
+                  example: 'Body del thread'
+                magazine:
+                  type: string
+                  example: 'Nom del magazine'
+        required: true
+      responses:
+        201:
+          description: Thread creat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NouThread'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    mensaje: "Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."
+
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+      security:
+      - ApiKeyAuth: []
+
+#LINKS
+  /api/links/top/:
+    get:
+      tags:
+      - Links
+      summary: Obté tots els links ordenats per numero de likes
+      operationId: LinksTop
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/links/newest/:
+    get:
+      tags:
+      - Links
+      summary: Obté tots els links ordenats per  data de creació
+      operationId: LinksNewest
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/links/commented/:
+    get:
+      tags:
+      - Links
+      summary: Obté tots els links ordenats per per numero de comentaris
+      operationId: LinksCommented
+      responses:
+        '200':
+          description: Operació correcte.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Link'
+
+  /api/links/:
+    post:
+      tags:
+      - Links
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou link a la aplicació i retorna la informació del link creat
+      operationId: AfegirLink
+      requestBody:
+        description: Indicar titol,nom del magazine i url del link a crear. Opcionalment també es pot indicar el body del link
+        content:
+          application/json:
+            schema:
+              required:
+              - Titol
+              - Nom magazine
+              - url
+              - body
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  example: 'Titol del thread'
+                url:
+                  type: string
+                  minLength: 0
+                  maxLength: 280 #TODO: MIRAR BÉ QUIN LIMIT
+                  example: 'www.raco.fib.upc.edu'
+                magazine:
+                  type: string
+                  example: 'Nom del magazine'
+                body:
+                  type: string
+                  example: "Body del link"
+        required: true
+      responses:
+        201:
+          description: Link creat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NouLink'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    mensaje: "Error: Falten atributs. Cal indicar titol,body i magazine del thread a crear."
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+      security:
+      - ApiKeyAuth: []
+
+# USERS
   /users/:
     get:
       tags:
@@ -487,7 +824,7 @@ components:
           example: 1
         magazine:
           type: string
-          description: Magazine del link
+          description: Nom de la magazine del link
           example: "La meva magazine"
         url:
           type: string
@@ -506,11 +843,11 @@ components:
         num_likes:
           type: integer
           description: Nombre de likes del thread
-          example: 10
+          example: 0
         num_dislikes:
           type: integer
           description: Nombre de dislikes del thread
-          example: 3
+          example: 0
         author:
           type: string
           description: Autor del thread
@@ -530,14 +867,14 @@ components:
         num_comments:
           type: integer
           description: Nombre de comentaris del thread
-          example: 2
+          example: 0
         num_boosts:
           type: integer
           description: Nombre de boosts del thread
           example: 1
         magazine:
           type: string
-          description: Magazine del thread
+          description: Nom de la magazine del thread
           example: "La meva magazine"
 
     User:
@@ -580,6 +917,25 @@ components:
           description: Número de boosts fets per l'user
           example: 48
 
+    NouThread:
+      allOf:
+        - $ref: '#/components/schemas/Thread'
+        - type: object
+
+    NouLink:
+      allOf:
+        - $ref: '#/components/schemas/Link'
+        - type: object
+
+    ErrorResult:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Titol massa curt'
+      required:
+        - message
+
     FiltreNotFoundError:
       type: object
       properties:
@@ -602,7 +958,21 @@ components:
         error:
           type: string
       example:
-        error: El usuario solicitado no fue encontrado
+        error: L'user sol·licitat no ha estat trobat
+
+  examples:
+      error400:
+        value:
+          message: "Error: Contingut massa curt"
+      error401:
+        value:
+          message: "Error: No has indicat cap token"
+      error403:
+        value:
+          message: "Error: El token indicat no és vàlid"
+      error404:
+        value:
+          message: "Error: No hi ha una publicació amb id=3"
 
   securitySchemes:
     ApiKeyAuth:
