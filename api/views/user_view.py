@@ -11,7 +11,6 @@ from kbin.models import User, Thread, Link, Comment, Boost
 
 class UserView(APIView):
     def get(self, request, username=None, element=None, ordre=None, filtre=None):
-        print(element, ordre, filtre)
         if username:
             return self.retrieve(request, username, element, ordre, filtre)
         else:
@@ -21,7 +20,6 @@ class UserView(APIView):
         try:
             user = User.objects.get(username=username)
             user_serializer = UserSerializer(user)
-            result = None
             if filtre is None:
                 filtre = 'tot'
             if element is None:
