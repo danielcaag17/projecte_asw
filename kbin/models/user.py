@@ -9,6 +9,7 @@ class User(models.Model):
     cover = models.ImageField(default="", max_length=10000)
     avatar = models.ImageField(default="", max_length=10000)
     email = models.EmailField(unique=True)
+    api_key = models.CharField(max_length=100, blank=True, null=True, unique=True)
 
     @property
     def total_threads(self):

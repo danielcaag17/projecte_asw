@@ -8,7 +8,7 @@ from django.db.models import Value, CharField
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from ..models import *
-
+import secrets
 
 @csrf_exempt
 def sort(all, ordre):
@@ -108,6 +108,7 @@ def login(request):
     User.objects.get_or_create(
         username=user_username,
         email=user_email,
+        api_key = secrets.token_hex(20)
     )
     if request.user.is_authenticated:
         url = reverse('main') + f'?django_user={djando_username}&user={user_username}'
