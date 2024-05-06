@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'storages',
-    "api.apps.ApiConfig"
+    "api.apps.ApiConfig",
+    'corsheaders',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -72,8 +73,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'kbin.middleware.AddUserToContextMiddleware'
+    'kbin.middleware.AddUserToContextMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True  # Permitir solicitudes de cualquier origen
 
 ROOT_URLCONF = 'projecte_asw.urls'
 
