@@ -927,6 +927,67 @@ paths:
                   - $ref: '#/components/schemas/PublicacioNotFoundError'
                   - $ref: '#/components/schemas/CommentNotFoundError'
 
+  /settings/profile/{username}/:
+    put:
+      tags:
+        - User
+      summary: Editar la informació de l'user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      requestBody:
+        description: Indicar descripció
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  minLength: 1
+                  example: 'Descripció del user'
+                cover:
+                  type: string
+                  format: binary
+                  example: 'cover image'
+                avatar:
+                  type: string
+                  format: binary
+                  example: 'avatar image'
+        required: true
+      responses:
+        '201':
+          description: Informació de l'usuari modificada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: "Error: Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenUserNotMatchError'
+        '401':
+          description: "Error: Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenNotFoundError'
+        '404':
+          description: "Error: Not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
+
+
 components:
   schemas:
     Comment:
@@ -1160,9 +1221,8 @@ components:
           type: string
       example:
 
-        error: No s'ha trobat l'usuari sol·licitat
-
-
+        error: L'user sol·licitat no ha estat trobat
+        
     PublicacioNotFoundError:
       type: object
       properties:
@@ -1172,13 +1232,13 @@ components:
         error: No hi ha cap publicacio amb ID 0
 
     CommentNotFoundError:
+
       type: object
       properties:
         error:
           type: string
       example:
-        error: No s'ha trobat el comentari sol·licitat
-
+        error: No s'ha trobat cap token
 
     ErrorResult:
       type: object
@@ -1186,7 +1246,8 @@ components:
         error:
           type: string
       example:
-        error: "Error: Falten atributs. Cal indicar el body del comentari a crear."
+        error: El token no correspon amb l'user
+
 
   examples:
       error400:
@@ -1209,3 +1270,4 @@ components:
       name: Authorization
 
       in: header
+
