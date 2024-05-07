@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
 
+urlmagazines = [
+    path('magazines/<str:ordre>/', views.LlistarMagazines.as_view(), name='llistar_magazines')
+]
+
 url_comentaris = [
     path('publicacions/<int:id_thread>/comments/', views.VeureComentarisPublicacio.as_view(),
          name='veure-comentaris-publicacio'),
@@ -31,7 +35,7 @@ url_users = [
 ]
 
 urlpatterns = [
-    path('<str:filter>/<str:ordre>/', views.LlistaThreadLinks.as_view(), name='llistar_publicacions'),
+    #path('<str:filter>/<str:ordre>/', views.LlistaThreadLinks.as_view(), name='llistar_publicacions'),
     path('threads/',views.CrearThread.as_view(), name='crear_thread'),
     path('links/',views.CrearLink.as_view(),name='crear_link'),
-              ] + url_users + url_comentaris
+] + urlmagazines + url_users + url_comentaris
