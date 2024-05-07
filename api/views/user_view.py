@@ -19,7 +19,6 @@ class UserView(APIView):
     def put(self, request, username=None):
         api_key = request.headers.get('Authorization')
         data = request.data
-        print(request.data)
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
