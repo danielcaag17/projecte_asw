@@ -772,7 +772,83 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicacioNotFoundError'
+  /publicacions/{id_thread}/create_comment/:
+    post:
+      tags:
+        - Comment
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou comentari al thread indicat i retorna la informació del comentari creat.
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+      requestBody:
+        description: Indicar el contingut del comentari
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: Contingut del comentari
+                  example: "Aquest és el body del comentari"
+      responses:
+        '201':
+          description: Comentari creat correctament
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+              examples:
+                commentExample:
+                  value:
+                      author: "user123"
+                      body: "Aquest és el body del comentari"
+                      creation_data: "2024-03-29T00:00:00Z"
+                      last_edited: "2024-03-30T00:00:00Z"
+                      num_likes: 2
+                      num_dislikes: 4
+                      level: 1
+                      parent: "http://127.0.0.1:8000/api/threads/2/"
+        '400':
+          description: No s'ha pogut crear el comentari. Falta el contingut del comentari
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Falten atributs. Cal indicar el body del comentari a crear.
 
+        '401':
+          description: Es necessari indicar el token del usuari
+          content:
+            application/json:
+              examples:
+                errorExample:
+                  value:
+                    error: No s'ha indicat el token de l'usuari
+
+
+        '403':
+          description: El token no correspon a cap usuari registrat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: No existeix un thread amb aquesta ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicacioNotFoundError'
 
 components:
   schemas:
@@ -818,17 +894,17 @@ components:
           type: array
           description: Respostes al comentari
           items:
-              $ref: '#/components/schemas/Comment'
+            $ref: '#/components/schemas/Comment'
           example:
-          - author: "user123"
-            body: "Aquest és el body del comentari"
-            creation_data: "2024-03-29T00:00:00Z"
-            last_edited: "2024-03-30T00:00:00Z"
-            num_likes: 2
-            num_dislikes: 4
-            level: 2
-            parent: "http://127.0.0.1:8000/api/threads/2/"
-            replies: []
+            - author: "user123"
+              body: "Aquest és el body del comentari"
+              creation_data: "2024-03-29T00:00:00Z"
+              last_edited: "2024-03-30T00:00:00Z"
+              num_likes: 2
+              num_dislikes: 4
+              level: 2
+              parent: "http://127.0.0.1:8000/api/threads/2/"
+              replies: [ ]
     Link:
       type: object
       properties:
@@ -1002,7 +1078,8 @@ components:
           type: string
       example:
 
-       error: L'user sol·licitat no ha estat trobat
+        error: No s'ha trobat l'usuari sol·licitat
+
 
     PublicacioNotFoundError:
       type: object
@@ -1011,6 +1088,15 @@ components:
           type: string
       example:
         error: No hi ha cap publicacio amb ID 0
+
+
+    ErrorResult:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: "Error: Falten atributs. Cal indicar el body del comentari a crear."
 
   examples:
       error400:
@@ -1026,10 +1112,10 @@ components:
         value:
           message: "Error: No hi ha una publicació amb id=3"
 
+
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       name: Authorization
+
       in: header
-
-
