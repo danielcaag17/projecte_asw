@@ -19,6 +19,7 @@ class UserView(APIView):
     def put(self, request, username=None):
         api_key = request.headers.get('Authorization')
         data = request.data
+        print(request.data)
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -32,6 +33,8 @@ class UserView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         user.description = data['description']
+        user.cover = request.FILES.get('cover')
+        user.avatar = request.FILES.get('avatar')
         user.save()
         user_updated_serializer = UserSerializer(user, context={'api_key': api_key})
         return Response(user_updated_serializer.data, status=201)  # 201: Created

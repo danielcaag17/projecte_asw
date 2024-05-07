@@ -758,16 +758,22 @@ paths:
       requestBody:
         description: Indicar descripció
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              required:
-                - description
               type: object
               properties:
                 description:
                   type: string
                   minLength: 1
                   example: 'Descripció del user'
+                cover:
+                  type: string
+                  format: binary
+                  example: 'cover image'
+                avatar:
+                  type: string
+                  format: binary
+                  example: 'avatar image'
         required: true
       responses:
         '201':
