@@ -10,7 +10,6 @@ from django.core.files.storage import default_storage
 from ..models import *
 import secrets
 
-
 @csrf_exempt
 def sort(all, ordre):
     if ordre == 'top':
