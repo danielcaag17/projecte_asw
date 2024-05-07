@@ -30,6 +30,7 @@ tags:
       url: http://swagger.io #TODO: posar o treure URL
   - name: Magazines
     description: Tot sobre Magazines
+
 paths:
 
 #PUBLICACIONS
@@ -989,6 +990,58 @@ paths:
       security:
         - ApiKeyAuth: [ ]
 
+  /u/{username}/{ordre}/{filtre}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les seves publicacions, threads i/o links, depen del filtre i ordenades segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom de l'user
+        - in: path
+          name: ordre
+          required: true
+          schema:
+            type: string
+            enum: [ 'newest', 'top', 'commented' ]
+          description: Ordre a seguir per a ordenar les publicacions
+        - in: path
+          name: filtre
+          required: true
+          schema:
+            type: string
+            enum: [ 'tot', 'threads', 'links' ]
+          description: Filtre per indicar quin tipus de publicacions s'obtenen
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FiltreNotFoundError'
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
 
   /magazines/threads/:
     get:
@@ -999,7 +1052,7 @@ paths:
       responses:
         '200':
           description: Operació correcte.
-          content:
+      content:
             application/json:
               schema:
                 type: object
@@ -1009,6 +1062,88 @@ paths:
                     items:
                       $ref: '#/components/schemas/Magazine'
 
+  /u/{username}/boosts/:
+    get:
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les publicacions que ha fet boost ordenats per data de creació, s'ha d'indicar el token que coincideix amb l'user. Estan ordenats per data de creació
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '400':
+          description: El token no correspon a aquest User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '401':
+          description: User no està autentificat per a fer aquesta consulta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
+
+  /u/{username}/comments/:
+    get:
+      tags:
+        - User
+      summary: Obtenir info d'un user més els seus comentaris ordenats per data de creació
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
 
   /magazines/elements/:
     get:
@@ -1019,12 +1154,12 @@ paths:
       responses:
         '200':
           description: Operació correcte.
-          content:
+           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  magazines:
+                    magazines:
                     type: array
                     items:
                       $ref: '#/components/schemas/Magazine'
@@ -1043,11 +1178,154 @@ paths:
               schema:
                 type: object
                 properties:
-                  magazines:
+                    magazines:
                     type: array
                     items:
                       $ref: '#/components/schemas/Magazine'
 
+  /u/{username}/comments/{ordre}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir info d'un user més els seus comentaris ordenats segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+        - in: path
+          name: ordre
+          required: true
+          schema:
+            type: string
+            enum: [ 'newest', 'top', 'commented' ]
+          description: Ordre a seguir per a ordenar les publicacions
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
+
+  /u/{username}/boosts/{ordre}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les publicacions que ha fet boost ordenades segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom de l'user
+        - in: path
+          name: ordre
+          required: true
+          schema:
+            type: string
+            enum: [ 'newest', 'top', 'commented' ]
+          description: Ordre a seguir per a ordenar les publicacions
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
+
+  /u/{username}/boosts/{ordre}/{filtre}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir la informació d'un user més les publicacions que ha fet boost. Es mostren els threads i/o links depenent del filtre i ordenades segons ordre
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom de l'user
+        - in: path
+          name: ordre
+          required: true
+          schema:
+            type: string
+            enum: [ 'newest', 'top', 'commented' ]
+          description: Ordre a seguir per a ordenar les publicacions
+        - in: path
+          name: filtre
+          required: true
+          schema:
+            type: string
+            enum: [ 'tot', 'threads', 'links' ]
+          description: Filtre per indicar quin tipus de publicacions s'obtenen
+      responses:
+        '200':
+          description: Informació de l'usuari obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    user:
+                    $ref: '#/components/schemas/User'
+                  data:
+                    type: array
+                    items:
+                      # Cada element de l'array pot ser un dels dos tipus següents
+                      oneOf:
+                        - $ref: '#/components/schemas/Thread'
+                        - $ref: '#/components/schemas/Link'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FiltreNotFoundError'
+                  - $ref: '#/components/schemas/OrdreNotFoundError'
+                  - $ref: '#/components/schemas/UserNotFoundError'
+              
   /magazines/suscriptions/:
     get:
       tags:
@@ -1067,6 +1345,247 @@ paths:
                     items:
                       $ref: '#/components/schemas/Magazine'
 
+  /publicacions/{id_thread}/comments/:
+    get:
+      tags:
+        - Comment
+      summary: Obtenir tots els comentaris d'un thread
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+      responses:
+        '200':
+          description: Comentaris obtinguts correctament
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '404':
+          description: No existeix un thread amb aquesta ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicacioNotFoundError'
+  /publicacions/{id_thread}/create_comment/:
+    post:
+      tags:
+        - Comment
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou comentari al thread indicat i retorna la informació del comentari creat.
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+      requestBody:
+        description: Indicar el contingut del comentari
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: Contingut del comentari
+                  example: "Aquest és el body del comentari"
+      responses:
+        '201':
+          description: Comentari creat correctament
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+              examples:
+                commentExample:
+                  value:
+                    author: "user123"
+                    body: "Aquest és el body del comentari"
+                    creation_data: "2024-03-29T00:00:00Z"
+                    last_edited: "2024-03-30T00:00:00Z"
+                    num_likes: 2
+                    num_dislikes: 4
+                    level: 1
+                    parent: "http://127.0.0.1:8000/api/threads/2/"
+                    replies: [ ]
+        '400':
+          description: No s'ha pogut crear el comentari. Falta el contingut del comentari
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Falten atributs. Cal indicar el body del comentari a crear.
+
+        '401':
+          description: Es necessari indicar el token de l'usuari
+          content:
+            application/json:
+              examples:
+                errorExample:
+                  value:
+                    error: No s'ha indicat el token de l'usuari
+
+
+        '403':
+          description: El token no correspon a cap usuari registrat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: No existeix un thread amb aquesta ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicacioNotFoundError'
+
+  /publicacions/{id_thread}/comments/{id_comment}/create_reply/:
+    post:
+      tags:
+        - Comment
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix una nova resposta al comentari indicat i retorna la informació del comentari orígen amb totes les seves respostes.
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+        - in: path
+          name: id_comment
+          required: true
+          schema:
+            type: integer
+          description: ID del comentari a respondre
+      requestBody:
+        description: Indicar el contingut del comentari resposta
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: Contingut del comentari resposta
+                  example: "Aquest és el body del comentari resposta"
+      responses:
+        '201':
+          description: Resposta creada correctament
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '400':
+          description: No s'ha pogut crear el comentari resposta. Falta el body de la resposta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Falten atributs. Cal indicar el body de la resposta a crear.
+
+        '401':
+          description: Es necessari indicar el token de l'usuari
+          content:
+            application/json:
+              examples:
+                errorExample:
+                  value:
+                    error: No s'ha indicat el token de l'usuari
+
+        '403':
+          description: El token no correspon a cap usuari registrat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: No existeix un thread amb aquesta ID o no existeix un comentari amb aquesta ID en el thread.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PublicacioNotFoundError'
+                  - $ref: '#/components/schemas/CommentNotFoundError'
+
+  /settings/profile/{username}/:
+    put:
+      tags:
+        - User
+      summary: Editar la informació de l'user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      requestBody:
+        description: Indicar descripció
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  minLength: 1
+                  example: 'Descripció del user'
+                cover:
+                  type: string
+                  format: binary
+                  example: 'cover image'
+                avatar:
+                  type: string
+                  format: binary
+                  example: 'avatar image'
+        required: true
+      responses:
+        '201':
+          description: Informació de l'usuari modificada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: "Error: Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenUserNotMatchError'
+        '401':
+          description: "Error: Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenNotFoundError'
+        '404':
+          description: "Error: Not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
 
 
 components:
@@ -1396,6 +1915,13 @@ components:
         error: No s'ha trobat cap token
 
 
+    ErrorResult:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: El token no correspon amb l'user
 
 
   examples:
@@ -1417,5 +1943,5 @@ components:
     ApiKeyAuth:
       type: apiKey
       name: Authorization
-
       in: header
+

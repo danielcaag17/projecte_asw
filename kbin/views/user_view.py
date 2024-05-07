@@ -108,7 +108,7 @@ def login(request):
     User.objects.get_or_create(
         username=user_username,
         email=user_email,
-        api_key = secrets.token_hex(20)
+        api_key=secrets.token_hex(20)
     )
     if request.user.is_authenticated:
         url = reverse('main') + f'?django_user={djando_username}&user={user_username}'
