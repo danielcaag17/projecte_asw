@@ -17,6 +17,8 @@ url_users = [
     path('u/<str:username>/<str:element>/', views.UserView.as_view(), name='view-user'),
     path('u/<str:username>/<str:element>/<str:ordre>/', views.UserView.as_view(), name='view-user'),
     path('u/<str:username>/<str:element>/<str:ordre>/<str:filtre>/', views.UserView.as_view(), name='view-user'),
+
+    path('settings/profile/<str:username>/', views.UserView.as_view(), name='edit_user'),
 ]
 
 urlpatterns = [

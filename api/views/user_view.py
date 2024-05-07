@@ -16,6 +16,26 @@ class UserView(APIView):
         else:
             return self.list(request)
 
+    def put(self, request, username=None):
+        api_key = request.headers.get('Authorization')
+        data = request.data
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"error": f"The user '{username}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        if api_key is None:
+            return Response({"error: The API key is missing"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        if user != User.objects.get(api_key=api_key):
+            return Response({"error": f"the token provided does not match the user"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user.description = data['description']
+        user.save()
+        user_updated_serializer = UserSerializer(user, context={'api_key': api_key})
+        return Response(user_updated_serializer.data, status=201)  # 201: Created
+
     def retrieve(self, request, username, element, ordre, filtre):
         try:
             api_key = request.headers.get('Authorization')

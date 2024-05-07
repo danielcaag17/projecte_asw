@@ -743,6 +743,61 @@ paths:
       security:
         - ApiKeyAuth: [ ]
 
+  /settings/profile/{username}/:
+    put:
+      tags:
+        - User
+      summary: Editar la informació de l'user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nom d'user
+      requestBody:
+        description: Indicar descripció
+        content:
+          application/json:
+            schema:
+              required:
+                - description
+              type: object
+              properties:
+                description:
+                  type: string
+                  minLength: 1
+                  example: 'Descripció del user'
+        required: true
+      responses:
+        '201':
+          description: Informació de l'usuari modificada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenUserNotMatchError'
+        '401':
+          description: No estas autoritzat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenNotFoundError'
+        '404':
+          description: El recurs demanat no s'ha trobat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+      security:
+        - ApiKeyAuth: [ ]
+
+
 components:
   schemas:
     Boost:
@@ -966,6 +1021,22 @@ components:
           type: string
       example:
         error: L'user sol·licitat no ha estat trobat
+
+    TokenNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: No s'ha trobat cap token
+
+    TokenUserNotMatchError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: El token no correspon amb l'user
 
   examples:
       error400:
