@@ -783,19 +783,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          description: Bad request
+          description: "Error: Bad request"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenUserNotMatchError'
         '401':
-          description: No estas autoritzat
+          description: "Error: Unauthorized"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenNotFoundError'
         '404':
-          description: El recurs demanat no s'ha trobat
+          description: "Error: Not found"
           content:
             application/json:
               schema:
