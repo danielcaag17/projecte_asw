@@ -23,7 +23,11 @@ tags:
       url: http://swagger.io #TODO: posar o treure URL
   - name: User
     description: Tot sobre Users
-
+  - name: Comment
+    description: Tot sobre Comments
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io #TODO: posar o treure URL
 paths:
 
 #PUBLICACIONS
@@ -370,17 +374,17 @@ paths:
         - User
       summary: Obtenir tots els users i si s'ha indicat un token es mostra aquest en l'usuari corresponent
       responses:
-          '200':
-            description: Users obtinguts correctament
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    users:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/User'
+        '200':
+          description: Users obtinguts correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
 
   /u/{username}/:
     get:
@@ -435,7 +439,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: ['newest', 'top', 'commented']
+            enum: [ 'newest', 'top', 'commented' ]
           description: Ordre a seguir per a ordenar les publicacions
       responses:
         '200':
@@ -480,14 +484,14 @@ paths:
           required: true
           schema:
             type: string
-            enum: ['newest', 'top', 'commented']
+            enum: [ 'newest', 'top', 'commented' ]
           description: Ordre a seguir per a ordenar les publicacions
         - in: path
           name: filtre
           required: true
           schema:
             type: string
-            enum: ['tot', 'threads', 'links']
+            enum: [ 'tot', 'threads', 'links' ]
           description: Filtre per indicar quin tipus de publicacions s'obtenen
       responses:
         '200':
@@ -705,14 +709,14 @@ paths:
           required: true
           schema:
             type: string
-            enum: ['newest', 'top', 'commented']
+            enum: [ 'newest', 'top', 'commented' ]
           description: Ordre a seguir per a ordenar les publicacions
         - in: path
           name: filtre
           required: true
           schema:
             type: string
-            enum: ['tot', 'threads', 'links']
+            enum: [ 'tot', 'threads', 'links' ]
           description: Filtre per indicar quin tipus de publicacions s'obtenen
       responses:
         '200':
@@ -740,8 +744,188 @@ paths:
                   - $ref: '#/components/schemas/FiltreNotFoundError'
                   - $ref: '#/components/schemas/OrdreNotFoundError'
                   - $ref: '#/components/schemas/UserNotFoundError'
+
+  /publicacions/{id_thread}/comments/:
+    get:
+      tags:
+        - Comment
+      summary: Obtenir tots els comentaris d'un thread
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+      responses:
+        '200':
+          description: Comentaris obtinguts correctament
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '404':
+          description: No existeix un thread amb aquesta ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicacioNotFoundError'
+  /publicacions/{id_thread}/create_comment/:
+    post:
+      tags:
+        - Comment
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix un nou comentari al thread indicat i retorna la informació del comentari creat.
       security:
         - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+      requestBody:
+        description: Indicar el contingut del comentari
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: Contingut del comentari
+                  example: "Aquest és el body del comentari"
+      responses:
+        '201':
+          description: Comentari creat correctament
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+              examples:
+                commentExample:
+                  value:
+                    author: "user123"
+                    body: "Aquest és el body del comentari"
+                    creation_data: "2024-03-29T00:00:00Z"
+                    last_edited: "2024-03-30T00:00:00Z"
+                    num_likes: 2
+                    num_dislikes: 4
+                    level: 1
+                    parent: "http://127.0.0.1:8000/api/threads/2/"
+                    replies: [ ]
+        '400':
+          description: No s'ha pogut crear el comentari. Falta el contingut del comentari
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Falten atributs. Cal indicar el body del comentari a crear.
+
+        '401':
+          description: Es necessari indicar el token de l'usuari
+          content:
+            application/json:
+              examples:
+                errorExample:
+                  value:
+                    error: No s'ha indicat el token de l'usuari
+
+
+        '403':
+          description: El token no correspon a cap usuari registrat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: No existeix un thread amb aquesta ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicacioNotFoundError'
+
+  /publicacions/{id_thread}/comments/{id_comment}/create_reply/:
+    post:
+      tags:
+        - Comment
+      summary: Si s'ha indicat un token, i aquest correspon a un usuari registrat, aleshores afegeix una nova resposta al comentari indicat i retorna la informació del comentari orígen amb totes les seves respostes.
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id_thread
+          required: true
+          schema:
+            type: integer
+          description: ID del thread
+        - in: path
+          name: id_comment
+          required: true
+          schema:
+            type: integer
+          description: ID del comentari a respondre
+      requestBody:
+        description: Indicar el contingut del comentari resposta
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: Contingut del comentari resposta
+                  example: "Aquest és el body del comentari resposta"
+      responses:
+        '201':
+          description: Resposta creada correctament
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '400':
+          description: No s'ha pogut crear el comentari resposta. Falta el body de la resposta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Falten atributs. Cal indicar el body de la resposta a crear.
+
+        '401':
+          description: Es necessari indicar el token de l'usuari
+          content:
+            application/json:
+              examples:
+                errorExample:
+                  value:
+                    error: No s'ha indicat el token de l'usuari
+
+        '403':
+          description: El token no correspon a cap usuari registrat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
+        '404':
+          description: No existeix un thread amb aquesta ID o no existeix un comentari amb aquesta ID en el thread.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PublicacioNotFoundError'
+                  - $ref: '#/components/schemas/CommentNotFoundError'
 
   /settings/profile/{username}/:
     put:
@@ -806,16 +990,18 @@ paths:
 
 components:
   schemas:
-    Boost:
-
     Comment:
 
       type: object
       properties:
         id:
           type: integer
-          description: ID del comment
-          example: 2
+          description: Id del comentari
+          example: 1
+        author:
+          type: string
+          description: Autor del comentari
+          example: "user123"
         body:
           type: string
           description: Contigut del comentari
@@ -823,34 +1009,45 @@ components:
         creation_data:
           type: string
           format: date-time
-          description: Data de la creació del comment
+          description: Data de la creació del comentari
           example: "2024-03-29T00:00:00Z"
         last_edited:
           type: string
           format: date-time
-          description: Data de l'última edició del comment
+          description: Data de l'última edició del comentari
           example: "2024-03-30T00:00:00Z"
         num_likes:
           type: integer
-          description: Número de likes del comment
+          description: Número de likes del comentari
           example: 2
         num_dislikes:
           type: integer
-          description: Número de dislikes del comment
+          description: Número de dislikes del comentari
           example: 4
         level: # TODO
           type: integer
           description: ID del link
           example: 2
-        author:
+        parent:
           type: string
-          description: Autor del comment
-          example: "user123"
-        thread:
-          type: integer
-          description: ID del thread
-          example: 2
-
+          description: URL del link del thread
+          example: "http://127.0.0.1:8000/api/threads/2/"
+        replies:
+          type: array
+          description: Respostes al comentari
+          items:
+            $ref: '#/components/schemas/Comment'
+          example:
+            - id: 2
+              author: "user123"
+              body: "Aquest és el body del comentari resposta"
+              creation_data: "2024-03-29T00:00:00Z"
+              last_edited: "2024-03-30T00:00:00Z"
+              num_likes: 2
+              num_dislikes: 4
+              level: 2
+              parent: "http://127.0.0.1:8000/api/threads/2/"
+              replies: [ ]
     Link:
       type: object
       properties:
@@ -898,9 +1095,6 @@ components:
           type: string
           description: URL del link
           example: "www.raco.fib.upc.edu"
-
-    Magazine:
-
     Thread:
       type: object
       properties:
@@ -1026,9 +1220,19 @@ components:
         error:
           type: string
       example:
-        error: L'user sol·licitat no ha estat trobat
 
-    TokenNotFoundError:
+        error: L'user sol·licitat no ha estat trobat
+        
+    PublicacioNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: No hi ha cap publicacio amb ID 0
+
+    CommentNotFoundError:
+
       type: object
       properties:
         error:
@@ -1036,13 +1240,14 @@ components:
       example:
         error: No s'ha trobat cap token
 
-    TokenUserNotMatchError:
+    ErrorResult:
       type: object
       properties:
         error:
           type: string
       example:
         error: El token no correspon amb l'user
+
 
   examples:
       error400:
@@ -1058,8 +1263,11 @@ components:
         value:
           message: "Error: No hi ha una publicació amb id=3"
 
+
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       name: Authorization
+
       in: header
+
