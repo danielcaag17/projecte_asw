@@ -10,7 +10,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         # TODO: Cal posar el level?
         # Field 'parent' necessari per quan es mostren els comentaris d'un user
-        fields = ['author', 'body', 'creation_data', 'last_edited', 'num_likes', 'num_dislikes',
+        fields = ['id', 'author', 'body', 'creation_data', 'last_edited', 'num_likes', 'num_dislikes',
                   'level', 'parent', 'replies']
 
     def get_parent(self, obj):
