@@ -17,8 +17,8 @@ class CommentSerializer(serializers.ModelSerializer):
         base = "http://127.0.0.1:8000/api/"
         if Thread.objects.filter(id=obj.thread_id).exists():
             base += "threads/" + str(obj.thread_id) + "/"
-        elif Link.objects.filter(id=obj.thread_id).exists(obj.link_id):
-            base += "links/" + str(obj.link_id) + "/"
+        elif Link.objects.filter(id=obj.thread_id).exists():
+            base += "links/" + str(obj.thread_id) + "/"
 
         return base
 
