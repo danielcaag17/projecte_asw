@@ -1066,6 +1066,38 @@ paths:
                     items:
                       $ref: '#/components/schemas/Magazine'
 
+  /magazines/:
+    post:
+      tags:
+        - Magazines
+      summary: Crea una magazine
+      operationId: MagazinesCreacio
+      requestBody:
+        description: asas #TODO
+        content:
+          application/json:
+            schema:
+              required:
+                - Title
+                - Name
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  example: "Titol de la magazine"
+                name:
+                  type: string
+                  maxLength: 80
+                  example: "Nom de la magazine"
+        required: true
+      responses:
+        '200':
+          description: Operació correcte.
+          # TODO
+      security:
+        - ApiKeyAuth: [ ]
+
 components:
   schemas:
     Thread:
