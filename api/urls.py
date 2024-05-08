@@ -2,7 +2,8 @@ from django.urls import path
 from . import views
 
 urlmagazines = [
-    path('magazines/<str:ordre>/', views.LlistarMagazines.as_view(), name='llistar_magazines')
+    path('magazines/<str:ordre>/', views.LlistarMagazines.as_view(), name='llistar_magazines'),
+    path('magazines/', views.CrearMagazine.as_view(), name='crear_magazine')
 ]
 
 url_comentaris = [

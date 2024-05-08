@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from ..serializers.serializer_magazines import *
 
 class LlistarMagazines(APIView):
-
     def get(self, request, ordre):
         magazines = Magazine.objects.all()
         if ordre == 'threads':
@@ -35,8 +34,39 @@ class LlistarMagazines(APIView):
             magazines_serializer = sorted(magazines_serializer, key=lambda x: x['n_suscriptions'], reverse=True)
 
         else: return Response({"Error: La url sol·licitada no existeix"}, status=404)
-
-
         return Response(magazines_serializer)
 
 
+class CrearMagazine(APIView):
+    def post(self, request):
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        data = request.data
+        required_fields = {"name", "title"}
+        if required_fields.issubset(data.keys()):
+            if len(data["name"]) == 0:
+                return Response({"error: Nom buit"}, status=400)
+            elif len(data["title"]) == 0:
+                return Response({"error: Títol buit"}, status=400)
+            try:
+                usuari = User.objects.get(api_key=api_key)
+            except:
+                return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+            description = data.get("description")
+            rules = data.get("rules")
+            nsfw = data.get("nsfw")
+            nou_magazine = Magazine.objects.create(author=usuari,
+                                                   name= data["name"],
+                                                   creation_date= timezone.now().isoformat(),
+                                                   title=data["title"],
+                                                   description=description,
+                                                   rules=rules,
+                                                   nsfw=nsfw)
+
+            nou_magazine = MagazineSerializer(nou_magazine)
+            return Response(nou_magazine.data, status=201)
+        else:
+            return Response({"Error: Falten atributs. Cal indicar nom i títol de la magazine a crear."},
+                            status=400)
