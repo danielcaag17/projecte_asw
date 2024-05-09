@@ -35,8 +35,12 @@ url_users = [
     path('settings/profile/<str:username>/', views.UserView.as_view(), name='edit_user'),
 ]
 
+url_threads = [
+    path('llistar/<str:filter>/<str:ordre>/', views.LlistaThreadLinks.as_view(), name='llistar_publicacions'),
+    path('thread/',views.CrearThread.as_view(), name='crear_thread'),
+    path('link/',views.CrearLink.as_view(),name='crear_link'),
+]
+
 urlpatterns = [
-    #path('<str:filter>/<str:ordre>/', views.LlistaThreadLinks.as_view(), name='llistar_publicacions'),
-    path('threads/',views.CrearThread.as_view(), name='crear_thread'),
-    path('links/',views.CrearLink.as_view(),name='crear_link'),
-] + urlmagazines + url_users + url_comentaris
+
+] + urlmagazines + url_users + url_comentaris + url_threads
