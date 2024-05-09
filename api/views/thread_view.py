@@ -19,6 +19,8 @@ class LlistaThreadLinks(APIView):
             thread_serializer = ThreadSerializer(threads, many=True)
             link_serializer = LinkSerializer(links, many=True)
             resultats_serializer = thread_serializer.data + link_serializer.data
+        else:
+            return Response({"Error: No existeix el filtre {}".format(filter)}, status=404)
 
         if ordre == 'newest':
             tot = sorted(resultats_serializer, key=lambda x: x['creation_data'],reverse=True)
@@ -26,6 +28,8 @@ class LlistaThreadLinks(APIView):
             tot = sorted(resultats_serializer, key=lambda x: x['num_coments'],reverse=True)
         elif (ordre == 'top'):
             tot = sorted(resultats_serializer, key=lambda x: x['num_likes'],reverse=True)
+        else:
+            return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
 
         return Response(tot)
 

@@ -105,11 +105,12 @@ def login(request):
     user_email = request.user.email
     djando_username = request.user.username
     user_username = get_username(user_email)
-    User.objects.get_or_create(
-        username=user_username,
-        email=user_email,
-        api_key = secrets.token_hex(20)
-    )
+    if not User.objects.filter(username=user_username).exists():
+        User.objects.create(
+            username=user_username,
+            email=user_email,
+            api_key=secrets.token_hex(20)
+        )
     if request.user.is_authenticated:
         url = reverse('main') + f'?django_user={djando_username}&user={user_username}'
         return redirect(url)
