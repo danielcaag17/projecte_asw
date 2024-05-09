@@ -116,7 +116,7 @@ class VotarPublicacio(APIView):
             vot = Vot.objects.get(user=usuari, publicacio=publicacio)
             if (tipus_vot == 'like'):
                 if (vot.positiu):  # Si el vot ja era positiu no fem res i retornem la informació del Thread o el Link
-                    return self.retorna_info_publicacio(id_publicacio)
+                    return retorna_info_publicacio(id_publicacio)
 
                 else: #Si el vot era negatiu canviem el sentit del vot
                     publicacio.num_dislikes -= 1
@@ -124,11 +124,11 @@ class VotarPublicacio(APIView):
                     vot.positiu = True
                     vot.save()
                     publicacio.save()
-                    return self.retorna_info_publicacio(id_publicacio)
+                    return retorna_info_publicacio(id_publicacio)
 
             else:
                 if (not vot.positiu):  # Si el vot ja era negatiu no fem res i retornem la informació del Thread o el Link
-                    return self.retorna_info_publicacio(id_publicacio)
+                    return retorna_info_publicacio(id_publicacio)
 
                 else: #Si el vot era positiu canviem el sentit del vot
                     publicacio.num_dislikes += 1
@@ -136,21 +136,20 @@ class VotarPublicacio(APIView):
                     vot.positiu = False
                     vot.save()
                     publicacio.save()
-                    return self.retorna_info_publicacio(id_publicacio)
+                    return retorna_info_publicacio(id_publicacio)
         else: #Creem un nou vot
             nou_vot = Vot(user=usuari, publicacio=publicacio, positiu= tipus_vot == "like")
             publicacio.num_likes += tipus_vot == "like"
             publicacio.num_dislikes += tipus_vot == "dislike"
             publicacio.save()
             nou_vot.save()
-            return self.retorna_info_publicacio(id_publicacio)
+            return retorna_info_publicacio(id_publicacio)
 
     def delete(self,request,id_publicacio,tipus_vot):
         validacio = self.validar_request(request, id_publicacio, tipus_vot)
         if isinstance(validacio, Response):
             return validacio
         usuari, publicacio = validacio
-
 
         if Vot.objects.filter(user=usuari, publicacio=publicacio).exists():  # L'usuari ha votat la publicacio indicada
             vot = Vot.objects.get(user=usuari, publicacio=publicacio)
@@ -189,15 +188,7 @@ class VotarPublicacio(APIView):
 
 
 
-    def retorna_info_publicacio(self,IDPublicacio):
-        try:
-            thread = Thread.objects.get(pk=IDPublicacio)
-            thread = ThreadSerializer(thread)
-            return Response(thread.data, status=200)
-        except:
-            link = Link.objects.get(pk=IDPublicacio)
-            link = LinkSerializer(link)
-            return Response(link.data, status=200)
+
 
 
 
@@ -236,3 +227,21 @@ class CercarPublicacions(APIView):
             return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
 
         return Response(tot)
+
+
+class ObtenirPublilcacio(APIView):
+    def get(self, request,id_publicacio):
+        if Publicacio.objects.filter(pk=id_publicacio).exists():
+            return retorna_info_publicacio(id_publicacio)
+        else:
+            return Response({"Error: No existeix una publicació amb ID {}".format(id_publicacio)}, status=404)
+
+def retorna_info_publicacio(IDPublicacio):
+    try:
+        thread = Thread.objects.get(pk=IDPublicacio)
+        thread = ThreadSerializer(thread)
+        return Response(thread.data, status=200)
+    except:
+        link = Link.objects.get(pk=IDPublicacio)
+        link = LinkSerializer(link)
+        return Response(link.data, status=200)
