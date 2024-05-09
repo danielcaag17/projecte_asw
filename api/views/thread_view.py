@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from kbin.models import Publicacio,Thread,Link, Vot
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -198,3 +200,39 @@ class VotarPublicacio(APIView):
             return Response(link.data, status=200)
 
 
+
+
+class CercarPublicacions(APIView):
+    def get(self, request,filter,ordre):
+        keyword = request.headers.get('keyword')
+
+        if (all(char.isspace() for char in keyword)): #Només s'han introduït espais en blanc
+            return Response({"La keyword de la cerca no pot ser només espais en blanc"}, status=400)
+
+        # Busquem totes les publicacions que contenen en el titol i el cos la keyword indicada
+        links = Link.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))
+        threads = Thread.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))
+
+        thread_serializer = ThreadSerializer(threads, many=True)
+        link_serializer = LinkSerializer(links, many=True)
+
+        if filter == 'links':
+            resultats_serializer = LinkSerializer(links,many=True).data
+        elif filter == 'threads':
+            resultats_serializer = ThreadSerializer(threads, many=True).data
+        elif filter == 'publicacions':
+            resultats_serializer = thread_serializer.data + link_serializer.data
+        else:
+            return Response({"Error: No existeix el filtre {}".format(filter)}, status=404)
+
+
+        if ordre == 'newest':
+            tot = sorted(resultats_serializer, key=lambda x: x['creation_data'], reverse=True)
+        elif ordre == 'commented':
+            tot = sorted(resultats_serializer, key=lambda x: x['num_coments'], reverse=True)
+        elif (ordre == 'top'):
+            tot = sorted(resultats_serializer, key=lambda x: x['num_likes'], reverse=True)
+        else:
+            return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
+
+        return Response(tot)

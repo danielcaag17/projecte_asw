@@ -39,7 +39,8 @@ url_threads = [
     path('llistar/<str:filter>/<str:ordre>/', views.LlistaThreadLinks.as_view(), name='llistar_publicacions'),
     path('thread/',views.CrearThread.as_view(), name='crear_thread'),
     path('link/',views.CrearLink.as_view(),name='crear_link'),
-    path('publicacions/votar/<int:id_publicacio>/<str:tipus_vot>',views.VotarPublicacio.as_view(),name='votar_publicacio'),
+    path('publicacions/votar/<int:id_publicacio>/<str:tipus_vot>/',views.VotarPublicacio.as_view(),name='votar_publicacio'),
+    path('cercador/<str:filter>/<str:ordre>/',views.CercarPublicacions.as_view(),name='cercador')
 ]
 
 urlpatterns = [
