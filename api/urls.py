@@ -41,7 +41,8 @@ url_threads = [
     path('link/',views.CrearLink.as_view(),name='crear_link'),
     path('publicacions/votar/<int:id_publicacio>/<str:tipus_vot>/',views.VotarPublicacio.as_view(),name='votar_publicacio'),
     path('cercador/<str:filter>/<str:ordre>/',views.CercarPublicacions.as_view(),name='cercador'),
-    path('publicacions/<int:id_publicacio>/',views.PublicacioIndividual.as_view(),name='obtenir_publicacio')
+    path('publicacions/<int:id_publicacio>/',views.PublicacioIndividual.as_view(),name='obtenir_publicacio'),
+    path('publicacions/boost/<int:id_publicacio>/',views.ImpulsarPublicacio.as_view(),name='obtenir_publicacio')
 ]
 
 urlpatterns = [
