@@ -9,9 +9,10 @@ urlmagazines = [
 url_comentaris = [
     path('publicacions/<int:id_thread>/comments/<str:ordre>', views.VeureComentarisPublicacio.as_view(),
          name='veure-comentaris-publicacio'),
-    path('create_comment/<int:id_thread>/', views.CrearComentari.as_view(), name='crear-comentari'),
-    path('create_reply/<int:id_comment>/', views.CrearComentariResposta.as_view(),
+    path('publicacions/<int:id_thread>/create_comment', views.CrearComentari.as_view(), name='crear-comentari'),
+    path('comments/create_reply/<int:id_comment>/', views.CrearComentariResposta.as_view(),
          name='crear-comentari-resposta'),
+    path('comments/vote/<int:id_comment>/<str:tipus_vot>/', views.VotarComentari.as_view(), name='votar-comentari'),
 ]
 
 url_users = [
