@@ -1,4 +1,4 @@
-from kbin.models import Publicacio,Thread,Link
+from kbin.models import Publicacio,Thread,Link, Vot
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
@@ -34,12 +34,6 @@ class LlistaThreadLinks(APIView):
         return Response(tot)
 
 class CrearThread(APIView):
-    def get(self,request): #TODO: CAL?
-        #Obtenim els threads
-        threads = Thread.objects.all()
-        thread_serializer = sorted(ThreadSerializer(threads, many=True).data,key=lambda x: x['creation_data'],reverse=True)
-        return Response(thread_serializer)
-
     def post(self,request):
         api_key = request.headers.get('Authorization')
         if (api_key == None):
@@ -72,12 +66,6 @@ class CrearThread(APIView):
 
 
 class CrearLink(APIView):
-    def get(self,request): #TODO: CAL?
-        #Obtenim els threads
-        links = Link.objects.all()
-        link_serializer = sorted(ThreadSerializer(links, many=True).data,key=lambda x: x['creation_data'],reverse=True)
-        return Response(link_serializer)
-
     def post(self,request):
         api_key = request.headers.get('Authorization')
         if (api_key == None):
@@ -114,3 +102,99 @@ class CrearLink(APIView):
             # Si los campos no coinciden, retornamos un error
             return Response({"Error: Falten atributs. Cal indicar titol,magazine i url del link a crear."},
                             status=400)  # 400: Bad Request
+
+class VotarPublicacio(APIView):
+    def post(self,request,id_publicacio,tipus_vot):
+        validacio = self.validar_request(request, id_publicacio, tipus_vot)
+        if isinstance(validacio, Response):
+            return validacio
+        usuari, publicacio = validacio
+
+        if Vot.objects.filter(user=usuari, publicacio=publicacio).exists(): #L'usuari ja ha votat
+            vot = Vot.objects.get(user=usuari, publicacio=publicacio)
+            if (tipus_vot == 'like'):
+                if (vot.positiu):  # Si el vot ja era positiu no fem res i retornem la informació del Thread o el Link
+                    return self.retorna_info_publicacio(id_publicacio)
+
+                else: #Si el vot era negatiu canviem el sentit del vot
+                    publicacio.num_dislikes -= 1
+                    publicacio.num_likes += 1
+                    vot.positiu = True
+                    vot.save()
+                    publicacio.save()
+                    return self.retorna_info_publicacio(id_publicacio)
+
+            else:
+                if (not vot.positiu):  # Si el vot ja era negatiu no fem res i retornem la informació del Thread o el Link
+                    return self.retorna_info_publicacio(id_publicacio)
+
+                else: #Si el vot era positiu canviem el sentit del vot
+                    publicacio.num_dislikes += 1
+                    publicacio.num_likes -= 1
+                    vot.positiu = False
+                    vot.save()
+                    publicacio.save()
+                    return self.retorna_info_publicacio(id_publicacio)
+        else: #Creem un nou vot
+            nou_vot = Vot(user=usuari, publicacio=publicacio, positiu= tipus_vot == "like")
+            publicacio.num_likes += tipus_vot == "like"
+            publicacio.num_dislikes += tipus_vot == "dislike"
+            publicacio.save()
+            nou_vot.save()
+            return self.retorna_info_publicacio(id_publicacio)
+
+    def delete(self,request,id_publicacio,tipus_vot):
+        validacio = self.validar_request(request, id_publicacio, tipus_vot)
+        if isinstance(validacio, Response):
+            return validacio
+        usuari, publicacio = validacio
+
+
+        if Vot.objects.filter(user=usuari, publicacio=publicacio).exists():  # L'usuari ha votat la publicacio indicada
+            vot = Vot.objects.get(user=usuari, publicacio=publicacio)
+            if ((tipus_vot == 'like' and vot.positiu) or (tipus_vot == 'dislike' and not vot.positiu)):
+                vot.delete()
+                publicacio.num_likes -= tipus_vot == 'like'
+                publicacio.num_dislikes -= tipus_vot == 'dislike'
+                publicacio.save()
+                return Response({"Vot eliminat correctament"}, status=204)
+
+            else:
+                return Response({"El tipus de vot indicat i el del vot ja existent no coincideixen"},status=400)
+
+        else: #L'usuari encara no ha votat
+            return Response({"L'usuari indicat no ha votat la publicació amb ID {}".format(id_publicacio)}, status=404)
+
+    def validar_request(self, request, id_publicacio, tipus_vot):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+
+        if tipus_vot not in ["like", "dislike"]:
+            return Response({"Error: El tipus de vot ha de ser like o dislike"}, status=400)
+
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            publicacio = Publicacio.objects.get(pk=id_publicacio)
+        except Publicacio.DoesNotExist:
+            return Response({"Error: no hi ha cap publicació amb ID {}".format(id_publicacio)}, status=404)
+
+        return usuari, publicacio
+
+
+
+    def retorna_info_publicacio(self,IDPublicacio):
+        try:
+            thread = Thread.objects.get(pk=IDPublicacio)
+            thread = ThreadSerializer(thread)
+            return Response(thread.data, status=200)
+        except:
+            link = Link.objects.get(pk=IDPublicacio)
+            link = LinkSerializer(link)
+            return Response(link.data, status=200)
+
+
