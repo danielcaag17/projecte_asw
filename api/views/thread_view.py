@@ -158,7 +158,7 @@ class VotarPublicacio(APIView):
                 publicacio.num_likes -= tipus_vot == 'like'
                 publicacio.num_dislikes -= tipus_vot == 'dislike'
                 publicacio.save()
-                return Response({"Vot eliminat correctament"}, status=204)
+                return Response({}, status=204)
 
             else:
                 return Response({"El tipus de vot indicat i el del vot ja existent no coincideixen"},status=400)
@@ -229,12 +229,33 @@ class CercarPublicacions(APIView):
         return Response(tot)
 
 
-class ObtenirPublilcacio(APIView):
+class PublicacioIndividual(APIView):
     def get(self, request,id_publicacio):
         if Publicacio.objects.filter(pk=id_publicacio).exists():
             return retorna_info_publicacio(id_publicacio)
         else:
             return Response({"Error: No existeix una publicació amb ID {}".format(id_publicacio)}, status=404)
+
+    def delete(self,request,id_publicacio):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            publicacio = Publicacio.objects.get(pk=id_publicacio)
+        except Publicacio.DoesNotExist:
+            return Response({"Error: no hi ha cap publicació amb ID {}".format(id_publicacio)}, status=404)
+
+        if publicacio.author_id != usuari.username:
+            return Response({"Error: el token no correspon a l'usuari que ha creat la publicació"}, status=403)
+
+        publicacio.delete()
+        return Response({}, status=204)
 
 def retorna_info_publicacio(IDPublicacio):
     try:
