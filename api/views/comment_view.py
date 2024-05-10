@@ -1,4 +1,4 @@
-from kbin.models import Publicacio, Thread, Link, Comment, User, Reply
+from kbin.models import Publicacio, Thread, Link, Comment, User, Reply, Vote_comment
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import json
@@ -26,6 +26,7 @@ class VeureComentarisPublicacio(APIView):
             return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
 
         return Response(comentaris_serializer)
+
 
 class CrearComentari(APIView):
     def post(self, request, id_thread):
@@ -86,5 +87,93 @@ class CrearComentariResposta(APIView):
 
         comentari_root = CommentSerializer(comentari_root)
 
-        # Retorna el comentari origen perque es vegi que s'ha creat la resposta
+        # Retorna el comentari origen perquè es vegi que s'ha creat la resposta
         return Response(comentari_root.data, status=201)
+
+
+class VotarComentari(APIView):
+    def post(self, request, id_comment, tipus_vot):
+        validacio = self.validar_request(request, id_comment, tipus_vot)
+        if isinstance(validacio, Response):
+            return validacio
+        usuari, comment = validacio
+
+        if Vote_comment.objects.filter(user=usuari, comment=comment).exists():  # L'usuari ja ha votat
+            vot = Vote_comment.objects.get(user=usuari, comment=comment)
+            if tipus_vot == 'like':
+                if vot.type == 'like':  # Si el vot ja era positiu no fem res i retornem la informació del Comentari
+                    return retorna_info_comment(id_comment, status=200)
+
+                else:  # Si el vot era negatiu canviem el sentit del vot
+                    comment.num_dislikes -= 1
+                    comment.num_likes += 1
+                    vot.type = 'like'
+                    vot.save()
+                    comment.save()
+                    return retorna_info_comment(id_comment, status=201)
+
+            else:
+                if vot.type == 'dislike':  # Si el vot ja era negatiu no fem res i retornem la informació del Comentari
+                    return retorna_info_comment(id_comment, status=200)
+
+                else:  # Si el vot era positiu canviem el sentit del vot
+                    comment.num_dislikes += 1
+                    comment.num_likes -= 1
+                    vot.type = 'dislike'
+                    vot.save()
+                    comment.save()
+                    return retorna_info_comment(id_comment, status=201)
+        else:  # Creem un nou vot
+            nou_vot = Vote_comment(user=usuari, comment=comment, type=tipus_vot)
+            comment.num_likes += tipus_vot == "like"
+            comment.num_dislikes += tipus_vot == "dislike"
+            comment.save()
+            nou_vot.save()
+            return retorna_info_comment(id_comment, status=201)
+
+    def delete(self, request, id_comment, tipus_vot):
+        validacio = self.validar_request(request, id_comment, tipus_vot)
+        if isinstance(validacio, Response):
+            return validacio
+        usuari, comment = validacio
+
+        if Vote_comment.objects.filter(user=usuari, comment=comment).exists():  # L'usuari ha votat el comentari indicat
+            vot = Vote_comment.objects.get(user=usuari, comment=comment)
+            if (tipus_vot == 'like' and vot.type == 'like') or (tipus_vot == 'dislike' and vot.type == 'dislike'):
+                vot.delete()
+                comment.num_likes -= tipus_vot == 'like'
+                comment.num_dislikes -= tipus_vot == 'dislike'
+                comment.save()
+                return Response({"Vot eliminat correctament"}, status=204)
+
+            else:
+                return Response({"El tipus de vot indicat i el del vot ja existent no coincideixen"}, status=400)
+
+        else:  # L'usuari encara no ha votat
+            return Response({"L'usuari indicat no ha votat el comentari amb ID {}".format(id_comment)}, status=404)
+
+    def validar_request(self, request, id_comment, tipus_vot):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+
+        if tipus_vot not in ["like", "dislike"]:
+            return Response({"Error: El tipus de vot ha de ser like o dislike"}, status=400)
+
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            comment = Comment.objects.get(pk=id_comment)
+        except Comment.DoesNotExist:
+            return Response({"Error: no hi ha cap comentari amb ID {}".format(id_comment)}, status=404)
+
+        return usuari, comment
+
+
+def retorna_info_comment(id_comment, status):
+    comment = Comment.objects.get(pk=id_comment)
+    serializer = CommentSerializer(comment)
+    return Response(serializer.data, status)
