@@ -1,6 +1,5 @@
 from django.db.models import Q
-
-from kbin.models import Publicacio,Thread,Link, Vot
+from kbin.models import Publicacio,Thread,Link, Vot, Boost
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
@@ -187,12 +186,6 @@ class VotarPublicacio(APIView):
         return usuari, publicacio
 
 
-
-
-
-
-
-
 class CercarPublicacions(APIView):
     def get(self, request,filter,ordre):
         keyword = request.headers.get('keyword')
@@ -256,6 +249,54 @@ class PublicacioIndividual(APIView):
 
         publicacio.delete()
         return Response({}, status=204)
+
+
+class ImpulsarPublicacio(APIView):
+    def post(self, request, id_publicacio):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            publicacio = Publicacio.objects.get(pk=id_publicacio)
+        except Publicacio.DoesNotExist:
+            return Response({"Error: no hi ha cap publicació amb ID {}".format(id_publicacio)}, status=404)
+
+        if not Boost.objects.filter(user=usuari,publicacio_id=id_publicacio).exists(): #L'usuari encara no ha fet boost de la publicació
+            nou_boost = Boost(user=usuari,publicacio_id=id_publicacio)
+            publicacio.num_boosts += 1
+            publicacio.save()
+            nou_boost.save()
+        return retorna_info_publicacio(id_publicacio)
+
+    def delete(self,request,id_publicacio):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            publicacio = Publicacio.objects.get(pk=id_publicacio)
+        except Publicacio.DoesNotExist:
+            return Response({"Error: no hi ha cap publicació amb ID {}".format(id_publicacio)}, status=404)
+
+        if Boost.objects.filter(user=usuari,publicacio_id=id_publicacio).exists(): #L'usuari ha fet boost de la publicació
+            publicacio.num_boosts -= 1
+            publicacio.save()
+            boost = Boost.objects.get(user=usuari, publicacio=publicacio)
+            boost.delete()
+            return Response({}, status=204)
+
+        else:
+            return Response({"L'usuari indicat no ha impulsat la publicació amb ID {}".format(id_publicacio)}, status=404)
+
 
 def retorna_info_publicacio(IDPublicacio):
     try:
