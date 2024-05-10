@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['bravo13-36a68ba47d34.herokuapp.com', '127.0.0.1']
 
 SITE_ID = 5
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -66,6 +65,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,11 +75,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'kbin.middleware.AddUserToContextMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True  # Permitir solicitudes de cualquier origen
-CORS_ALLOW_HEADERS = ["keyword","Authorization"]
+# CORS_ALLOW_HEADERS = ["keyword","Authorization"]
+CORS_ALLOW_ALL_HEADERS = True
 
 ROOT_URLCONF = 'projecte_asw.urls'
 

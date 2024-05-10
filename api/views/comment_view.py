@@ -7,7 +7,7 @@ from ..serializers.comment_serializer import CommentSerializer
 
 
 class VeureComentarisPublicacio(APIView):
-    def get(self, request, id_thread):
+    def get(self, request, id_thread, ordre):
         try:
             publicacio = Publicacio.objects.get(id=id_thread)
         except:
@@ -15,6 +15,16 @@ class VeureComentarisPublicacio(APIView):
 
         comentaris = Comment.objects.filter(thread=publicacio, level=1)
         comentaris_serializer = CommentSerializer(comentaris, many=True).data
+
+        if ordre == "top":
+            comentaris_serializer = sorted(comentaris_serializer, key=lambda x: x['num_likes'], reverse=True)
+        elif ordre == "newest":
+            comentaris_serializer = sorted(comentaris_serializer, key=lambda x: x['creation_data'], reverse=True)
+        elif ordre == "oldest":
+            comentaris_serializer = sorted(comentaris_serializer, key=lambda x: x['creation_data'])
+        else:
+            return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
+
         return Response(comentaris_serializer)
 
 class CrearComentari(APIView):
