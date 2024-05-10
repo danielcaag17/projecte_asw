@@ -173,6 +173,40 @@ class VotarComentari(APIView):
         return usuari, comment
 
 
+class ComentariIndividual(APIView):
+    def get(self, request, id_comment):
+        try:
+            comment = Comment.objects.get(pk=id_comment)
+        except Comment.DoesNotExist:
+            return Response({"Error: No hi ha cap comentari amb ID {}".format(id_comment)}, status=404)
+
+        return retorna_info_comment(id_comment, status=200)
+
+    def delete(self, request, id_comment):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        try:
+            comment = Comment.objects.get(pk=id_comment)
+        except Comment.DoesNotExist:
+            return Response({"Error: no hi ha cap comentari amb ID {}".format(id_comment)}, status=404)
+
+        if comment.author_id != usuari.username:
+            return Response({"Error: el token no correspon a l'usuari que ha creat la publicació"}, status=403)
+
+        replies = Reply.objects.filter(comment_root=comment)
+        for reply in replies:
+            reply.delete()
+        comment.delete()
+        return Response({}, status=204)
+
+
 def retorna_info_comment(id_comment, status):
     comment = Comment.objects.get(pk=id_comment)
     serializer = CommentSerializer(comment)
