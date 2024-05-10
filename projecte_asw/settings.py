@@ -79,7 +79,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True  # Permitir solicitudes de cualquier origen
-CORS_ALLOW_HEADERS = ["keyword"]
+CORS_ALLOW_HEADERS = ["keyword","Authorization"]
 
 ROOT_URLCONF = 'projecte_asw.urls'
 
