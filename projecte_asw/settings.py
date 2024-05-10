@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-
+from corsheaders.defaults import default_headers
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -78,8 +78,13 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True  # Permitir solicitudes de cualquier origen
-# CORS_ALLOW_HEADERS = ["keyword","Authorization"]
-CORS_ALLOW_ALL_HEADERS = True
+# CORS_ALLOW_HEADERS = ["keyword"]
+# CORS_ALLOW_ALL_HEADERS = True
+
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "keyword",
+)
 
 ROOT_URLCONF = 'projecte_asw.urls'
 
