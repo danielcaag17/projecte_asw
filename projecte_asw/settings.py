@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['bravo13-36a68ba47d34.herokuapp.com', '127.0.0.1']
 
 SITE_ID = 5
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,6 +79,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True  # Permitir solicitudes de cualquier origen
+CORS_ALLOW_HEADERS = ["keyword"]
 
 ROOT_URLCONF = 'projecte_asw.urls'
 
