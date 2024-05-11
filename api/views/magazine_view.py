@@ -1,7 +1,8 @@
-from kbin.models import Publicacio,Thread,Link
+from kbin.models import Subscription
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_magazines import *
+from ..serializers.subscription_serializer import *
 
 class LlistarMagazines(APIView):
     def get(self, request, ordre):
@@ -70,3 +71,55 @@ class CrearMagazine(APIView):
         else:
             return Response({"Error: Falten atributs. Cal indicar nom i títol de la magazine a crear."},
                             status=400)
+
+class CrearSuscripcio(APIView):
+    def post(self, request,magazine_id):
+
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: No hi ha cap publicacio amb id {}".format(magazine_id)}, status=404)
+
+
+        suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
+        if suscripcio.exists():
+            return Response({"Error: L'usuari loguejat ja esta suscrit a la magazine indicada."}, status=400)
+        else:
+            nou_suscripcio = Subscription.objects.create(user=usuari, magazine=magazine)
+            nou_suscripcio.save()
+            nou_suscripcio = SubscriptionSerializer(nou_suscripcio)
+            magazine.n_suscriptions += 1
+            magazine.save()
+            return Response(nou_suscripcio.data, status=201)
+
+    def delete(self, request, magazine_id):
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: No s'ha indicat el token de l'usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except:
+            return Response({"Error: El token indicat no és vàlid"}, status=403)
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+
+        suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
+        if suscripcio.exists():
+            Subscription.objects.filter(user=usuari, magazine=magazine).delete()
+            magazine.n_suscriptions -= 1
+            magazine.save()
+            return Response(status=204)
+        else:
+            return Response({"Error: L'usuari loguejat no esta suscrit a la magazine indicada."}, status=400)
+
+
+
