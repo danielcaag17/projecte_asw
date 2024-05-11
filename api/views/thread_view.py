@@ -184,6 +184,28 @@ class PublicacioIndividual(APIView):
         publicacio.delete()
         return Response({}, status=204)
 
+    def put(self,request,id_publicacio):
+        validacio = validar_request(request, id_publicacio)
+        if isinstance(validacio, Response):
+            return validacio
+        usuari, publicacio = validacio
+
+        if publicacio.author_id != usuari.username:
+            return Response({"Error: el token no correspon a l'usuari que ha creat la publicació"}, status=403)
+
+        data = request.data
+
+        if "title" in data.keys():
+            if len(data["title"]) == 0:
+                return Response({"Error: El titol de la publicació no pot ser buit."}, status=400)
+            else:
+                publicacio.title = data["title"]
+
+        if "body" in data.keys():
+            publicacio.body = data["body"]
+        publicacio.save()
+        return retorna_info_publicacio(id_publicacio,200)
+
 
 class ImpulsarPublicacio(APIView):
     def post(self, request, id_publicacio):
