@@ -1,8 +1,10 @@
-from kbin.models import Subscription
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_magazines import *
 from ..serializers.subscription_serializer import *
+from ..serializers.link_serializer import *
+from ..serializers.thread_serializer import *
 
 class LlistarMagazines(APIView):
     def get(self, request, ordre):
@@ -35,7 +37,7 @@ class LlistarMagazines(APIView):
             magazines_serializer = sorted(magazines_serializer, key=lambda x: x['n_suscriptions'], reverse=True)
 
         else: return Response({"Error: La url sol·licitada no existeix"}, status=404)
-        return Response(magazines_serializer)
+        return Response(magazines_serializer, status=200)
 
 
 class CrearMagazine(APIView):
@@ -123,3 +125,47 @@ class CrearSuscripcio(APIView):
 
 
 
+class VeureMagazine(APIView):
+    def get(self, request,magazine_id):
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+        magazine = MagazineSerializer(magazine)
+        return Response(magazine.data, status=200)
+
+
+class ObtenirPublicacionsMagazine(APIView):
+    def get(self, request, magazine_id, filter, order):
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+
+        links = Link.objects.filter(magazine_id=magazine_id)
+        threads = Thread.objects.filter(magazine_id=magazine_id)
+        return filtrar_ordenar(threads, links, filter, order)
+
+def filtrar_ordenar(threads, links, filter, ordre):
+    thread_serializer = ThreadSerializer(threads, many=True)
+    link_serializer = LinkSerializer(links, many=True)
+
+    if filter == 'links':
+        resultats_serializer = link_serializer.data
+    elif filter == 'threads':
+        resultats_serializer = thread_serializer.data
+    elif filter == 'publicacions':
+        resultats_serializer = thread_serializer.data + link_serializer.data
+    else:
+        return Response({"Error: No existeix el filtre {}".format(filter)}, status=404)
+
+    if ordre == 'newest':
+        tot = sorted(resultats_serializer, key=lambda x: x['creation_data'], reverse=True)
+    elif ordre == 'commented':
+        tot = sorted(resultats_serializer, key=lambda x: x['num_coments'], reverse=True)
+    elif (ordre == 'top'):
+        tot = sorted(resultats_serializer, key=lambda x: x['num_likes'], reverse=True)
+    else:
+        return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
+
+    return Response(tot, status=200)
