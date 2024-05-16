@@ -8,11 +8,11 @@ from ..serializers.comment_serializer import CommentSerializer
 
 
 class VeureComentarisPublicacio(APIView):
-    def get(self, request, id_thread, ordre):
+    def get(self, request, id_publicacio, ordre):
         try:
-            publicacio = Publicacio.objects.get(id=id_thread)
+            publicacio = Publicacio.objects.get(id=id_publicacio)
         except:
-            return Response({"Error: No hi ha cap publicacio amb id {}".format(id_thread)}, status=404)
+            return Response({"Error: No hi ha cap publicacio amb id {}".format(id_publicacio)}, status=404)
 
         comentaris = Comment.objects.filter(thread=publicacio, level=1)
         comentaris_serializer = CommentSerializer(comentaris, many=True).data
@@ -30,15 +30,15 @@ class VeureComentarisPublicacio(APIView):
 
 
 class CrearComentari(APIView):
-    def post(self, request, id_thread):
+    def post(self, request, id_publicacio):
         api_key = request.headers.get('Authorization')
         if api_key is None:
             return Response({"Error: Es necessari indicar el token de l'usuari"}, status=401)
 
         try:
-            publicacio = Publicacio.objects.get(id=id_thread)
+            publicacio = Publicacio.objects.get(id=id_publicacio)
         except:
-            return Response({"Error: No hi ha cap publicacio amb id {}".format(id_thread)}, status=404)
+            return Response({"Error: No hi ha cap publicacio amb id {}".format(id_publicacio)}, status=404)
 
         body = request.data.get('body')
         if not body:
@@ -207,13 +207,15 @@ class ComentariIndividual(APIView):
             return Response({"Error: el token no correspon a l'usuari que ha creat la publicació"}, status=403)
 
         replies = Reply.objects.filter(comment_root=comment)
+        publicacio = Publicacio.objects.get(id=comment.thread_id)
         for reply in replies:
-            comment.thread_id.num_comments -= 1
+            publicacio.num_coments -= 1
+            publicacio.save()
             comment_reply = reply.comment_reply
             comment_reply.delete()
             reply.delete()
-        comment.thread_id.num_comments -= 1
-        comment.thread_id.save()
+        publicacio.num_comments -= 1
+        publicacio.save()
         comment.delete()
         return Response({}, status=204)
 
