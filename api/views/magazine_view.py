@@ -91,7 +91,7 @@ class CrearSuscripcio(APIView):
         try:
             magazine = Magazine.objects.get(pk=magazine_id)
         except:
-            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+            return Response({"Error: La magazine sol·licitada no s'ha trobat"}, status=404)
 
 
         suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
