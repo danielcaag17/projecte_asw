@@ -933,7 +933,7 @@ paths:
       security:
         - ApiKeyAuth: [ ]
 
-  /settings/profile/{username}/:
+  /settings/{username}/:
     put:
       tags:
         - User
@@ -993,7 +993,7 @@ paths:
       security:
         - ApiKeyAuth: [ ]
 
-  # COMMENTS -----------------------------------------------------------------------------------------
+  # COMMENTS --------------------------------------------------------------------
   /publicacions/{id_publicacio}/comments/{ordre}:
     get:
       tags:
