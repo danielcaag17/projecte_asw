@@ -18,7 +18,7 @@
             transform: translate3d(0, 0, 0);
         }
     </style>
-    <title>Profile - {{ usuari.username }} - kbin.social</title>
+    <title>Profile - {{ usuari2.username }} - kbin.social</title>
     <link rel="icon" href="{% static '/ico/favicon.ico' %}" sizes="any">
     <link rel="stylesheet" href="{% static '/css/824.b4cc3385.css' %}" data-turbo-track="reload">
     <link rel="stylesheet" href="{% static '/css/app.910c0aab.css' %}" data-turbo-track="reload">
@@ -34,14 +34,14 @@
             <aside class="options" id="options">
                 <div></div>
                 <menu class="options__main" style="align-items: center; justify-content: center;">
-                    <li><a href="/u/{{ usuari.username }}" class="{% if selected == "threads" %}active{% endif %}">
+                    <li><a href="/u/{{ usuari2.username }}" class="{% if selected == "threads" %}active{% endif %}">
                         <span style="vertical-align: inherit;">threads ({{ n_threads }})</span>
                     </a></li>
-                    <li><a href="/u/{{ usuari.username }}/commented" class="{% if selected == "com" %}active{% endif %}">
+                    <li><a href="/u/{{ usuari2.username }}/commented" class="{% if selected == "com" %}active{% endif %}">
                         <span style="vertical-align: inherit;">comments ({{ n_com }})</span>
                     </a></li>
-                    {% if user.is_authenticated and user.email == usuari.email %}
-                        <li><a href="/u/{{ usuari.username }}/boosts"
+                    {% if user.is_authenticated and user.email == usuari2.email %}
+                        <li><a href="/u/{{ usuari2.username }}/boosts"
                                class="{% if selected == "boost" %}active{% endif %}">
                             <span style="vertical-align: inherit;">boosts ({{ n_boosts }})</span>
                         </a></li>
@@ -53,19 +53,19 @@
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ usuari.username }}/{%if selected != "threads"%}boosts/{% endif %}top/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari2.username }}/{%if selected != "threads"%}boosts/{% endif %}top/{{ active_filter }}"
                                class="{% if active_option == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ usuari.username }}/{%if selected != "threads"%}boosts/{% endif %}newest/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari2.username }}/{%if selected != "threads"%}boosts/{% endif %}newest/{{ active_filter }}"
                                class="{% if active_option == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ usuari.username }}/{%if selected != "threads"%}boosts/{% endif %}com/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari2.username }}/{%if selected != "threads"%}boosts/{% endif %}com/{{ active_filter }}"
                                class="{% if active_option == 'com' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 commented
@@ -80,18 +80,18 @@
                             </button>
                             <ul class="dropdown__menu">
                                 <li>
-                                    <a href="/u/{{ usuari.username }}/{{ active_option }}/tot" class="{% if active_filter == "tot" %}active{% endif %}">
+                                    <a href="/u/{{ usuari2.username }}/{{ active_option }}/tot" class="{% if active_filter == "tot" %}active{% endif %}">
                                         Tot
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/u/{{ usuari.username }}/{{ active_option }}/links" class="{% if active_filter == "links" %}active{% endif %}">
+                                    <a href="/u/{{ usuari2.username }}/{{ active_option }}/links" class="{% if active_filter == "links" %}active{% endif %}">
                                         <!--     <a href="//Links "class=""> -->
                                         Links
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/u/{{ usuari.username }}/{{ active_option }}/threads" class="{% if active_filter == "threads" %}active{% endif %}">
+                                    <a href="/u/{{ usuari2.username }}/{{ active_option }}/threads" class="{% if active_filter == "threads" %}active{% endif %}">
                                         Threads
                                     </a>
                                 </li>
@@ -104,19 +104,19 @@
                 <aside class="options options--top" id="options" style="align-items: center; justify-content: center;">
                     <div></div>
                     <menu class="options__main no-scroll">
-                        <li><a href="/u/{{ usuari.username }}/commented/top/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari2.username }}/commented/top/{{ active_filter }}"
                                class="{% if active_option == 'top' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 top
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ usuari.username }}/commented/newest/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari2.username }}/commented/newest/{{ active_filter }}"
                                class="{% if active_option == 'newest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 newest
                             </font></font>
                         </a></li>
-                        <li><a href="/u/{{ usuari.username }}/commented/oldest/{{ active_filter }}"
+                        <li><a href="/u/{{ usuari2.username }}/commented/oldest/{{ active_filter }}"
                                class="{% if active_option == 'oldest' %}active{% endif %}">
                             <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                                 oldest

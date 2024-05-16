@@ -8,7 +8,6 @@ from django.utils import timezone
 @login_required(redirect_field_name='login')
 @csrf_exempt
 def add_comment(request, thread_id):
-    print(f"Valor de thread_id: {thread_id}")
     thread = Publicacio.objects.get(pk=thread_id)
     if request.method == 'POST':
         body = request.POST.get('entry_comment[body]')

@@ -34,7 +34,7 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
     if select == 'threads':
 
 
-        context = {'usuari': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
+        context = {'usuari2': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
                    'active_option': ordre, 'active_filter': filter, 'selected': select,
                    'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
@@ -62,7 +62,7 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
                                           zip(comments, publicacions)]
 
 
-        context = {'usuari': obj, 'coments': comments, 'active_option': ordre, 'active_filter': filter,
+        context = {'usuari2': obj, 'coments': comments, 'active_option': ordre, 'active_filter': filter,
                    'selected': select,'pare':parella,'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
     else:
@@ -72,7 +72,7 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
         links = Link.objects.filter(id__in=publication_ids)
         threads = Thread.objects.filter(id__in=publication_ids)
 
-        context = {'usuari': obj, 'threads': ordena(links,threads,ordre,filter), 'active_option': ordre,
+        context = {'usuari2': obj, 'threads': ordena(links,threads,ordre,filter), 'active_option': ordre,
                    'active_filter': filter, 'selected': select,'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
     return HttpResponse(template.render(context, request))
@@ -133,12 +133,12 @@ def edit_user(request, username):
             obj.cover = default_storage.url(cover_name)
         obj.save()
         template = loader.get_template('edit_user.html')
-        context = {'usuari': obj}
+        context = {'usuari2': obj}
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template('edit_user.html')
         obj = User.objects.get(username=username)
-        context = {'usuari': obj}
+        context = {'usuari2': obj}
         return HttpResponse(template.render(context, request))
 
 
