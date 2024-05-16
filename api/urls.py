@@ -20,20 +20,8 @@ url_comentaris = [
 ]
 
 url_users = [
-    path('users/', views.UserView.as_view(), name='users'),
+    path('users/', views.UserView.as_view(), {'username': None, 'element': 'threads', 'ordre': 'tot', 'filtre': 'newest'},  name='users'),
 
-    path('u/<str:username>/', views.UserView.as_view(), name='view-user'),
-
-    path('u/<str:username>/top/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/newest/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/commented/', views.UserView.as_view(), name='view-user'),
-
-    path('u/<str:username>/top/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/newest/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/commented/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-
-    path('u/<str:username>/<str:element>/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/<str:element>/<str:ordre>/', views.UserView.as_view(), name='view-user'),
     path('u/<str:username>/<str:element>/<str:ordre>/<str:filtre>/', views.UserView.as_view(), name='view-user'),
 
     path('settings/profile/<str:username>/', views.UserView.as_view(), name='edit_user'),
