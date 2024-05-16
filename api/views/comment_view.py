@@ -51,6 +51,8 @@ class CrearComentari(APIView):
 
         comment = Comment.objects.create(author=usuari, thread=publicacio, body=body, level=1)
         comment.save()
+        publicacio.num_coments += 1
+        publicacio.save()
 
         comment = CommentSerializer(comment)
         return Response(comment.data, status=201)
@@ -78,6 +80,7 @@ class CrearComentariResposta(APIView):
         except:
             return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
 
+        publicacio = comentari_root.thread
         # Creem el comentari
         comment = Comment.objects.create(author=usuari, thread=comentari_root.thread, body=body,
                                          level=comentari_root.level + 1)
@@ -88,6 +91,8 @@ class CrearComentariResposta(APIView):
 
         comentari_root = CommentSerializer(comentari_root)
 
+        publicacio.num_coments += 1
+        publicacio.save()
         # Retorna el comentari origen perquè es vegi que s'ha creat la resposta
         return Response(comentari_root.data, status=201)
 

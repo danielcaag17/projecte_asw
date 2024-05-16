@@ -25,7 +25,7 @@
                         </figure>
                         <h1>{{ usuari.username }}</h1>
                         <small>@{{ usuari.username }}@kbin.social</small>
-                        <small>{{ usuari.api_key }}</small>
+                        <small>{% if user.email == usuari.email %}{{ usuari.api_key }}{% endif %}</small>
                     </div>
                 </div>
             </div>
