@@ -53,16 +53,31 @@ class UserView(APIView):
                 result = tot_ordenat
 
             elif element == 'comments':
-                # TODO: Veure si hi ha filtre
                 comments = Comment.objects.filter(author=username)
-                comment_serializer = CommentSerializer(comments, many=True)
-                if ordre != 'commented':
-                    tot_ordenat = get_ordena(comment_serializer.data, ordre)
-                    result = tot_ordenat
+                # Son tots els comentaris
+                if filtre == 'tot':
+                    pass
+                elif filtre == 'threads':
+                    comment_thread = []
+                    for comment in comments:
+                        if Thread.objects.filter(id=comment.thread_id).exists():
+                            comment_thread.append(comment)
+                    comments = comment_thread
+                elif filtre == 'links':
+                    comment_link = []
+                    for comment in comments:
+                        if Link.objects.filter(id=comment.thread_id).exists():
+                            comment_link.append(comment)
+                    comments = comment_link
                 else:
-                    # TODO: Veure si es aixi o no (si es error o no)
-                    return Response({"error": f"Comments cannot be ordered by number of comments"},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error": f"The filter '{filtre}' does not exist"},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+                comment_serializer = CommentSerializer(comments, many=True)
+                tot_ordenat = get_ordena(comment_serializer.data, ordre)
+                for comment in tot_ordenat:
+                    comment.pop("replies", None)
+                result = tot_ordenat
             elif element == 'boosts':
                 if user != User.objects.filter(api_key=api_key).exists():
                     return Response({"error": f"the token provided does not match the user"},
@@ -147,6 +162,8 @@ def ordena(elements, ordre):
         elements = sorted(elements, key=lambda x: x['num_likes'], reverse=True)
     elif ordre == 'commented':
         elements = sorted(elements, key=lambda x: x['num_coments'], reverse=True)
+    elif ordre == 'oldest':
+        elements = sorted(elements, key=lambda x: x['creation_data'])
     else:
         raise Exception(f"The order '{ordre}' does not exist")
     return elements
