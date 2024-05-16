@@ -17,7 +17,7 @@ def all_magazines(request, ordre=None):
     else:
         user_subscriptions = []
     if ordre == 'threads':
-        magazines = sorted(magazines, key=lambda x: x.total_threads, reverse=True)
+        magazines = sorted(magazines, key=lambda x: x.total_threads(), reverse=True)
     elif ordre == 'elements':
         magazines = sorted(magazines, key=lambda x: x.total_publicacions(), reverse=True)
     elif ordre == 'commented':
