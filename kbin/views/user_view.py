@@ -23,7 +23,6 @@ def sort(all, ordre):
 def view_user(request, username, filter=None,ordre=None,select='threads'):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
-    print(username)
     links_tot = Link.objects.filter(author_id=username)
     threads_tot = Thread.objects.filter(author_id=username)
     comments = Comment.objects.filter(author_id=username)
@@ -35,7 +34,7 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
     if select == 'threads':
 
 
-        context = {'usuari': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
+        context = {'perfil': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
                    'active_option': ordre, 'active_filter': filter, 'selected': select,
                    'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
 
