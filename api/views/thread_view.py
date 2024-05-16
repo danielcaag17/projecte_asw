@@ -29,7 +29,7 @@ class CrearThread(APIView):
             try:  #Comprovem si el magazine indicat existeix
                 magazine = Magazine.objects.get(pk=data["magazine"])
             except:
-                return Response({"Error: No hi ha un magazine amb nom {}".format(data["magazine"])}, status=400)
+                return Response({"Error: No hi ha un magazine amb ID {}".format(data["magazine"])}, status=400)
 
             try:
                 usuari = User.objects.get(api_key=api_key)
@@ -63,7 +63,7 @@ class CrearLink(APIView):
             try:  #Comprovem si el magazine indicat existeix
                 magazine = Magazine.objects.get(pk=data["magazine"])
             except:
-                return Response({"Error: No hi ha un magazine amb nom {}".format(data["magazine"])}, status=400)
+                return Response({"Error: No hi ha un magazine amb ID {}".format(data["magazine"])}, status=400)
 
             try:
                 usuari = User.objects.get(api_key=api_key)
