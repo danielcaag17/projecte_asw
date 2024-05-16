@@ -17,7 +17,7 @@ class UserView(APIView):
         else:
             return self.list(request)
 
-    def put(self, request, username=None):
+    def put(self, request, username):
         api_key = request.headers.get('Authorization')
         data = request.data
         try:

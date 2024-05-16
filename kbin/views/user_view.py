@@ -33,7 +33,6 @@ def view_user(request, username, filter=None,ordre=None,select='threads'):
     ncom = len(comments)
     if select == 'threads':
 
-
         context = {'usuari2': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
                    'active_option': ordre, 'active_filter': filter, 'selected': select,
                    'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
