@@ -23,6 +23,7 @@ def sort(all, ordre):
 def view_user(request, username, filter=None,ordre=None,select='threads'):
     template = loader.get_template('view_user.html')
     obj = User.objects.get(username=username)
+    print(username)
     links_tot = Link.objects.filter(author_id=username)
     threads_tot = Thread.objects.filter(author_id=username)
     comments = Comment.objects.filter(author_id=username)
