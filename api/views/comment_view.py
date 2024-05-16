@@ -207,15 +207,14 @@ class ComentariIndividual(APIView):
             return Response({"Error: el token no correspon a l'usuari que ha creat la publicació"}, status=403)
 
         replies = Reply.objects.filter(comment_root=comment)
-        publicacio = Publicacio.objects.get(id=comment.thread_id)
+        thread = Publicacio.objects.get(pk=comment.thread_id)
         for reply in replies:
-            publicacio.num_coments -= 1
-            publicacio.save()
-            comment_reply = reply.comment_reply
-            comment_reply.delete()
-            reply.delete()
-        publicacio.num_comments -= 1
-        publicacio.save()
+            reply_comment = reply.comment_reply
+            reply_comment.delete()
+            thread.num_coments -= 1
+            thread.save()
+        thread.num_coments -= 1
+        thread.save()
         comment.delete()
         return Response({}, status=204)
 
