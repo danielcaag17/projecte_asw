@@ -4,7 +4,9 @@ from . import views
 urlmagazines = [
     path('magazines/<str:ordre>/', views.LlistarMagazines.as_view(), name='llistar_magazines'),
     path('magazines/', views.CrearMagazine.as_view(), name='crear_magazine'),
-    path('suscriptions/<int:magazine_id>/', views.CrearSuscripcio.as_view(), name='crear_suscripcio')
+    path('suscriptions/<int:magazine_id>/', views.CrearSuscripcio.as_view(), name='crear_suscripcio'),
+    path('magazine/<int:magazine_id>/', views.VeureMagazine.as_view(), name='veure_magazine'),
+    path('magazine/<int:magazine_id>/<str:filter>/<str:order>/', views.ObtenirPublicacionsMagazine.as_view(), name='obtenir_publicacions_magazines')
 ]
 
 url_comentaris = [
