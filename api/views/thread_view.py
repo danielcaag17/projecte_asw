@@ -52,7 +52,7 @@ class CrearLink(APIView):
             return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
 
         data = request.data
-        required_fields = {"title", "magazine", "url"}
+        required_fields = {"title", "magazine", "url","body"}
         if required_fields.issubset(data.keys()):
             if len(data["title"]) == 0:
                 return Response({"Error: Titol buit"}, status=400)
@@ -70,16 +70,14 @@ class CrearLink(APIView):
             except:
                 return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
 
-            body = data.get("body")
-
-            nou_link = Link.objects.create(author=usuari, title=data["title"], body=body,
+            nou_link = Link.objects.create(author=usuari, title=data["title"], body=data["body"],
                                            magazine=magazine, url=data["url"])
 
             nou_link = LinkSerializer(nou_link)
             return Response(nou_link.data, status=201)  # 201: Created
         else:
             # Si los campos no coinciden, retornamos un error
-            return Response({"Error: Falten atributs. Cal indicar titol,magazine i url del link a crear."},
+            return Response({"Error: Falten atributs. Cal indicar titol, body, magazine i url del link a crear."},
                             status=400)  # 400: Bad Request
 
 
