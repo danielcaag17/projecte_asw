@@ -52,7 +52,7 @@ class CrearLink(APIView):
             return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
 
         data = request.data
-        required_fields = {"title", "magazine", "url","body"}
+        required_fields = {"title", "magazine", "url", "body"}
         if required_fields.issubset(data.keys()):
             if len(data["title"]) == 0:
                 return Response({"Error: Titol buit"}, status=400)
