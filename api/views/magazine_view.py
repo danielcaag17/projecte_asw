@@ -60,6 +60,10 @@ class CrearMagazine(APIView):
             description = data.get("description")
             rules = data.get("rules")
             nsfw = data.get("nsfw")
+            nou_magazine = Magazine.objects.get(name= data["name"])
+            if(nou_magazine):
+                return Response({"Error: ja existeix una magazine amb el nom introduït"}, status=400)
+
             nou_magazine = Magazine.objects.create(author=usuari,
                                                    name= data["name"],
                                                    creation_date= timezone.now().isoformat(),
@@ -87,12 +91,12 @@ class CrearSuscripcio(APIView):
         try:
             magazine = Magazine.objects.get(pk=magazine_id)
         except:
-            return Response({"Error: No hi ha cap publicacio amb id {}".format(magazine_id)}, status=404)
+            return Response({"Error: La magazine sol·licitada no s'ha trobat"}, status=404)
 
 
         suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
         if suscripcio.exists():
-            return Response({"Error: L'usuari loguejat ja esta suscrit a la magazine indicada."}, status=400)
+            return Response({"Error: L'usuari loguejat ja esta subscrit a la magazine indicada."}, status=400)
         else:
             nou_suscripcio = Subscription.objects.create(user=usuari, magazine=magazine)
             nou_suscripcio.save()
@@ -121,7 +125,7 @@ class CrearSuscripcio(APIView):
             magazine.save()
             return Response(status=204)
         else:
-            return Response({"Error: L'usuari loguejat no esta suscrit a la magazine indicada."}, status=400)
+            return Response({"Error: L'usuari loguejat no està subscrit a la magazine indicada."}, status=400)
 
 
 
