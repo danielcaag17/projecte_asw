@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   version: 1.0.0
   title: API Kbin.social
-  description: "Aquesta es la documentació Open API de la API REST de la aplicació de Kbin desplegada a Heroku."
+  description: "Aquesta es la documentació Open API de la API REST de l'aplicació de Kbin desplegada a Heroku."
 servers:
   - url: 'https://bravo13-36a68ba47d34.herokuapp.com/api'
 tags:
@@ -12,27 +12,13 @@ tags:
     description: Tot sobre Magazines
   - name: Publicacions
     description: Tot sobre Publicacions
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io #TODO: posar o treure URL
   - name: Thread
     description: Tot sobre Threads
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io #TODO: posar o treure URL
   - name: Link
     description: Tot sobre Links
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io #TODO: posar URL
   - name: Comment
     description: Tot sobre Comments
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io #TODO: posar o treure URL
 paths:
-
-
   # PUBLICACIONS -------------------------------------------------------------------------------------
   /llistar/publicacions/{ordre}/:
     get:
