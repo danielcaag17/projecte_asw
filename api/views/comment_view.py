@@ -203,9 +203,12 @@ class ComentariIndividual(APIView):
 
         replies = Reply.objects.filter(comment_root=comment)
         for reply in replies:
+            comment.thread_id.num_comments -= 1
             comment_reply = reply.comment_reply
             comment_reply.delete()
             reply.delete()
+        comment.thread_id.num_comments -= 1
+        comment.thread_id.save()
         comment.delete()
         return Response({}, status=204)
 
