@@ -60,9 +60,9 @@ class CrearMagazine(APIView):
             description = data.get("description")
             rules = data.get("rules")
             nsfw = data.get("nsfw")
-            nou_magazine = Magazine.objects.get(name= data["name"])
-            if(nou_magazine):
-                return Response({"Error: ja existeix una magazine amb el nom introduït"}, status=400)
+            test_magazine = Magazine.objects.exists(name= data["name"])
+            if(test_magazine):
+                return Response({"Error: ja existeix una magazine amb el nom introduït"}, status=409)
 
             nou_magazine = Magazine.objects.create(author=usuari,
                                                    name= data["name"],
