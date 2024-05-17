@@ -1,10 +1,10 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_magazines import *
 from ..serializers.subscription_serializer import *
 from ..serializers.link_serializer import *
 from ..serializers.thread_serializer import *
+
 
 class LlistarMagazines(APIView):
     def get(self, request, ordre):
@@ -36,7 +36,8 @@ class LlistarMagazines(APIView):
             magazines_serializer = MagazineSerializer(magazines, many=True).data
             magazines_serializer = sorted(magazines_serializer, key=lambda x: x['n_suscriptions'], reverse=True)
 
-        else: return Response({"Error: La url sol·licitada no existeix"}, status=404)
+        else:
+            return Response({"Error: La url sol·licitada no existeix"}, status=404)
         return Response(magazines_serializer, status=200)
 
 
@@ -60,13 +61,13 @@ class CrearMagazine(APIView):
             description = data.get("description")
             rules = data.get("rules")
             nsfw = data.get("nsfw")
-            test_magazine = Magazine.objects.exists(name= data["name"])
-            if(test_magazine):
+            test_magazine = Magazine.objects.filter(name=data["name"]).exists()
+            if (test_magazine):
                 return Response({"Error: ja existeix una magazine amb el nom introduït"}, status=409)
 
             nou_magazine = Magazine.objects.create(author=usuari,
-                                                   name= data["name"],
-                                                   creation_date= timezone.now().isoformat(),
+                                                   name=data["name"],
+                                                   creation_date=timezone.now().isoformat(),
                                                    title=data["title"],
                                                    description=description,
                                                    rules=rules,
@@ -78,8 +79,9 @@ class CrearMagazine(APIView):
             return Response({"Error: Falten atributs. Cal indicar nom i títol de la magazine a crear."},
                             status=400)
 
+
 class CrearSuscripcio(APIView):
-    def post(self, request,magazine_id):
+    def post(self, request, magazine_id):
 
         api_key = request.headers.get('Authorization')
         if (api_key == None):
@@ -92,7 +94,6 @@ class CrearSuscripcio(APIView):
             magazine = Magazine.objects.get(pk=magazine_id)
         except:
             return Response({"Error: La magazine sol·licitada no s'ha trobat"}, status=404)
-
 
         suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
         if suscripcio.exists():
@@ -128,9 +129,8 @@ class CrearSuscripcio(APIView):
             return Response({"Error: L'usuari loguejat no està subscrit a la magazine indicada."}, status=400)
 
 
-
 class VeureMagazine(APIView):
-    def get(self, request,magazine_id):
+    def get(self, request, magazine_id):
         try:
             magazine = Magazine.objects.get(pk=magazine_id)
         except:
@@ -149,6 +149,7 @@ class ObtenirPublicacionsMagazine(APIView):
         links = Link.objects.filter(magazine_id=magazine_id)
         threads = Thread.objects.filter(magazine_id=magazine_id)
         return filtrar_ordenar(threads, links, filter, order)
+
 
 def filtrar_ordenar(threads, links, filter, ordre):
     thread_serializer = ThreadSerializer(threads, many=True)
