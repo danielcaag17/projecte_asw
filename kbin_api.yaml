@@ -1660,6 +1660,17 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error403'
 
+        '409':
+          description: 'Error: Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    mensaje: "Error: Ja existeix una magazine amb aquest name."
+
           # TODO
       security:
         - ApiKeyAuth: [ ]
@@ -2162,6 +2173,9 @@ components:
     error404:
       value:
         error: "No hi ha una publicació amb id=3"
+    error409:
+      value:
+        error: "Ja existeix una magazine amb aquest títol"
 
   securitySchemes:
     ApiKeyAuth:
