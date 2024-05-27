@@ -179,18 +179,22 @@ def filtrar_ordenar(threads, links, filter, ordre):
 class ObtenirUserSubscriptions(APIView):
     def get(self, request):
         api_key = request.headers.get('Authorization')
-        if (api_key == None):
-            return Response({"Error: No s'ha indicat el token de l'usuari"}, status=401)
+        if api_key is None:
+            return Response({"Error": "No s'ha indicat el token de l'usuari"}, status=401)
+
         try:
             usuari = User.objects.get(api_key=api_key)
-        except:
-            return Response({"Error: El token indicat no és vàlid"}, status=403)
+        except User.DoesNotExist:
+            return Response({"Error": "El token indicat no és vàlid"}, status=403)
+
         try:
             suscripcions = Subscription.objects.filter(user=usuari)
-        except:
-            return Response({"Error: L'usuari no te cap subscripcio"}, status=404)
+            if not suscripcions.exists():
+                return Response({"Error": "L'usuari no te cap subscripcio"}, status=404)
+        except Subscription.DoesNotExist:
+            return Response({"Error": "L'usuari no te cap subscripcio"}, status=404)
 
-        suscripcions = SubscriptionSerializer(suscripcions, many=True).data
+        serialized_suscripcions = SubscriptionSerializer(suscripcions, many=True).data
 
-        return Response(suscripcions.data, status=200)
+        return Response(serialized_suscripcions, status=200)
 
