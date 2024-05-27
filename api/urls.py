@@ -11,9 +11,9 @@ urlmagazines = [
 ]
 
 url_comentaris = [
-    path('publicacions/<int:id_thread>/comments/<str:ordre>/', views.VeureComentarisPublicacio.as_view(),
+    path('publicacions/<int:id_publicacio>/comments/<str:ordre>/', views.VeureComentarisPublicacio.as_view(),
          name='veure-comentaris-publicacio'),
-    path('publicacions/<int:id_thread>/create_comment/', views.CrearComentari.as_view(), name='crear-comentari'),
+    path('publicacions/<int:id_publicacio>/create_comment/', views.CrearComentari.as_view(), name='crear-comentari'),
     path('comments/create_reply/<int:id_comment>/', views.CrearComentariResposta.as_view(),
          name='crear-comentari-resposta'),
     path('comments/vote/<int:id_comment>/<str:tipus_vot>/', views.VotarComentari.as_view(), name='votar-comentari'),
@@ -21,23 +21,11 @@ url_comentaris = [
 ]
 
 url_users = [
-    path('users/', views.UserView.as_view(), name='users'),
+    path('users/', views.UserView.as_view(), {'username': None, 'element': 'threads', 'ordre': 'tot', 'filtre': 'newest'},  name='users'),
 
-    path('u/<str:username>/', views.UserView.as_view(), name='view-user'),
-
-    path('u/<str:username>/top/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/newest/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/commented/', views.UserView.as_view(), name='view-user'),
-
-    path('u/<str:username>/top/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/newest/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/commented/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-
-    path('u/<str:username>/<str:element>/', views.UserView.as_view(), name='view-user'),
-    path('u/<str:username>/<str:element>/<str:ordre>/', views.UserView.as_view(), name='view-user'),
     path('u/<str:username>/<str:element>/<str:ordre>/<str:filtre>/', views.UserView.as_view(), name='view-user'),
 
-    path('settings/profile/<str:username>/', views.UserView.as_view(), name='edit_user'),
+    path('settings/<str:username>/', views.UserView.as_view(), name='edit-user'),
 ]
 
 url_threads = [

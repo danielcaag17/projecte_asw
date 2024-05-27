@@ -32,7 +32,7 @@
                         class="user-name">{{ usuari.username }}</span></a>
                     <ul class="dropdown__menu">
                         <li><a href="/u/{{ usuari.username }}" class="">Profile</a></li>
-                        <li><a href="{% url 'edit_user' usuari.username %}" class="">Settings</a></li>
+                        <li><a href="/kbin/settings/profile/{{ usuari.username }}" class="">Settings</a></li>
                         <li><a href="/logout">Sing off</a></li>
                     </ul>
                 </li>

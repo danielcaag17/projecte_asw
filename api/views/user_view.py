@@ -1,22 +1,23 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.core.files.storage import default_storage
 
 from ..serializers.user_serializer import UserSerializer
 from ..serializers.thread_serializer import ThreadSerializer
-from ..serializers.link_serializer import LinkSerializer
+from ..serializers.serializer_threads import LinkSerializer
 from ..serializers.comment_serializer import CommentSerializer
 from kbin.models import User, Thread, Link, Comment, Boost
 
 
 class UserView(APIView):
-    def get(self, request, username=None, element=None, ordre=None, filtre=None):
+    def get(self, request, username, element, ordre, filtre):
         if username:
             return self.retrieve(request, username, element, ordre, filtre)
         else:
             return self.list(request)
 
-    def put(self, request, username=None):
+    def put(self, request, username):
         api_key = request.headers.get('Authorization')
         data = request.data
         try:
@@ -32,73 +33,84 @@ class UserView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         user.description = data['description']
-        user.cover = request.FILES.get('cover')
-        user.avatar = request.FILES.get('avatar')
+        avatar = request.FILES.get('avatar')
+        if avatar is not None:
+            avatar_name = default_storage.save('avatar/' + avatar.name, avatar)
+            user.avatar = default_storage.url(avatar_name)
+        cover = request.FILES.get('cover')
+        if cover is not None:
+            cover_name = default_storage.save('cover/' + cover.name, cover)
+            user.cover = default_storage.url(cover_name)
         user.save()
         user_updated_serializer = UserSerializer(user, context={'api_key': api_key})
         return Response(user_updated_serializer.data, status=201)  # 201: Created
 
     def retrieve(self, request, username, element, ordre, filtre):
+        result = None
         try:
             api_key = request.headers.get('Authorization')
             user = User.objects.get(username=username)
-            user_serializer = UserSerializer(user, context={'api_key': api_key})
-            if filtre is None:
-                filtre = 'tot'
-            if element is None:
-                element = 'threads'
-
-            if element == 'threads':
-                tot_ordenat = filtrar(filtre, username, ordre, False)
-                result = tot_ordenat
-
-            elif element == 'comments':
-                comments = Comment.objects.filter(author=username)
-                # Son tots els comentaris
-                if filtre == 'tot':
-                    pass
-                elif filtre == 'threads':
-                    comment_thread = []
-                    for comment in comments:
-                        if Thread.objects.filter(id=comment.thread_id).exists():
-                            comment_thread.append(comment)
-                    comments = comment_thread
-                elif filtre == 'links':
-                    comment_link = []
-                    for comment in comments:
-                        if Link.objects.filter(id=comment.thread_id).exists():
-                            comment_link.append(comment)
-                    comments = comment_link
-                else:
-                    return Response({"error": f"The filter '{filtre}' does not exist"},
-                                    status=status.HTTP_404_NOT_FOUND)
-
-                comment_serializer = CommentSerializer(comments, many=True)
-                tot_ordenat = get_ordena(comment_serializer.data, ordre)
-                for comment in tot_ordenat:
-                    comment.pop("replies", None)
-                result = tot_ordenat
-            elif element == 'boosts':
-                if user != User.objects.filter(api_key=api_key).exists():
-                    return Response({"error": f"the token provided does not match the user"},
-                                    status=status.HTTP_400_BAD_REQUEST)
-                elif user == User.objects.filter(api_key=api_key):
-                    tot_ordenat = filtrar(filtre, username, ordre, True)
-                    result = tot_ordenat
-                else:
-                    return Response({"error": f"Only the user can get its boosts"},
-                                    status=status.HTTP_401_UNAUTHORIZED)
-            else:
-                return Response({"error": f"The element '{element}' does not exist"},
-                                status=status.HTTP_404_NOT_FOUND)
-            serializer = {
-                "user": user_serializer.data,
-                element: result
-            }
-            return Response(serializer, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": f"The user '{username}' does not exist"},
                             status=status.HTTP_404_NOT_FOUND)
+        user_serializer = UserSerializer(user, context={'api_key': api_key})
+        if filtre is None:
+            filtre = 'tot'
+        if element is None:
+            element = 'threads'
+
+        if element == 'threads':
+            tot_ordenat = filtrar(filtre, username, ordre, False)
+            result = tot_ordenat
+
+        elif element == 'comments':
+            comments = Comment.objects.filter(author=username)
+            # Son tots els comentaris
+            if filtre == 'tot':
+                pass
+            elif filtre == 'threads':
+                comment_thread = []
+                for comment in comments:
+                    if Thread.objects.filter(id=comment.thread_id).exists():
+                        comment_thread.append(comment)
+                comments = comment_thread
+            elif filtre == 'links':
+                comment_link = []
+                for comment in comments:
+                    if Link.objects.filter(id=comment.thread_id).exists():
+                        comment_link.append(comment)
+                comments = comment_link
+            else:
+                return Response({"error": f"The filter '{filtre}' does not exist"},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            comment_serializer = CommentSerializer(comments, many=True)
+            tot_ordenat = get_ordena(comment_serializer.data, ordre)
+            for comment in tot_ordenat:
+                comment.pop("replies", None)
+            result = tot_ordenat
+        elif element == 'boosts':
+            if api_key is None:
+                return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+            try:
+                user_token = User.objects.get(api_key=api_key)
+            except User.DoesNotExist:
+                return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+            if user != user_token:
+                return Response({"Error: el token no correspon a l'usuari"}, status=403)
+            elif user == User.objects.get(api_key=api_key):
+                tot_ordenat = filtrar(filtre, username, ordre, True)
+                result = tot_ordenat
+        else:
+            return Response({"error": f"The element '{element}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = {
+            "user": user_serializer.data,
+            "data": result
+        }
+        return Response(serializer, status=status.HTTP_200_OK)
+
 
     def list(self, request):
         api_key = request.headers.get('Authorization')
