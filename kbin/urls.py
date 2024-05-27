@@ -63,7 +63,7 @@ url_users = [
     path('u/<str:username>/boosts/newest/<str:filter>/', views.view_user,{'select':'boost', 'ordre': 'newest'}, name='user_newest_filter'),
     path('u/<str:username>/boosts/com/<str:filter>/', views.view_user, { 'select':'boost','ordre': 'com'}, name='user_commented_filter'),
 
-    path('settings/profile/<str:username>', views.edit_user, name='edit_user'),
+    path('settings/profile/<str:username>/', views.edit_user, name='edit_user'),
     path('login', views.login, name='login'),
     path('logout', views.logout_view, name='logout'),
 ]
