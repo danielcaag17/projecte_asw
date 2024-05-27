@@ -183,7 +183,10 @@ class ObtenirUserSubscriptions(APIView):
             usuari = User.objects.get(api_key=api_key)
         except:
             return Response({"Error: El token indicat no és vàlid"}, status=403)
-        suscripcions = Subscription.objects.filter(user=usuari)
-        suscripcions = SubscriptionSerializer(suscripcions, many=True).data
+        try:
+            suscripcions = Subscription.objects.filter(user=usuari)
+        except:
+            return Response({"Error: L'usuari no te cap subscripcio"}, status=404)
 
+        suscripcions = SubscriptionSerializer(suscripcions, many=True).data
         return Response(suscripcions.data, status=200)
