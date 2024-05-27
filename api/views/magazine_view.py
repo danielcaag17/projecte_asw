@@ -191,5 +191,6 @@ class ObtenirUserSubscriptions(APIView):
             return Response({"Error: L'usuari no te cap subscripcio"}, status=404)
 
         suscripcions = SubscriptionSerializer(suscripcions, many=True).data
+
         return Response(suscripcions.data, status=200)
 
