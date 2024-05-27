@@ -173,3 +173,17 @@ def filtrar_ordenar(threads, links, filter, ordre):
         return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
 
     return Response(tot, status=200)
+
+class ObtenirUserSubscriptions(APIView):
+    def get(self, request):
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: No s'ha indicat el token de l'usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except:
+            return Response({"Error: El token indicat no és vàlid"}, status=403)
+        suscripcions = Subscription.objects.filter(user=usuari)
+        suscripcions = SubscriptionSerializer(suscripcions, many=True).data
+
+        return Response(suscripcions.data, status=200)
