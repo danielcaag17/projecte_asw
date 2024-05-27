@@ -111,11 +111,25 @@ class UserView(APIView):
         }
         return Response(serializer, status=status.HTTP_200_OK)
 
-
     def list(self, request):
-        api_key = request.headers.get('Authorization')
         users = User.objects.all()
-        serializer = UserSerializer(users, many=True, context={'api_key': api_key})
+        serializers = UserSerializer(users, many=True, context={'api_key': None})
+        for serializer in serializers.data:
+            user = User.objects.get(username=serializer['username'])
+            serializer['token'] = user.api_key
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+class UserDetail(APIView):
+    def get(self, request, username):
+        api_key = request.headers.get('Authorization')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"error": f"The user '{username}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user, context={'api_key': api_key})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
