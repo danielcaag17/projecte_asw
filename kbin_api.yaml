@@ -5,6 +5,7 @@ info:
   description: "Aquesta es la documentació Open API de la API REST de l'aplicació de Kbin desplegada a Heroku."
 servers:
   - url: 'https://bravo13-36a68ba47d34.herokuapp.com/api'
+  - url: 'http://127.0.0.1:8000/api/'
 tags:
   - name: User
     description: Tot sobre Users
@@ -783,7 +784,7 @@ paths:
     get:
       tags:
         - User
-      summary: Obtenir tots els users i si s'ha indicat un token es mostra aquest en l'usuari corresponent
+      summary: Obtenir la informació bàscia de tots els users
       responses:
         '200':
           description: Users obtinguts correctament
@@ -796,6 +797,36 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
+      security:
+        - ApiKeyAuth: [ ]
+
+  /u/{username}/:
+    get:
+      tags:
+        - User
+      summary: Obtenir la informació bàsica del User
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User obtingut correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: "Error: Not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserNotFoundError'
       security:
         - ApiKeyAuth: [ ]
 
