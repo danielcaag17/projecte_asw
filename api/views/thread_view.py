@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
 from ..serializers.serializer_vots import *
+from ..serializers.serializer_boosts import *
 import json
 
 
@@ -42,8 +43,9 @@ class CrearThread(APIView):
             return Response(nou_thread.data, status=201)  # 201: Created
         else:
             #Falta algun dels camps
-            return Response({"Error: Falten atributs. Cal indicar titol, body i la ID del magazine del thread a crear."},
-                            status=400)
+            return Response(
+                {"Error: Falten atributs. Cal indicar titol, body i la ID del magazine del thread a crear."},
+                status=400)
 
 
 class CrearLink(APIView):
@@ -81,6 +83,22 @@ class CrearLink(APIView):
             return Response({"Error: Falten atributs. Cal indicar titol, body, magazine i url del link a crear."},
                             status=400)  # 400: Bad Request
 
+
+class ObtenirBoosts(APIView):
+    def get(self, request):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        boosts = Boost.objects.filter(user_id=usuari.username)
+        boosts = BoostSerializer(boosts, many=True)
+        return Response(boosts.data, status=200)
+
+
 class ObtenirVots(APIView):
     def get(self, request):
         api_key = request.headers.get('Authorization')
@@ -93,7 +111,8 @@ class ObtenirVots(APIView):
 
         vots = Vot.objects.filter(user_id=usuari.username)
         vots = VotSerializer(vots, many=True)
-        return Response(vots.data,status=200)
+        return Response(vots.data, status=200)
+
 
 class VotarPublicacio(APIView):
     def post(self, request, id_publicacio, tipus_vot):
@@ -196,7 +215,7 @@ class PublicacioIndividual(APIView):
         publicacio.delete()
         return Response({}, status=204)
 
-    def put(self,request,id_publicacio):
+    def put(self, request, id_publicacio):
         validacio = validar_request(request, id_publicacio)
         if isinstance(validacio, Response):
             return validacio
@@ -216,7 +235,7 @@ class PublicacioIndividual(APIView):
         if "body" in data.keys():
             publicacio.body = data["body"]
         publicacio.save()
-        return retorna_info_publicacio(id_publicacio,200)
+        return retorna_info_publicacio(id_publicacio, 200)
 
 
 class ImpulsarPublicacio(APIView):

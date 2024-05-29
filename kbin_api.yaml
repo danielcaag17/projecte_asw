@@ -5,7 +5,6 @@ info:
   description: "Aquesta es la documentació Open API de la API REST de l'aplicació de Kbin desplegada a Heroku."
 servers:
   - url: 'https://bravo13-36a68ba47d34.herokuapp.com/api'
-  - url: 'http://127.0.0.1:8000/api/'
 tags:
   - name: User
     description: Tot sobre Users
@@ -1040,6 +1039,48 @@ paths:
                 properties:
                   vots:
                     $ref: '#/components/schemas/Vot'
+
+        '401':
+          description: No s'ha indicat un token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Es necessari indicar el token del usuari
+
+        '403':
+          description: El token no correspon amb cap usuari
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: El token no correspon a cap usuari registrat
+      security:
+        - ApiKeyAuth: [ ]
+
+
+  /boosts/:
+    get:
+      tags:
+        - User
+      summary: Obté tots els boosts fets per l'usuari indicat en el token que s'envia a la petició
+
+      responses:
+        '200':
+          description: Informació dels boosts obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vots:
+                    $ref: '#/components/schemas/Boost'
 
         '401':
           description: No s'ha indicat un token
@@ -2124,6 +2165,14 @@ components:
         positiu:
           type: boolean
           description: Indica si el vot és un like o no
+
+    Boost:
+      type: object
+      properties:
+        publicacio_id:
+          type: integer
+          description: ID de la publicació
+          example: 1
 
 
     NouThread:
