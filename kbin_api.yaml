@@ -1024,6 +1024,47 @@ paths:
       security:
         - ApiKeyAuth: [ ]
 
+  /vots/:
+    get:
+      tags:
+        - User
+      summary: Obté tots els vots fets per l'usuari indicat en el token que s'envia a la petició
+
+      responses:
+        '200':
+          description: Informació dels vots obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vots:
+                    $ref: '#/components/schemas/Vot'
+
+        '401':
+          description: No s'ha indicat un token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Es necessari indicar el token del usuari
+
+        '403':
+          description: El token no correspon amb cap usuari
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: El token no correspon a cap usuari registrat
+      security:
+        - ApiKeyAuth: [ ]
+
   # COMMENTS --------------------------------------------------------------------
   /publicacions/{id_publicacio}/comments/{ordre}:
     get:
@@ -2072,6 +2113,18 @@ components:
           type: integer
           description: Número de subscriptors de la magazine
           example: 33
+
+    Vot:
+      type: object
+      properties:
+        publicacio_id:
+          type: integer
+          description: ID de la publicació
+          example: 1
+        positiu:
+          type: boolean
+          description: Indica si el vot és un like o no
+
 
     NouThread:
       allOf:
