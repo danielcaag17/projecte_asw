@@ -24,8 +24,8 @@ url_users = [
     path('users/', views.UserView.as_view(), {'username': None, 'element': 'threads', 'ordre': 'tot', 'filtre': 'newest'},  name='users'),
     path('u/<str:username>/', views.UserDetail.as_view(), name='user-info'),
     path('u/<str:username>/<str:element>/<str:ordre>/<str:filtre>/', views.UserView.as_view(), name='view-user'),
-
     path('settings/<str:username>/', views.UserView.as_view(), name='edit-user'),
+    path('vots/',views.ObtenirVots.as_view(),name='obtenir-vots'),
 ]
 
 url_threads = [

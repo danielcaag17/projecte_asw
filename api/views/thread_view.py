@@ -3,6 +3,7 @@ from kbin.models import Publicacio, Thread, Link, Vot, Boost
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..serializers.serializer_threads import *
+from ..serializers.serializer_vots import *
 import json
 
 
@@ -80,6 +81,19 @@ class CrearLink(APIView):
             return Response({"Error: Falten atributs. Cal indicar titol, body, magazine i url del link a crear."},
                             status=400)  # 400: Bad Request
 
+class ObtenirVots(APIView):
+    def get(self, request):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        vots = Vot.objects.filter(user_id=usuari.username)
+        vots = VotSerializer(vots, many=True)
+        return Response(vots.data,status=200)
 
 class VotarPublicacio(APIView):
     def post(self, request, id_publicacio, tipus_vot):
