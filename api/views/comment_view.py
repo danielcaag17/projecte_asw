@@ -2,10 +2,9 @@ from kbin.models import Publicacio, Thread, Link, Comment, User, Reply, Vote_com
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import json
-
 from django.utils import timezone
 from ..serializers.comment_serializer import CommentSerializer
-
+from ..serializers.serializer_vots_comentaris import *
 
 class VeureComentarisPublicacio(APIView):
     def get(self, request, id_publicacio, ordre):
@@ -95,6 +94,21 @@ class CrearComentariResposta(APIView):
         publicacio.save()
         # Retorna el comentari origen perquè es vegi que s'ha creat la resposta
         return Response(comentari_root.data, status=201)
+
+class ObtenirVotsComentaris(APIView):
+    def get(self,request):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+        vots = Vote_comment.objects.filter(user_id=usuari.username)
+        vots = VoteCommentSerializer(vots, many=True)
+        print(vots)
+        return Response(vots.data, status=200)
 
 
 class VotarComentari(APIView):
