@@ -5,6 +5,7 @@ info:
   description: "Aquesta es la documentació Open API de la API REST de l'aplicació de Kbin desplegada a Heroku."
 servers:
   - url: 'https://bravo13-36a68ba47d34.herokuapp.com/api'
+  - url: 'http://127.0.0.1:8000/api/'
 tags:
   - name: User
     description: Tot sobre Users
@@ -1106,6 +1107,48 @@ paths:
       security:
         - ApiKeyAuth: [ ]
 
+  /comments/vots/:
+    get:
+      tags:
+        - User
+      summary: Obté tots els vots a comentaris fets per l'usuari indicat en el token que s'envia a la petició
+
+      responses:
+        '200':
+          description: Informació dels vots obtinguda correctament
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vots:
+                    $ref: '#/components/schemas/VotComentari'
+
+        '401':
+          description: No s'ha indicat un token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: Es necessari indicar el token del usuari
+
+        '403':
+          description: El token no correspon amb cap usuari
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: El token no correspon a cap usuari registrat
+      security:
+        - ApiKeyAuth: [ ]
+
+
   # COMMENTS --------------------------------------------------------------------
   /publicacions/{id_publicacio}/comments/{ordre}:
     get:
@@ -2164,6 +2207,17 @@ components:
           example: 1
         positiu:
           type: boolean
+          description: Indica si el vot és un like o no
+
+    VotComentari:
+      type: object
+      properties:
+        comment_id:
+          type: integer
+          description: ID del comentari
+          example: 1
+        type:
+          type: string
           description: Indica si el vot és un like o no
 
     Boost:
