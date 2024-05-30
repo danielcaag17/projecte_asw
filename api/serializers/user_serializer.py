@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     total_threads = serializers.SerializerMethodField()
     total_comments = serializers.SerializerMethodField()
     total_boosts = serializers.SerializerMethodField()
-    avatar = serializers.URLField(source='avatar')
+    avatar = serializers.URLField()
 
     class Meta:
         model = User
