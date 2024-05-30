@@ -27,6 +27,7 @@ url_users = [
     path('settings/<str:username>/', views.UserView.as_view(), name='edit-user'),
     path('vots/',views.ObtenirVots.as_view(),name='obtenir-vots'),
     path('boosts/',views.ObtenirBoosts.as_view(),name='obtenir-boosts'),
+    path('comments/vots/',views.ObtenirVotsComentaris.as_view(),name='obtenir-vots-comentaris'),
 ]
 
 url_threads = [
