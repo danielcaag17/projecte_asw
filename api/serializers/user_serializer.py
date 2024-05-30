@@ -7,6 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     total_threads = serializers.SerializerMethodField()
     total_comments = serializers.SerializerMethodField()
     total_boosts = serializers.SerializerMethodField()
+    avatar = serializers.URLField(source='avatar')
 
     class Meta:
         model = User
@@ -14,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'total_threads', 'total_comments', 'total_boosts']
 
     def get_token(self, obj):
-        if obj.api_key == self.context['api_key']:
+        if obj.api_key == self.context.get('api_key'):
             return obj.api_key
         return None
 
