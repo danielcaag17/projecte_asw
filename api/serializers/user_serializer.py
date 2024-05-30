@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     total_comments = serializers.SerializerMethodField()
     total_boosts = serializers.SerializerMethodField()
     avatar = serializers.URLField()
+    cover = serializers.URLField()
 
     class Meta:
         model = User
