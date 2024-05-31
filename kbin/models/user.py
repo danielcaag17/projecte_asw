@@ -9,18 +9,19 @@ class User(models.Model):
     cover = models.ImageField(default="", max_length=10000)
     avatar = models.ImageField(default="", max_length=10000)
     email = models.EmailField(unique=True)
+    api_key = models.CharField(max_length=100, blank=True, null=True, unique=True)
 
     @property
     def total_threads(self):
-        publicacio = apps.get_model('api', 'Publicacio')
+        publicacio = apps.get_model('kbin', 'Publicacio')
         return publicacio.objects.filter(author=self.username).count()
 
     @property
     def total_comments(self):
-        comment = apps.get_model('api', 'Comment')
+        comment = apps.get_model('kbin', 'Comment')
         return comment.objects.filter(author=self.username).count()
 
     @property
     def total_boosts(self):
-        boost = apps.get_model('api', 'Boost')
+        boost = apps.get_model('kbin', 'Boost')
         return boost.objects.filter(user=self.username).count()

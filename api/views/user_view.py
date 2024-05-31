@@ -1,149 +1,195 @@
-from django.http import HttpResponse
-from django.template import loader
-from django.contrib.auth import logout
-from django.shortcuts import redirect
-from django.urls import reverse,reverse_lazy
-from itertools import chain
-from django.db.models import Value, CharField
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.core.files.storage import default_storage
-from ..models import *
+
+from ..serializers.user_serializer import UserSerializer
+from ..serializers.thread_serializer import ThreadSerializer
+from ..serializers.serializer_threads import LinkSerializer
+from ..serializers.comment_serializer import CommentSerializer
+from kbin.models import User, Thread, Link, Comment, Boost
 
 
-@csrf_exempt
-def sort(all, ordre):
-    if ordre == 'top':
-        res = sorted(all, key=lambda x: x.num_likes, reverse=True)
-    elif ordre == 'newest':
-        res = sorted(all, key=lambda x: x.creation_data, reverse=True)
-    elif ordre == 'commented':
-        res = sorted(all, key=lambda x: x.num_coments, reverse=True)
-    return res
-
-def view_user(request, username, filter=None,ordre=None,select='threads'):
-    template = loader.get_template('view_user.html')
-    obj = User.objects.get(username=username)
-    links_tot = Link.objects.filter(author_id=username)
-    threads_tot = Thread.objects.filter(author_id=username)
-    comments = Comment.objects.filter(author_id=username)
-    boosts = Boost.objects.filter(user_id=username)
-
-    nboosts =len(boosts)
-    nthreads = len(list(links_tot)+list(threads_tot))
-    ncom = len(comments)
-    if select == 'threads':
-
-
-        context = {'usuari': obj, 'threads': ordena(links_tot,threads_tot,ordre,filter),
-                   'active_option': ordre, 'active_filter': filter, 'selected': select,
-                   'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
-
-    elif select == 'com':
-        if ordre == 'top':
-            comments = sorted(comments, key=lambda x: x.num_likes, reverse=True)
-        elif ordre == 'newest':
-            comments = sorted(comments, key=lambda x: x.creation_data, reverse=True)
+class UserView(APIView):
+    def get(self, request, username, element, ordre, filtre):
+        if username:
+            return self.retrieve(request, username, element, ordre, filtre)
         else:
-            comments = sorted(comments, key=lambda x: x.creation_data, reverse=False)
+            return self.list(request)
 
-        thread_ids = [comment.thread_id for comment in comments]
+    def put(self, request, username):
+        api_key = request.headers.get('Authorization')
+        data = request.data
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"error": f"The user '{username}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        if api_key is None:
+            return Response({"error: The API key is missing"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        if user != User.objects.get(api_key=api_key):
+            return Response({"error": f"the token provided does not match the user"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        links = []
-        threads = []
-        # Itera pels IDs i afegix manualment les instàncies corresponents a les llistes
-        for thread_id in thread_ids:
-            # Afegeix els links corresponents a la llista de links
-            links.extend(Link.objects.filter(id=thread_id))
-            # Afegeix els threads corresponents a la llista de threads
-            threads.extend(Thread.objects.filter(id=thread_id))
-
-
-        publicacions = sorted(chain(links, threads), key=lambda x: thread_ids.index(x.id))
-        parella = [(commen, publicacion) for commen, publicacion in
-                                          zip(comments, publicacions)]
-
-
-        context = {'usuari': obj, 'coments': comments, 'active_option': ordre, 'active_filter': filter,
-                   'selected': select,'pare':parella,'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
-
-    else:
-
-        publication_ids = boosts.values_list('publicacio_id', flat=True)
-
-        links = Link.objects.filter(id__in=publication_ids)
-        threads = Thread.objects.filter(id__in=publication_ids)
-
-        context = {'usuari': obj, 'threads': ordena(links,threads,ordre,filter), 'active_option': ordre,
-                   'active_filter': filter, 'selected': select,'n_threads' : nthreads,'n_com' : ncom,'n_boosts' : nboosts}
-
-    return HttpResponse(template.render(context, request))
-
-
-def ordena(links,threads,ordre,filter):
-    if filter == 'links':
-        tot = links
-    elif filter == 'threads':
-        tot = threads
-    else:
-        tot = list(links) + list(threads)
-
-    if ordre == 'top':
-        tot = sorted(tot, key=lambda x: x.num_likes, reverse=True)
-    elif ordre == 'newest':
-        tot = sorted(tot, key=lambda x: x.creation_data, reverse=True)
-    elif ordre == 'commented':
-        tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
-    return tot
-  
-
-@csrf_exempt
-def get_username(user_email):
-    return user_email.split('@')[0]
-
-
-@csrf_exempt
-def login(request):
-    user_email = request.user.email
-    djando_username = request.user.username
-    user_username = get_username(user_email)
-    User.objects.get_or_create(
-        username=user_username,
-        email=user_email,
-    )
-    if request.user.is_authenticated:
-        url = reverse('main') + f'?django_user={djando_username}&user={user_username}'
-        return redirect(url)
-
-
-@csrf_exempt
-def edit_user(request, username):
-    if request.method == "POST":
-        obj = User.objects.get(username=username)
-        description = request.POST.get('description')
-        if description is not None:
-            obj.description = description
+        user.description = data['description']
         avatar = request.FILES.get('avatar')
         if avatar is not None:
             avatar_name = default_storage.save('avatar/' + avatar.name, avatar)
-            obj.avatar = default_storage.url(avatar_name)
+            user.avatar = default_storage.url(avatar_name)
         cover = request.FILES.get('cover')
         if cover is not None:
             cover_name = default_storage.save('cover/' + cover.name, cover)
-            obj.cover = default_storage.url(cover_name)
-        obj.save()
-        template = loader.get_template('edit_user.html')
-        context = {'usuari': obj}
-        return HttpResponse(template.render(context, request))
+            user.cover = default_storage.url(cover_name)
+        user.save()
+        user_updated_serializer = UserSerializer(user, context={'api_key': api_key})
+        return Response(user_updated_serializer.data, status=201)  # 201: Created
+
+    def retrieve(self, request, username, element, ordre, filtre):
+        result = None
+        try:
+            api_key = request.headers.get('Authorization')
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"error": f"The user '{username}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        user_serializer = UserSerializer(user, context={'api_key': api_key})
+        if filtre is None:
+            filtre = 'tot'
+        if element is None:
+            element = 'threads'
+
+        if element == 'threads':
+            tot_ordenat = filtrar(filtre, username, ordre, False)
+            result = tot_ordenat
+
+        elif element == 'comments':
+            comments = Comment.objects.filter(author=username)
+            # Son tots els comentaris
+            if filtre == 'tot':
+                pass
+            elif filtre == 'threads':
+                comment_thread = []
+                for comment in comments:
+                    if Thread.objects.filter(id=comment.thread_id).exists():
+                        comment_thread.append(comment)
+                comments = comment_thread
+            elif filtre == 'links':
+                comment_link = []
+                for comment in comments:
+                    if Link.objects.filter(id=comment.thread_id).exists():
+                        comment_link.append(comment)
+                comments = comment_link
+            else:
+                return Response({"error": f"The filter '{filtre}' does not exist"},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            comment_serializer = CommentSerializer(comments, many=True)
+            tot_ordenat = get_ordena(comment_serializer.data, ordre)
+            for comment in tot_ordenat:
+                comment.pop("replies", None)
+            result = tot_ordenat
+        elif element == 'boosts':
+            if api_key is None:
+                return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+            try:
+                user_token = User.objects.get(api_key=api_key)
+            except User.DoesNotExist:
+                return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+            if user != user_token:
+                return Response({"Error: el token no correspon a l'usuari"}, status=403)
+            elif user == User.objects.get(api_key=api_key):
+                tot_ordenat = filtrar(filtre, username, ordre, True)
+                result = tot_ordenat
+        else:
+            return Response({"error": f"The element '{element}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = {
+            "user": user_serializer.data,
+            "data": result
+        }
+        return Response(serializer, status=status.HTTP_200_OK)
+
+    def list(self, request):
+        users = User.objects.all()
+        serializers = UserSerializer(users, many=True, context={'api_key': None})
+        for serializer in serializers.data:
+            user = User.objects.get(username=serializer['username'])
+            serializer['token'] = user.api_key
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+class UserDetail(APIView):
+    def get(self, request, username):
+        api_key = request.headers.get('Authorization')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"error": f"The user '{username}' does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user, context={'api_key': api_key})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def filtrar(filtre, username, ordre, boost):
+    if filtre == 'tot':
+        thread_serializer = get_thread_serialized(username, boost)
+        link_serializer = get_link_serialized(username, boost)
+        tot = link_serializer.data + thread_serializer.data
+        tot_ordenat = get_ordena(tot, ordre)
+    elif filtre == 'threads':
+        thread_serializer = get_thread_serialized(username, boost)
+        tot_ordenat = get_ordena(thread_serializer.data, ordre)
+    elif filtre == 'links':
+        link_serializer = get_link_serialized(username, boost)
+        tot_ordenat = get_ordena(link_serializer.data, ordre)
     else:
-        template = loader.get_template('edit_user.html')
-        obj = User.objects.get(username=username)
-        context = {'usuari': obj}
-        return HttpResponse(template.render(context, request))
+        return Response({"error": f"The filter '{filtre}' does not exist"},
+                        status=status.HTTP_404_NOT_FOUND)
+    return tot_ordenat
 
 
-@csrf_exempt
-def logout_view(request):
-    logout(request)
-    return redirect("/")
+def get_thread_serialized(username, boost):
+    if boost:
+        boosts = Boost.objects.filter(user=username)
+        publication_ids = boosts.values_list('publicacio_id', flat=True)
+        threads = Thread.objects.filter(id__in=publication_ids)
+    else:
+        threads = Thread.objects.filter(author=username)
+    thread_serializer = ThreadSerializer(threads, many=True)
+    return thread_serializer
 
 
+def get_link_serialized(username, boost):
+    if boost:
+        boosts = Boost.objects.filter(user=username)
+        publication_ids = boosts.values_list('publicacio_id', flat=True)
+        links = Link.objects.filter(id__in=publication_ids)
+    else:
+        links = Link.objects.filter(author=username)
+    link_serializer = LinkSerializer(links, many=True)
+    return link_serializer
+
+
+def get_ordena(elements, ordre):
+    try:
+        tot_ordenat = ordena(elements, ordre)
+        return tot_ordenat
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+def ordena(elements, ordre):
+    if ordre is None or ordre == 'newest':
+        elements = sorted(elements, key=lambda x: x['creation_data'], reverse=True)
+    elif ordre == 'top':
+        elements = sorted(elements, key=lambda x: x['num_likes'], reverse=True)
+    elif ordre == 'commented':
+        elements = sorted(elements, key=lambda x: x['num_coments'], reverse=True)
+    elif ordre == 'oldest':
+        elements = sorted(elements, key=lambda x: x['creation_data'])
+    else:
+        raise Exception(f"The order '{ordre}' does not exist")
+    return elements

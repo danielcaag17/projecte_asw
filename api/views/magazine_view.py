@@ -1,118 +1,196 @@
-from django.contrib import messages
-from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import render, redirect
-from ..models import *
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
-from django.contrib.auth.decorators import login_required
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from ..serializers.serializer_magazines import *
+from ..serializers.subscription_serializer import *
+from ..serializers.link_serializer import *
+from ..serializers.thread_serializer import *
 
 
-def all_magazines(request, ordre=None):
-    magazines = Magazine.objects.all()
-    if request.user.is_authenticated:
-        user_email = request.user.email
-        user = User.objects.get(email=user_email)
-        user_subscriptions = Subscription.objects.filter(user=user).values_list('magazine_id', flat=True)
-    else:
-        user_subscriptions = []
-    if ordre == 'threads':
-        magazines = sorted(magazines, key=lambda x: x.total_threads, reverse=True)
-    elif ordre == 'elements':
-        magazines = sorted(magazines, key=lambda x: x.total_publicacions(), reverse=True)
-    elif ordre == 'commented':
-        magazines = sorted(magazines, key=lambda x: x.total_comments(), reverse=True)
-    elif ordre == 'suscriptions':
-        magazines = sorted(magazines, key=lambda x: x.n_suscriptions, reverse=True)
-    context = {'magazines': magazines, 'user_subscriptions': user_subscriptions}
-    template = loader.get_template("all_magazines.html")
-    return HttpResponse(template.render(context, request))
+class LlistarMagazines(APIView):
+    def get(self, request, ordre):
+        magazines = Magazine.objects.all()
+        if ordre == 'threads':
+            magazine_threads = {}
+            for magazine in magazines:
+                magazine_threads[magazine.id] = magazine.total_threads()
 
+            magazines = sorted(magazines, key=lambda x: magazine_threads.get(x.id, 0), reverse=True)
+            magazines_serializer = MagazineSerializer(magazines, many=True).data
 
-@login_required(redirect_field_name='login')
-@csrf_exempt
-def new_magazine(request):
-    if request.method == 'POST':
+        elif ordre == 'elements':
+            magazine_elements = {}
+            for magazine in magazines:
+                magazine_elements[magazine.id] = magazine.total_publicacions()
 
-        name = request.POST.get('name')
-        if Magazine.objects.filter(name=name).exists():
-            is_used = True
-            context = {'is_used': is_used}
-            return render(request, 'new_magazine.html', context)
+            magazines = sorted(magazines, key=lambda x: magazine_elements.get(x.id, 0), reverse=True)
+            magazines_serializer = MagazineSerializer(magazines, many=True).data
+
+        elif ordre == 'commented':
+            magazine_comments = {}
+            for magazine in magazines:
+                magazine_comments[magazine.id] = magazine.total_comments()
+            magazines = sorted(magazines, key=lambda x: magazine_comments.get(x.id, 0), reverse=True)
+            magazines_serializer = MagazineSerializer(magazines, many=True).data
+
+        elif ordre == 'suscriptions':
+            magazines_serializer = MagazineSerializer(magazines, many=True).data
+            magazines_serializer = sorted(magazines_serializer, key=lambda x: x['n_suscriptions'], reverse=True)
+
         else:
-            author_email = request.user.email
-            author = User.objects.get(email=author_email)
-            creation_date = timezone.now().isoformat()
-            title = request.POST.get('title')
-            description = request.POST.get('description')
-            rules = request.POST.get('rules')
-            nsfw = request.POST.get('isAdult')
-
-            magazine = Magazine.objects.create(
-                name=name,
-                author=author,
-                creation_date=creation_date,
-                title=title,
-                description=description,
-                rules=rules,
-                nsfw=nsfw
-            )
-
-            return redirect('main')
-    else:
-        template = loader.get_template("new_magazine.html")
-        return HttpResponse(template.render({}, request))
+            return Response({"Error: La url sol·licitada no existeix"}, status=404)
+        return Response(magazines_serializer, status=200)
 
 
-@login_required(redirect_field_name='login')
-@csrf_exempt
-def add_subscription(request, magazine_id):
-    if request.method == 'POST':
-        user = User.objects.get(email=request.user.email)
-        magazine = Magazine.objects.get(pk=magazine_id)
-        sub = Subscription.objects.create(user=user, magazine=magazine)
-        sub.save()
-        magazine.n_suscriptions += 1
-        magazine.save()
-        return redirect('all_magazines')
-    else:
-        return redirect('main')
+class CrearMagazine(APIView):
+    def post(self, request):
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        data = request.data
+        required_fields = {"name", "title"}
+        if required_fields.issubset(data.keys()):
+            if len(data["name"]) == 0:
+                return Response({"error: Nom buit"}, status=400)
+            elif len(data["title"]) == 0:
+                return Response({"error: Títol buit"}, status=400)
+            try:
+                usuari = User.objects.get(api_key=api_key)
+            except:
+                return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+
+            description = data.get("description")
+            rules = data.get("rules")
+            nsfw = data.get("nsfw")
+            test_magazine = Magazine.objects.filter(name=data["name"]).exists()
+            if (test_magazine):
+                return Response({"Error: ja existeix una magazine amb el nom introduït"}, status=409)
+
+            nou_magazine = Magazine.objects.create(author=usuari,
+                                                   name=data["name"],
+                                                   creation_date=timezone.now().isoformat(),
+                                                   title=data["title"],
+                                                   description=description,
+                                                   rules=rules,
+                                                   nsfw=nsfw)
+
+            nou_magazine = MagazineSerializer(nou_magazine)
+            return Response(nou_magazine.data, status=201)
+        else:
+            return Response({"Error: Falten atributs. Cal indicar nom i títol de la magazine a crear."},
+                            status=400)
 
 
-@login_required(redirect_field_name='login')
-@csrf_exempt
-def remove_subscription(request, magazine_id):
-    if request.method == 'POST':
-        user = User.objects.get(email=request.user.email)
-        magazine = Magazine.objects.get(pk=magazine_id)
-        Subscription.objects.filter(user=user, magazine=magazine).delete()
-        magazine.n_suscriptions -= 1
-        magazine.save()
-        return redirect('all_magazines')
-    else:
-        return redirect('main')
+class CrearSuscripcio(APIView):
+    def post(self, request, magazine_id):
+
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: Es necessari indicar el token del usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except:
+            return Response({"Error: el token no correspon amb cap usuari registrat"}, status=403)
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: La magazine sol·licitada no s'ha trobat"}, status=404)
+
+        suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
+        if suscripcio.exists():
+            return Response({"Error: L'usuari loguejat ja esta subscrit a la magazine indicada."}, status=400)
+        else:
+            nou_suscripcio = Subscription.objects.create(user=usuari, magazine=magazine)
+            nou_suscripcio.save()
+            nou_suscripcio = SubscriptionSerializer(nou_suscripcio)
+            magazine.n_suscriptions += 1
+            magazine.save()
+            return Response(nou_suscripcio.data, status=201)
+
+    def delete(self, request, magazine_id):
+        api_key = request.headers.get('Authorization')
+        if (api_key == None):
+            return Response({"Error: No s'ha indicat el token de l'usuari"}, status=401)
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except:
+            return Response({"Error: El token indicat no és vàlid"}, status=403)
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+
+        suscripcio = Subscription.objects.filter(user=usuari, magazine=magazine)
+        if suscripcio.exists():
+            Subscription.objects.filter(user=usuari, magazine=magazine).delete()
+            magazine.n_suscriptions -= 1
+            magazine.save()
+            return Response(status=204)
+        else:
+            return Response({"Error: L'usuari loguejat no està subscrit a la magazine indicada."}, status=400)
 
 
-def veure_magazine(request, magazine_id, ordre=None, filter=None):
-    if ordre == None:
-        ordre = 'newest'
-    magazine = Magazine.objects.get(pk=magazine_id)
-    links = Link.objects.filter(magazine_id=magazine_id)
-    threads = Thread.objects.filter(magazine_id=magazine_id)
+class VeureMagazine(APIView):
+    def get(self, request, magazine_id):
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+        magazine = MagazineSerializer(magazine)
+        return Response(magazine.data, status=200)
+
+
+class ObtenirPublicacionsMagazine(APIView):
+    def get(self, request, magazine_id, filter, order):
+        try:
+            magazine = Magazine.objects.get(pk=magazine_id)
+        except:
+            return Response({"Error: El magazine sol·licitat no s'ha trobat"}, status=404)
+
+        links = Link.objects.filter(magazine_id=magazine_id)
+        threads = Thread.objects.filter(magazine_id=magazine_id)
+        return filtrar_ordenar(threads, links, filter, order)
+
+
+def filtrar_ordenar(threads, links, filter, ordre):
+    thread_serializer = ThreadSerializer(threads, many=True)
+    link_serializer = LinkSerializer(links, many=True)
 
     if filter == 'links':
-        tot = links
+        resultats_serializer = link_serializer.data
     elif filter == 'threads':
-        tot = threads
+        resultats_serializer = thread_serializer.data
+    elif filter == 'publicacions':
+        resultats_serializer = thread_serializer.data + link_serializer.data
     else:
-        tot = list(links) + list(threads)
+        return Response({"Error: No existeix el filtre {}".format(filter)}, status=404)
 
-    if ordre == 'top':
-        tot = sorted(tot, key=lambda x: x.num_likes, reverse=True)
-    elif ordre == 'newest':
-        tot = sorted(tot, key=lambda x: x.creation_data, reverse=True)
-    elif ordre == 'comment':
-        tot = sorted(tot, key=lambda x: x.num_coments, reverse=True)
+    if ordre == 'newest':
+        tot = sorted(resultats_serializer, key=lambda x: x['creation_data'], reverse=True)
+    elif ordre == 'commented':
+        tot = sorted(resultats_serializer, key=lambda x: x['num_coments'], reverse=True)
+    elif (ordre == 'top'):
+        tot = sorted(resultats_serializer, key=lambda x: x['num_likes'], reverse=True)
+    else:
+        return Response({"Error: No existeix l'ordre {}".format(ordre)}, status=404)
 
-    context = {'magazine': magazine, 'threads': tot, 'active_filter': filter, 'ordre': ordre}
-    return render(request, 'veure_magazine.html', context)
+    return Response(tot, status=200)
+
+
+class ObtenirUserSubscriptions(APIView):
+    def get(self, request):
+        api_key = request.headers.get('Authorization')
+        if api_key is None:
+            return Response({"Error": "No s'ha indicat el token de l'usuari"}, status=401)
+
+        try:
+            usuari = User.objects.get(api_key=api_key)
+        except User.DoesNotExist:
+            return Response({"Error": "El token indicat no és vàlid"}, status=403)
+
+
+        suscripcions = Subscription.objects.filter(user=usuari)
+
+        serialized_suscripcions = SubscriptionSerializer(suscripcions, many=True).data
+
+        return Response(serialized_suscripcions, status=200)
+

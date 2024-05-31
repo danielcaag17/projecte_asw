@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,14 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'api',
+    'kbin',
     'rest_framework',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'storages'
+    'storages',
+    "api.apps.ApiConfig",
+    'corsheaders',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -63,6 +66,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,8 +75,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'api.middleware.AddUserToContextMiddleware'
+    'kbin.middleware.AddUserToContextMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True  # Permitir solicitudes de cualquier origen
+# CORS_ALLOW_HEADERS = ["keyword"]
+# CORS_ALLOW_ALL_HEADERS = True
+
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "keyword",
+)
 
 ROOT_URLCONF = 'projecte_asw.urls'
 
@@ -87,7 +100,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'api.context_processors.usuari_context_processor',
+                'kbin.context_processors.usuari_context_processor',
             ],
         },
     },
@@ -172,9 +185,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 # S3 settings
 
-AWS_ACCESS_KEY_ID = 'ASIA6GBMBUJHM3LIMPGN'
-AWS_SECRET_ACCESS_KEY = 'sauug3Gqdqr185pbEeFwFOus1I0DzeCMijsgRLug'
-AWS_SESSION_TOKEN = 'IQoJb3JpZ2luX2VjEMb//////////wEaCXVzLXdlc3QtMiJHMEUCIQDgsB7Y0jLEJvUoY3Vpu8llY3VfotlXz/YpPo2iE01qJQIgUYPd+RPgg2kGRg+wu+j01dPEdBNzQCJGSQvsgB0DLqEqwgII////////////ARAAGgw5NzUwNDk5NTc5NjYiDHjBFGKCeO6GmbSOkCqWAtG/izg82BVZ4CzCgzAn3aSok4ALk7A3tEbPXvkJWuTt1nhOLPLnFsgfmsbEvBEKBG6aD1bOG77JhISuVsqDiJ8NQhjy8yqxf79ko7E/SuVa33edYGfNEyi3jCr3ZgqoYNJbEfwGXGGqht8XyYYo6Kj5sfSKXkdCVVz3AUvhfO97SQsfOY3bHLCZJXBEVVgFti0eXscukSxWBn/k87cU+/Fk67GLU8zO20VJQtw9YHzX55+MLAca+0RgsK5ctGzvCgC2m19bHXEYHHms+8Bcbgx4OFKY0X1oHnIIgn6CojzaWkBGnHxP/O0k1aaSj8gxEgIC/r+L6qrlhLQivFy8C/BNM8UoRhgN6rAw5oEmG2nJErzqarcTMMOTiLEGOp0BRi6CZKtR2Dd/vR07MUHKuXzsEwwbvXef10/LqKAfXaV39QWT6m0py20tmVVcKbx4wYeT93avN2HRtra83ZjYFFRAm73SX1uBVYLbbS45WUnKw2ZZ1SJcQLpvobEVOtLTxXSNxfGr/DXSarGL9CFZozuLNoCfm2nvuhpe6ViK9CKKjCbsHbgxUW9nZZuKGQi1ajBLm+Vv7Vus4zIVAA=='
+AWS_ACCESS_KEY_ID = 'ASIA6GBMBUJHHEZU2KOP'
+AWS_SECRET_ACCESS_KEY = 'xhRTjsUwaqPq6YfHZAPiZiZ4Rr/Hk0NNXDzhSYTz'
+AWS_SESSION_TOKEN = 'IQoJb3JpZ2luX2VjELb//////////wEaCXVzLXdlc3QtMiJHMEUCIGUCGGNnM5Hm2JC5TXkuaife8a+M7cocD/vtX41YE4mKAiEA/lnec9T9sbqd93Bw0P0Y/RWUn4g0elTJpleTsmL2UVgquQIIPxAAGgw5NzUwNDk5NTc5NjYiDMkZllBL5s1tPwHsoSqWAmAIJ+N4Q5s1zMXgQkLaaAuU/CKDgXIYfVIqKHfP2j9YETj3VuZw0K/4yfHBy7MRlwOmO8FOui6HxQ/67y8gSwbWoup80IVEtKqx+O7UCfcTfY5dMT7xgMxTzs8nvetprHmAItbcyhTjoGwO9bhg1IPnKkE7oib/Qd8Rzvt0/YGd5duOy35Rp5d64zJ4OdqXcfvoCYWFIjyQxvi9aXRcs8IvdcMqxPiLMXJXBzpGXH8c45pDKjtcCekC/5LkoFv6Dff9V9sHFNFr+X4Q6AKEFqrxxNAtCUZwUjkMlMLUiFSh89OJA3lq+qVvT2/Onb2hgo/1m4HXZ+0f9W8ZqbWjgNgFyWXctRczMat4FEmlxVwDCF4ZFJo+MIDS5bIGOp0BUpYURkyRK4vnd3Kg9G5lJtD1Y6ept+61J1vDPx+K/YrJvUD1Ep8yXNRkxnOf2Ahvgstl/wlc5q/sohUZHFzGq5arjTe8p9quCZh2xPRPyZmErCQKsE1BGMG3rSCUFphQ2e5ftWf+ovtvXy3iFkM3CriF/X6/nwOIv9Vx5IvqPss5bilcv9WutgF4yH5ytWhg/+aC0+76f9A+8h2CNQ=='
 AWS_STORAGE_BUCKET_NAME = 'bravo13-bucket'
 
 # Configura el almacenamiento predeterminado para utilizar S3

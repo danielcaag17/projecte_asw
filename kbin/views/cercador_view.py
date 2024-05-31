@@ -18,7 +18,6 @@ def view_cercador(request,ordre=None,filter=None):
         return HttpResponse(template.render({}, request=request))
 
     else: #Busquem totes les publicacions que contenen en el titol i el cos la keyword indicada
-        print("fins aqui ok")
         links = Link.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))
         threads = Thread.objects.filter(Q(title__contains=keyword) | Q(body__contains=keyword))
 

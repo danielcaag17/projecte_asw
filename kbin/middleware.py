@@ -1,4 +1,4 @@
-from api.models.user import User
+from kbin.models.user import User
 
 
 class AddUserToContextMiddleware:
